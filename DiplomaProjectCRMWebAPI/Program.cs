@@ -31,10 +31,22 @@ builder.Services.AddDbContext<CrmContext>(
         .UseSqlServer(connection)
 ); // AddDbContext
 
+
+// добавление сервисов аутентификации
+// (схема аутентификации - с помощью jwt-токенов)
+builder.Services.AddAuthentication("Barer")
+    // подключение аутентификации с помощью jwt-токенов
+    .AddJwtBearer();
+
+// добавление сервисов авторизации
+builder.Services.AddAuthorization();
+
+
 // добавление сервиса CORS (Cross Origin Resource Sharing)
 // для разрешения запросов к серверу от других доменов
 // т.е. от клиентских приложений, созданных в других проектах
 builder.Services.AddCors();
+
 
 var app = builder.Build();
 
@@ -48,8 +60,19 @@ app.UseRouting();
 // и все виды REST-запросов
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod());
 
-// авторизация, работа с учетными записями пользователей
-//app.UseAuthorization();
+
+// добавление middleware аутентификации,
+// работа с учетными записями пользователей
+app.UseAuthentication();
+
+// добавление middleware авторизации,
+// авторизация пользователей
+app.UseAuthorization();
+
+
+/*app.Map("/hello", [Authorize] () => "Hello World!");
+app.Map("/", () => "Home Page");*/
+
 
 // обязательное задание маршрута
 app.MapControllerRoute(
