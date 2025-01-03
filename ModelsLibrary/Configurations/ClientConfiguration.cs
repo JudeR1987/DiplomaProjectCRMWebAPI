@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ModelsLibrary.Models.Entities;
+using Domain.Models.Entities;
 
-namespace ModelsLibrary.Configurations;
+namespace Domain.Configurations;
 
 // конфигурация для сущности Client, задаётся атрибутом в классе сущности
 public class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
-    void IEntityTypeConfiguration<Client>.Configure(EntityTypeBuilder<Client> builder) {
+    void IEntityTypeConfiguration<Client>.Configure(EntityTypeBuilder<Client> builder)
+    {
 
         #region Задание ограничений полей таблицы "КЛИЕНТЫ" при помощи Fluent API
 

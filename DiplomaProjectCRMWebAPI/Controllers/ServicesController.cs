@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DiplomaProjectCRMWebAPI.Context;
-using ModelsLibrary.Models.Dto;
+using Domain.Models.Dto;
+using Application.Interfaces;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
 // ServicesController - передаёт данные таблицы "УСЛУГИ" в JSON-формате
 [ApiController]
 [Route("api/{controller}/{action}")]
-public class ServicesController(CrmContext crmContext) : ControllerBase
+public class ServicesController(IDbService dbService) : ControllerBase
 {
-    private readonly CrmContext _crmContext = crmContext;
+    // получение ссылки на сервис-поставщик данных из базы данных
+    // при помощи внедрения зависимости - через конструктор
+    private readonly IDbService _dbService = dbService;
+
 
     // 1. по GET-запросу вернуть клиенту данные
     // о коллекции записей об услугах из БД в JSON-формате
@@ -21,8 +23,7 @@ public class ServicesController(CrmContext crmContext) : ControllerBase
         Task.Delay(1_500).Wait();
 
         // все записи таблицы
-        var source = (await _crmContext
-            .Services.AsNoTracking().ToListAsync())
+        var source = (await _dbService.GetAllServicesAsync())
             .Select(service => new ServiceDto(
                 service.Id, service.Name,
                 new ServicesCategoryDto(

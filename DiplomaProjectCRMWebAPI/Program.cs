@@ -10,16 +10,25 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using DiplomaProjectCRMWebAPI.Context;
+using Domain.Context;
+using Application.Repositories;
+using Application.Interfaces;
+using Application.Services;
 
 // построение приложения
 var builder = WebApplication.CreateBuilder(args);
 
+// добавление функционала контроллеров API
+builder.Services.AddControllers();
+
 // поставщик данных об объектах из базы данных
 // builder.Services.AddScoped<DbService>();
 
-// добавление функционала контроллеров API
-builder.Services.AddControllers();
+// репозиторий-поставщик данных из базы данных
+builder.Services.AddScoped<IDbRepository, DbRepository>();
+
+// поставщик данных из базы данных с бизнес-логикой
+builder.Services.AddScoped<IDbService, DbService>();
 
 // добавление функционала EF Core как сервиса приложения
 // строку подключения определяем в appsettings.json  

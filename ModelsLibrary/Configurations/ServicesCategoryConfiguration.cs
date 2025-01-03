@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ModelsLibrary.Models.Entities;
+using Domain.Models.Entities;
 
-namespace ModelsLibrary.Configurations;
+namespace Domain.Configurations;
 
 // конфигурация для сущности ServicesCategory,
 // задаётся атрибутом в классе сущности

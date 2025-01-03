@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ModelsLibrary.Models.Entities;
+using Domain.Models.Entities;
 
-namespace DiplomaProjectCRMWebAPI.Context;
+namespace Domain.Context;
 
 // контекст отображения на базу данных
 public class CrmContext : DbContext

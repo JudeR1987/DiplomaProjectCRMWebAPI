@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ModelsLibrary.Configurations;
+using Domain.Configurations;
 
-namespace ModelsLibrary.Models.Entities;
+namespace Domain.Models.Entities;
 
 // сущность для таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UsersRoles)
 // связь "многие ко многим" между таблицами

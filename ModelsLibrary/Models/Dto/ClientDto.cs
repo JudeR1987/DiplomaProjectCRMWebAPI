@@ -1,4 +1,4 @@
-﻿namespace ModelsLibrary.Models.Dto;
+﻿namespace Domain.Models.Dto;
 
 // DTO: Data Transfer Object - объект для переноса данных
 // Данные для отображения сведений о сущности таблицы "КЛИЕНТЫ" (Clients)

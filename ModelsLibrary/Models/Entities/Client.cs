@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ModelsLibrary.Configurations;
+﻿using Domain.Configurations;
+using Microsoft.EntityFrameworkCore;
 
-namespace ModelsLibrary.Models.Entities;
+namespace Domain.Models.Entities;
 
 // сущность для таблицы "КЛИЕНТЫ" (Clients)
 
@@ -83,7 +83,7 @@ public class Client(string surname, string name, string patronymic,
 
 
     // ? categories object Массив идентификаторов категорий клиента
-    
+
     // ? custom_fields object Массив дополнительных полей клиента
     // в виде пар "api-key": "value"
 
@@ -116,7 +116,8 @@ public class Client(string surname, string name, string patronymic,
 
     // конструктор по умолчанию
     public Client() : this("", "", "", "", "", 0, 0,
-        0, "", DateTime.Now.Date, "", 0, 0, 0, 0) {
+        0, "", DateTime.Now.Date, "", 0, 0, 0, 0)
+    {
     } // Client
 
 } // class Client

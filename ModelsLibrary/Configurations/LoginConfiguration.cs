@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ModelsLibrary.Models.Entities;
+using Domain.Models.Entities;
 
-namespace ModelsLibrary.Configurations;
+namespace Domain.Configurations;
 
 // конфигурация для сущности Login, задаётся атрибутом в классе сущности
 public class LoginConfiguration : IEntityTypeConfiguration<Login>
 {
-    void IEntityTypeConfiguration<Login>.Configure(EntityTypeBuilder<Login> builder) {
+    void IEntityTypeConfiguration<Login>.Configure(EntityTypeBuilder<Login> builder)
+    {
 
         #region Задание ограничений полей таблицы "ЛОГИНЫ" при помощи Fluent API
 
