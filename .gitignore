@@ -1,5 +1,7 @@
 .vs
 DiplomaProjectCRMWebAPI/bin
 DiplomaProjectCRMWebAPI/obj
-ModelsLibrary/bin
-ModelsLibrary/obj
+Domain/bin
+Domain/obj
+Application/bin
+Application/obj
