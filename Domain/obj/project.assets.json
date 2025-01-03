@@ -1049,20 +1049,6 @@
             "rid": "win"
           }
         }
-      },
-      "Domain/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v9.0",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Proxies": "9.0.0",
-          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Domain.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Domain.dll": {}
-        }
       }
     }
   },
@@ -2883,16 +2869,12 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
-    },
-    "Domain/1.0.0": {
-      "type": "project",
-      "path": "../Domain/Domain.csproj",
-      "msbuildProject": "../Domain/Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Domain >= 1.0.0"
+      "Microsoft.EntityFrameworkCore.Proxies >= 9.0.0",
+      "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.0"
     ]
   },
   "packageFolders": {
@@ -2902,11 +2884,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Application\\Application.csproj",
-      "projectName": "Application",
-      "projectPath": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Application\\Application.csproj",
+      "projectUniqueName": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Domain\\Domain.csproj",
+      "projectName": "Domain",
+      "projectPath": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Domain\\Domain.csproj",
       "packagesPath": "C:\\Users\\Евгений\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Application\\obj\\",
+      "outputPath": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2926,11 +2908,7 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {
-            "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\Евгений\\Documents\\IT\\Домашки\\21_DP\\DiplomaProjectCRMWebAPI\\Domain\\Domain.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
@@ -2948,6 +2926,16 @@
     "frameworks": {
       "net9.0": {
         "targetAlias": "net9.0",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Proxies": {
+            "target": "Package",
+            "version": "[9.0.0, )"
+          },
+          "Microsoft.EntityFrameworkCore.SqlServer": {
+            "target": "Package",
+            "version": "[9.0.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
