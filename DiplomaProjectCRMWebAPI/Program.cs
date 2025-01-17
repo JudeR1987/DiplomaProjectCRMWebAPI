@@ -10,10 +10,13 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using Domain.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Application.Repositories;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Models.Infrastructure;
+using Domain.Context;
 
 // построение приложени€
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +33,9 @@ builder.Services.AddScoped<IDbRepository, DbRepository>();
 // поставщик данных из базы данных с бизнес-логикой
 builder.Services.AddScoped<IDbService, DbService>();
 
+// поставщик jwt-токенов
+builder.Services.AddSingleton<IJwtService, JwtService>();
+
 // добавление функционала EF Core как сервиса приложени€
 // строку подключени€ определ€ем в appsettings.json  
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -43,9 +49,34 @@ builder.Services.AddDbContext<CrmContext>(
 
 // добавление сервисов аутентификации
 // (схема аутентификации - с помощью jwt-токенов)
-builder.Services.AddAuthentication("Barer")
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     // подключение аутентификации с помощью jwt-токенов
-    .AddJwtBearer();
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+
+            // указывает, будет ли валидироватьс€ издатель при валидации токена
+            ValidateIssuer = true,
+
+            // будет ли валидироватьс€ потребитель токена
+            ValidateAudience = true,
+
+            // будет ли валидироватьс€ врем€ существовани€
+            ValidateLifetime = true,
+
+            // валидаци€ ключа безопасности
+            ValidateIssuerSigningKey = true,
+
+
+            // строка, представл€юща€ издател€
+            ValidIssuer = AuthOptions.ISSUER,
+
+            // установка потребител€ токена
+            ValidAudience = AuthOptions.AUDIENCE,
+
+            // установка ключа безопасности
+            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+        };
+    });
 
 // добавление сервисов авторизации
 builder.Services.AddAuthorization();
@@ -59,6 +90,9 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
+// перенаправление запросов по https протоколу
+// app.UseHttpsRedirection();
+
 // подключение статических файлов из папки wwwroot
 app.UseStaticFiles();
 
@@ -67,7 +101,12 @@ app.UseRouting();
 
 // настройка CORS - разрешаем обрабатывать все источники запросов
 // и все виды REST-запросов
-app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod());
+app.UseCors(
+    builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+); // UseCors
 
 
 // добавление middleware аутентификации,
@@ -77,11 +116,6 @@ app.UseAuthentication();
 // добавление middleware авторизации,
 // авторизаци€ пользователей
 app.UseAuthorization();
-
-
-/*app.Map("/hello", [Authorize] () => "Hello World!");
-app.Map("/", () => "Home Page");*/
-
 
 // об€зательное задание маршрута
 app.MapControllerRoute(

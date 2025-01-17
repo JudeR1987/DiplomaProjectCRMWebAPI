@@ -8,7 +8,7 @@ namespace Domain.Models.Entities;
 // "ПОЛЬЗОВАТЕЛИ" (Users) и "РОЛИ" (Roles)
 
 // Атрибут задания класса конфигурирования сущности
-//[EntityTypeConfiguration(typeof(UsersRolesConfiguration))]
+[EntityTypeConfiguration(typeof(UsersRolesConfiguration))]
 public class UsersRoles(int userId, int roleId)
 {
     // первичный ключ - идентификатор связи
@@ -21,7 +21,7 @@ public class UsersRoles(int userId, int roleId)
 
     // связное свойство для таблицы "ПОЛЬЗОВАТЕЛИ", связь М:1
     // (во многих связях может быть только один пользователь)
-    //public virtual User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 
 
     // данные о роли
@@ -30,7 +30,7 @@ public class UsersRoles(int userId, int roleId)
 
     // связное свойство для таблицы "РОЛИ", связь М:1
     // (во многих связях может быть выбрана только одна роль)
-    //public virtual Role Role { get; set; } = null!;
+    public virtual Role Role { get; set; } = null!;
 
 
     // конструктор по умолчанию

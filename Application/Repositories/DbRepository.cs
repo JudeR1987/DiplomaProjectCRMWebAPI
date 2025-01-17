@@ -12,17 +12,48 @@ public class DbRepository(CrmContext db) : IDbRepository
     private CrmContext _db = db;
 
 
-    // 1. получить все записи таблицы "КЛИЕНТЫ" из БД
+    // 1. получить все записи таблицы "РОЛИ" из БД
+    public async Task<List<Role>> GetAllRolesAsync() =>
+        await _db.Roles.AsNoTracking().ToListAsync();
+
+
+    // 2. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    public async Task<List<User>> GetAllUsersAsync() =>
+        //await _db.Users.AsNoTracking().ToListAsync();
+        await _db.Users.ToListAsync();
+
+    // 2.1. добавить новую запись о пользователе в БД
+    public async Task CreateUserAsync(User user) {
+
+        // добавление записи в БД
+        await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync();
+
+    } // CreateUserAsync
+
+    // 2.2. изменить данные пользователя в БД
+    public async Task UpdateUserAsync(User user) {
+
+        // изменение записи в БД
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync();
+
+    } // UpdateUserAsync
+
+
+
+
+    // 3. получить все записи таблицы "КЛИЕНТЫ" из БД
     public async Task<List<Client>> GetAllClientsAsync() =>
         await _db.Clients.AsNoTracking().ToListAsync();
 
 
-    // 2. получить все записи таблицы "УСЛУГИ" из БД
+    // 4. получить все записи таблицы "УСЛУГИ" из БД
     public async Task<List<Service>> GetAllServicesAsync() =>
         await _db.Services.AsNoTracking().ToListAsync();
 
 
-    // 3. получить все записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
+    // 5. получить все записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
     public async Task<List<ServicesCategory>> GetAllServicesCategoriesAsync() =>
         await _db.ServicesCategories.AsNoTracking().ToListAsync();
 

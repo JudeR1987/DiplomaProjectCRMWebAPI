@@ -6,7 +6,7 @@ namespace Domain.Models.Entities;
 // сущность для таблицы "ЛОГИНЫ" (Logins)
 
 // Атрибут задания класса конфигурирования сущности
-[EntityTypeConfiguration(typeof(LoginConfiguration))]
+//[EntityTypeConfiguration(typeof(LoginConfiguration))]
 public class Login(int userId, string loginName, string password, int roleId)
 {
     // первичный ключ - идентификатор записи о логине пользователя

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain.Configurations;
+using Domain.Models.Dto;
 
 namespace Domain.Models.Entities;
 
@@ -22,20 +23,40 @@ public class Role(string name)
 
     // связное свойство для таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ", связь 1:M
     // (одна роль может использоваться во многих связях)
-    // public virtual List<UsersRoles> UsersRoles { get; set; } = [];
+    public virtual List<UsersRoles> UsersRoles { get; set; } = [];
 
     // связное свойство для таблицы "ПОЛЬЗОВАТЕЛИ", связь M:M
     // (многие роли могут быть у множества пользователей)
-    // public virtual List<User> Users { get; set; } = [];
+    public virtual List<User> Users { get; set; } = [];
 
 
     // связное свойство для таблицы "ЛОГИНЫ", связь 1:M
     // (одна роль может быть во многих учётных записях)
-    public virtual List<Login> Logins { get; set; } = [];
+    //public virtual List<Login> Logins { get; set; } = [];
 
 
     // конструктор по умолчанию
     public Role() : this("") {
     } // Role
+
+
+    // статический метод, возвращающий новый объект-копию
+    public static Role NewRole(Role srcRole) =>
+        new(srcRole.Name) {
+            Id = srcRole.Id,
+            Users = srcRole.Users,
+            UsersRoles = srcRole.UsersRoles
+        };
+
+
+    // статический метод, возвращающий объект-DTO
+    public static RoleDto RoleToDto(Role srcRole) =>
+        new RoleDto(srcRole.Id, srcRole.Name);
+
+
+    // статический метод, возвращающий список объектов-DTO
+    public static List<RoleDto> RolesToDto(List<Role> srcRoles) =>
+        // srcRoles.Select(role => RoleToDto(role)).ToList();
+        srcRoles.Select(RoleToDto).ToList();
 
 } // class Role

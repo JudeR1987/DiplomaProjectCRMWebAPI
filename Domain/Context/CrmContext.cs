@@ -17,7 +17,7 @@ public class CrmContext : DbContext
 
 
     // 3. таблица "ЛОГИНЫ"
-    public DbSet<Login> Logins => Set<Login>();
+    //public DbSet<Login> Logins => Set<Login>();
 
 
     // 4. таблица "ПОЛЬЗОВАТЕЛИ_РОЛИ"
@@ -54,7 +54,7 @@ public class CrmContext : DbContext
     public CrmContext(DbContextOptions<CrmContext> options) : base(options) {
 
         // гарантированное удаление БД, если она есть
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
 
         // гарантированное создание БД, если её нет
         Database.EnsureCreated();

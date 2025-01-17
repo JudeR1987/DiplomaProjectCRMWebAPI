@@ -33,7 +33,7 @@ public class UsersRolesConfiguration : IEntityTypeConfiguration<UsersRoles>
         };
 
         // инициализация таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ"
-        //builder.HasData(usersRoles);
+        builder.HasData(usersRoles);
 
         #endregion
 

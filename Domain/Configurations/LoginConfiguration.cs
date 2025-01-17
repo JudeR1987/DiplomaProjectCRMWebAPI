@@ -45,16 +45,16 @@ public class LoginConfiguration : IEntityTypeConfiguration<Login>
         // Настройка отношения "многие к одному"
 
         // связь с таблицей "ПОЛЬЗОВАТЕЛИ"
-        builder
-            .HasOne(login => login.User)
-            .WithMany(user => user.Logins)
-            .HasForeignKey(login => login.UserId);
+        //builder
+        //    .HasOne(login => login.User)
+        //    .WithMany(user => user.Logins)
+        //    .HasForeignKey(login => login.UserId);
 
         // связь с таблицей "РОЛИ"
-        builder
-            .HasOne(login => login.Role)
-            .WithMany(role => role.Logins)
-            .HasForeignKey(login => login.RoleId);
+        //builder
+        //    .HasOne(login => login.Role)
+        //    .WithMany(role => role.Logins)
+        //    .HasForeignKey(login => login.RoleId);
 
         #endregion
 
@@ -73,7 +73,7 @@ public class LoginConfiguration : IEntityTypeConfiguration<Login>
         };
 
         // инициализация таблицы "ЛОГИНЫ"
-        builder.HasData(logins);
+        //builder.HasData(logins);
 
         #endregion
 
