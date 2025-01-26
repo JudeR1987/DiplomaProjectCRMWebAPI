@@ -67,6 +67,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsUnique();
 
         // настроить ограничение поля Password для User:
+        // задать ограничение минимальной длины строкового поля пароля пользователя
+        builder
+            .ToTable(user => user
+            .HasCheckConstraint("Password", "LEN(Password) > 3"));
+
+        // настроить ограничение поля Password для User:
         // задать ограничение максимальной длины строкового поля пароля пользователя
         // nvarchar(50) not null
         builder
@@ -112,13 +118,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         #region Инициализация таблицы "ПОЛЬЗОВАТЕЛИ"
 
         var users = new List<User> {
-            new() { Id = 1, UserName = "Андрей 12",   Login = "72332123456",     Phone = "72332123456", Email = "diaspora@inbox.ru",   Password = "72332123456", Avatar = "http://localhost:4200/users/123456.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 2, UserName = "Вераника 23", Login = "72252546231",     Phone = "72252546231", Email = "pilka@bk.ru",         Password = "72252546231", Avatar = "http://localhost:4200/users/123457.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 3, UserName = "Иван 34",     Login = "74251635241",     Phone = "74251635241", Email = "holiday@hotmail.com", Password = "74251635241", Avatar = "http://localhost:4200/users/123458.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 4, UserName = "Татьяна 45",  Login = "78990123987",     Phone = "78990123987", Email = "astrology@live.com",  Password = "78990123987", Avatar = "http://localhost:4200/users/123459.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 5, UserName = "Вадим 56",    Login = "79090159951",     Phone = "79090159951", Email = "kabala@furmail.ru",   Password = "79090159951", Avatar = "http://localhost:4200/users/123460.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 6, UserName = "Надежда 67",  Login = "71459024075",     Phone = "71459024075", Email = "capacity@yandex.ru",  Password = "71459024075", Avatar = "http://localhost:4200/users/123461.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
-            new() { Id = 7, UserName = "Валерия 78",  Login = "big@hotmail.com", Phone = "72113391752", Email = "big@hotmail.com",     Password = "72113391752", Avatar = "http://localhost:4200/users/123462.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false }
+            new() { Id = 1, UserName = "Андрей 12",   Login = "+72332123456", Phone = "+72332123456", Email = "diaspora@inbox.ru",   Password = "+72332123456", Avatar = "http://localhost:4200/users/123456.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 2, UserName = "Вераника 23", Login = "+72252546231", Phone = "+72252546231", Email = "pilka@bk.ru",         Password = "+72252546231", Avatar = "http://localhost:4200/users/123457.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 3, UserName = "Иван 34",     Login = "+74251635241", Phone = "+74251635241", Email = "holiday@hotmail.com", Password = "+74251635241", Avatar = "http://localhost:4200/users/123458.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 4, UserName = "Татьяна 45",  Login = "+78990123987", Phone = "+78990123987", Email = "astrology@live.com",  Password = "+78990123987", Avatar = "http://localhost:4200/users/123459.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 5, UserName = "Вадим 56",    Login = "+79090159951", Phone = "+79090159951", Email = "kabala@furmail.ru",   Password = "+79090159951", Avatar = "http://localhost:4200/users/123460.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 6, UserName = "Надежда 67",  Login = "+71459024075", Phone = "+71459024075", Email = "capacity@yandex.ru",  Password = "+71459024075", Avatar = "http://localhost:4200/users/123461.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 7, UserName = "Валерия 78",  Login = "+72113391752", Phone = "+72113391752", Email = "big@hotmail.com",     Password = "+72113391752", Avatar = "http://localhost:4200/users/123462.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false }
         };
 
         // инициализация таблицы "ПОЛЬЗОВАТЕЛИ"

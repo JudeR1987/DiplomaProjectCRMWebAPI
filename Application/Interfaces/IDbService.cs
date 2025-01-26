@@ -23,12 +23,20 @@ public interface IDbService
 
     // 2.3. получить зарегистрированного пользователя с совпадающими данными
     // (если пользователь не найден - вернуть new User() с Id=0)
-    Task<User> GetRegisteredUserAsync(string phone, string email);
+    //Task<User> GetRegisteredUserAsync(string phone, string email);
 
-    // 2.4. добавить новую запись о пользователе в БД
+    // 2.3. получить зарегистрированного пользователя с совпадающим логином
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    Task<User> GetUserByLoginAsync(string phone);
+
+    // 2.4. получить зарегистрированного пользователя с совпадающим email
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    Task<User> GetUserByEmailAsync(string email);
+
+    // 2.5. добавить новую запись о пользователе в БД
     Task CreateUserAsync(User user);
 
-    // 2.5. изменить данные пользователя в БД
+    // 2.6. изменить данные пользователя в БД
     Task UpdateUserAsync(User user);
 
 

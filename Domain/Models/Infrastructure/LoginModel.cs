@@ -3,7 +3,7 @@
 // класс, содержащий данные пользователя при регистрации/входе в систему
 public class LoginModel(string login, string phone, string email, string password)
 {
-    // логин пользователя
+    // логин пользователя (логин=телефону)
     public string Login { get; set; } = login;
 
 

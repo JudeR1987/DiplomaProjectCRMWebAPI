@@ -19,7 +19,7 @@ public class User(string userName, string login, string phone, string email,
     public string UserName { get; set; } = userName;
 
 
-    // логин пользователя
+    // логин пользователя (логин=телефону)
     public string Login { get; set; } = login;
 
 

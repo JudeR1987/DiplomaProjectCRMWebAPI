@@ -36,16 +36,34 @@ public class DbService(IDbRepository dbRepository) : IDbService
 
     // 2.3. получить зарегистрированного пользователя с совпадающими данными
     // (если пользователь не найден - вернуть new User() с Id=0)
-    public async Task<User> GetRegisteredUserAsync(string phone, string email) =>
+    /*public async Task<User> GetRegisteredUserAsync(string phone, string email) =>
         (await GetAllUsersAsync())
-        .Find(user => user.Login == phone || user.Login == email)
+        .Find(
+            user => user.Login == phone ||
+                    user.Login == email ||
+                    user.Email == email
+        )
+        ?? new User() { Id = 0 };*/
+
+    // 2.3. получить зарегистрированного пользователя с совпадающим логином
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    public async Task<User> GetUserByLoginAsync(string login) =>
+        (await GetAllUsersAsync())
+        .Find(user => user.Login == login)
         ?? new User() { Id = 0 };
 
-    // 2.4. добавить новую запись о пользователе в БД
+    // 2.4. получить зарегистрированного пользователя с совпадающим email
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    public async Task<User> GetUserByEmailAsync(string email) =>
+        (await GetAllUsersAsync())
+        .Find(user => user.Email == email)
+        ?? new User() { Id = 0 };
+
+    // 2.5. добавить новую запись о пользователе в БД
     public async Task CreateUserAsync(User user) =>
         await _dbRepository.CreateUserAsync(user);
 
-    // 2.5. изменить данные пользователя в БД
+    // 2.6. изменить данные пользователя в БД
     public async Task UpdateUserAsync(User user) =>
         await _dbRepository.UpdateUserAsync(user);
 

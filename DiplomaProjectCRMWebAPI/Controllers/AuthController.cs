@@ -28,21 +28,53 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
         Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть сообщение об ошибке
-        if (loginModel == null || string.IsNullOrEmpty(loginModel.Login) ||
-            string.IsNullOrEmpty(loginModel.Password))
-            return BadRequest("Данные о пользователе отсутствуют"); // потом убрать сообщение(валидация на клиенте)
+        if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
+            (string.IsNullOrEmpty(loginModel.Login) && string.IsNullOrEmpty(loginModel.Email)))
+            return BadRequest("Данные о пользователе отсутствуют");
 
 
-        // поиск пользователя по его логину и паролю
-        var user = await _dbService
-            .GetUserToLoginAsync(loginModel.Login, loginModel.Password);
+        // если в данных указан адрес почты, то найдём пользователя
+        // по email и паролю
+        var user = new User();
+        if (!string.IsNullOrEmpty(loginModel.Email)) {
+            
+            user = await _dbService
+                .GetUserByEmailAsync(loginModel.Email);
 
-        // если пользователь не найден(Id=0) - вернуть сообщение
-        // об ошибке 401(НЕ АВТОРИЗОВАН)
-        if (user.Id == 0)
-            return Unauthorized("Invalid username or password " +
-                "(Неверный логин или пароль, или пользователь не зарегистрирован)");
+            // если пользователь не найден(Id=0) - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Id == 0)
+                return Unauthorized(new { loginModel.Email });
 
+            // если пароль найденного пользователя не совпадает - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Password != loginModel.Password)
+                return Unauthorized(new { loginModel.Email, loginModel.Password });
+
+        } // if
+
+
+        // если в данных указан логин(телефон), то найдём пользователя
+        // по логину и паролю
+        if (!string.IsNullOrEmpty(loginModel.Login)) {
+            
+            user = await _dbService
+                .GetUserByLoginAsync(loginModel.Login);
+
+            // если пользователь не найден(Id=0) - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Id == 0)
+                return Unauthorized(new { loginModel.Login });
+
+            // если пароль найденного пользователя не совпадает - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Password != loginModel.Password)
+                return Unauthorized(new { loginModel.Login, loginModel.Password });
+
+        } // if
+
+
+        // зададим найденному пользователю требуемые параметры
 
         // создать jwt-токен безопасности для пользователя
         var jwtTokenString = _jwtService.CreateJwtToken(user);
@@ -177,18 +209,31 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
         Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть сообщение об ошибке
-        if (loginModel == null || string.IsNullOrEmpty(loginModel.Phone) ||
+        if (loginModel == null ||
+            string.IsNullOrEmpty(loginModel.Login) ||
+            string.IsNullOrEmpty(loginModel.Phone) ||
             string.IsNullOrEmpty(loginModel.Email))
-            return BadRequest("Данные для регистрации отсутствуют"); // потом убрать сообщение(валидация на клиенте)
+            return BadRequest("Данные для регистрации отсутствуют");
 
 
-        // поиск совпадений пользовательских данных
-        var regUser = await _dbService
-            .GetRegisteredUserAsync(loginModel.Phone, loginModel.Email);
+        // поиск пользователя по логину (логин=телефону)
+        var regUserByLogin = await _dbService
+            .GetUserByLoginAsync(loginModel.Login);
 
-        // если пользователь найден(Id != 0) - вернуть сообщение об ошибке
-        if (regUser.Id != 0)
-            return BadRequest("Invalid data (Такой пользователь уже зарегистрирован)");
+        var regPhone = regUserByLogin.Id != 0 ? loginModel.Phone : "";
+
+
+        // поиск пользователя по email
+        var regUserByEmail = await _dbService
+            .GetUserByEmailAsync(loginModel.Email);
+
+        var regEmail = regUserByEmail.Id != 0 ? loginModel.Email : "";
+
+
+        // если хотя бы один пользователь найден(Id != 0),
+        // вернуть объект с совпадающими параметрами
+        if (regUserByLogin.Id != 0 || regUserByEmail.Id != 0)
+            return new JsonResult(new { Phone = regPhone, Email = regEmail });
 
 
         // данные для регистрации
@@ -207,7 +252,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
 
         // 5 - пароль учётной записи пользователя
         // TODO: сформировать и отправить на email
-        var password = "123";
+        var password = "1234";
 
         // 6 - путь к файлу аватарки пользователя
         // TODO: проработать download
