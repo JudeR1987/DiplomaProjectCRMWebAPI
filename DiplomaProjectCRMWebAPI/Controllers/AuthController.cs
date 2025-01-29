@@ -8,7 +8,8 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 // контроллер для аутентификации и авторизации пользователей
 [ApiController]
 [Route("api/{controller}/{action}")]
-public class AuthController(IDbService dbService, IJwtService jwtService) : ControllerBase
+public class AuthController(IDbService dbService, IJwtService jwtService,
+    IMailService mailService) : ControllerBase
 {
     // получение ссылки на сервис-поставщик данных из базы данных
     // при помощи внедрения зависимости - через конструктор
@@ -17,6 +18,10 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
     // получение ссылки на сервис-поставщик jwt-токенов
     // при помощи внедрения зависимости - через конструктор
     private readonly IJwtService _jwtService = jwtService;
+
+    // получение ссылки на сервис отправки электронных писем на почту
+    // при помощи внедрения зависимости - через конструктор
+    private readonly IMailService _mailService = mailService;
 
 
     // по POST-запросу при успешной аутентификации вернуть
@@ -27,10 +32,10 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
         // имитация временной задержки
         Task.Delay(1_500).Wait();
 
-        // если данных о пользователе нет - вернуть сообщение об ошибке
+        // если данных о пользователе нет - вернуть некорректные данные
         if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
             (string.IsNullOrEmpty(loginModel.Login) && string.IsNullOrEmpty(loginModel.Email)))
-            return BadRequest("Данные о пользователе отсутствуют");
+            return BadRequest(new { loginModel });
 
 
         // если в данных указан адрес почты, то найдём пользователя
@@ -208,12 +213,12 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
         // имитация временной задержки
         Task.Delay(1_500).Wait();
 
-        // если данных о пользователе нет - вернуть сообщение об ошибке
+        // если данных о пользователе нет - вернуть некорректные данные
         if (loginModel == null ||
             string.IsNullOrEmpty(loginModel.Login) ||
             string.IsNullOrEmpty(loginModel.Phone) ||
             string.IsNullOrEmpty(loginModel.Email))
-            return BadRequest("Данные для регистрации отсутствуют");
+            return BadRequest(new { loginModel });
 
 
         // поиск пользователя по логину (логин=телефону)
@@ -252,7 +257,8 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
 
         // 5 - пароль учётной записи пользователя
         // TODO: сформировать и отправить на email
-        var password = "1234";
+        var password = $"{_jwtService.CreateUserToken()}-" +
+            $"{_jwtService.CreateUserToken()}";
 
         // 6 - путь к файлу аватарки пользователя
         // TODO: проработать download
@@ -275,7 +281,12 @@ public class AuthController(IDbService dbService, IJwtService jwtService) : Cont
 
         // добавить данные о пользователе в базу данных
         await _dbService.CreateUserAsync(newUser);
-        
+
+
+        // отправить пароль на почту !!!
+        (bool isOk, string message) = await _mailService
+            .SendMailAsync(newUser, MailOptions.SUBJECT_PASSWORD);
+
 
         // TODO: возможно, потребуется добавить новому
         // пользователю роль типа "НОВИЧЁК"

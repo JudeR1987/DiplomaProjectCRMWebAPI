@@ -18,8 +18,8 @@ public class AuthOptions
     private const string KEY = "mysupersecret_secretsecretsecretkey!123";
 
 
-    // метод получения ключа безопасности(который применяется для генерации токена)
-    // из массива байт(созданного по секретному ключу)
+    // метод получения ключа безопасности(который применяется для
+    // генерации токена) из массива байт(созданного по секретному ключу)
     public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
 

@@ -118,7 +118,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         #region Инициализация таблицы "ПОЛЬЗОВАТЕЛИ"
 
         var users = new List<User> {
-            new() { Id = 1, UserName = "Андрей 12",   Login = "+72332123456", Phone = "+72332123456", Email = "diaspora@inbox.ru",   Password = "+72332123456", Avatar = "http://localhost:4200/users/123456.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
+            new() { Id = 1, UserName = "Андрей 12",   Login = "+72332123456", Phone = "+72332123456", Email = "diaspora@inbox.ru",   Password = "+72332123456", Avatar = "https://wylsa.com/wp-content/uploads/2016/02/jake_d1-500x640.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
             new() { Id = 2, UserName = "Вераника 23", Login = "+72252546231", Phone = "+72252546231", Email = "pilka@bk.ru",         Password = "+72252546231", Avatar = "http://localhost:4200/users/123457.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
             new() { Id = 3, UserName = "Иван 34",     Login = "+74251635241", Phone = "+74251635241", Email = "holiday@hotmail.com", Password = "+74251635241", Avatar = "http://localhost:4200/users/123458.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },
             new() { Id = 4, UserName = "Татьяна 45",  Login = "+78990123987", Phone = "+78990123987", Email = "astrology@live.com",  Password = "+78990123987", Avatar = "http://localhost:4200/users/123459.jpg", UserToken = $"{Guid.NewGuid().ToString().Substring(0, 8)}", IsLogin = false },

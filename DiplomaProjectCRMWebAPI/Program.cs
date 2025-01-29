@@ -36,6 +36,9 @@ builder.Services.AddScoped<IDbService, DbService>();
 // поставщик jwt-токенов
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
+// сервис отправки электронных писем на почту
+builder.Services.AddSingleton<IMailService, MailService>();
+
 // добавление функционала EF Core как сервиса приложения
 // строку подключения определяем в appsettings.json  
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
