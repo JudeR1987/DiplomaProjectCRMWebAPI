@@ -1,7 +1,4 @@
-﻿using Application.Interfaces;
-using Application.Services;
-using Domain.Models.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -23,20 +20,16 @@ public class DownloadController(IHostEnvironment environment/*,
     [HttpGet]
     public async Task<IActionResult> UserPhoto(string fileName) {
 
-        // имитация временной задержки
-        //Task.Delay(1_500).Wait();
-
-        // поиск пользователя по Id
-        //var user = await _dbService.GetUserByIdAsync(userId);
-
-        // если пользователь не найден(Id=0) - вернуть сообщение
-        // об ошибке 401(НЕ АВТОРИЗОВАН)
-        /*if (user.Id == 0)
-            return Unauthorized("Invalid user (Пользователь не зарегистрирован)");*/
-
-        //var name = "devs1.jpg";
+        // путь расположения фотографии
         var path = Path.Combine(_environment.ContentRootPath,
             "App_Data", "Users", "photos", fileName);
+
+        // если файла нет - заменить его на файл с изображением по умолчанию
+        if (!System.IO.File.Exists(path))
+            path = Path.Combine(_environment.ContentRootPath,
+                "App_Data", "Users", "photos", "photo.ico");
+
+        // массив байтов для отправки на клиента
         byte[] bytes = await System.IO.File.ReadAllBytesAsync(path);
 
         // text/plain для текста или универсальный тип application/octet-stream

@@ -6,6 +6,9 @@ public class MailOptions
     // заголовок письма с паролем после регистрации
     public const string SUBJECT_PASSWORD = "password";
 
+    // заголовок письма с паролем после изменения
+    public const string SUBJECT_NEW_PASSWORD = "new password";
+
     // имя отправителя
     public const string NAME = "CRM_WebAPI";
 

@@ -114,10 +114,10 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // имитация временной задержки
         Task.Delay(1_500).Wait();
 
-        // если данных о пользователе нет - вернуть сообщение об ошибке
-        if (logOutModel == null || logOutModel.UserId == 0 ||
+        // если данных о пользователе нет - вернуть некорректные данные
+        if (logOutModel == null || logOutModel.UserId <= 0 ||
             string.IsNullOrEmpty(logOutModel.UserToken))
-            return BadRequest();
+            return BadRequest(new { logOutModel });
 
 
         // поиск пользователя по Id
@@ -126,14 +126,14 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
         if (user.Id == 0)
-            return Unauthorized("Invalid user (Пользователь не зарегистрирован)");
+            return Unauthorized(new { logOutModel.UserId });
 
 
-        // если пользователь не входил в учётную запись или его
-        // параметры не соответствует - вернуть сообщение об ошибке
+        // если пользователь не входил в учётную запись или его параметры
+        // не соответствуют - вернуть сообщение об ошибке 401(НЕ АВТОРИЗОВАН)
         if (!user.IsLogin || user.IsLogin != logOutModel.IsLogin ||
             user.UserToken != logOutModel.UserToken)
-            return Unauthorized("Invalid token (Требуется повторный вход)");
+            return Unauthorized(new { logOutModel.IsLogin, logOutModel.UserToken });
 
 
         // создать токен обновления
@@ -160,12 +160,12 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel) {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        //Task.Delay(1_500).Wait();
 
-        // если данных о пользователе нет - вернуть сообщение об ошибке
+        // если данных о пользователе нет - вернуть некорректные данные
         if (refreshModel == null || refreshModel.UserId == 0 ||
             string.IsNullOrEmpty(refreshModel.UserToken))
-            return BadRequest();
+            return BadRequest(new { refreshModel });
 
 
         // поиск пользователя по Id
@@ -174,13 +174,13 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
         if (user.Id == 0)
-            return Unauthorized("Invalid user (Пользователь не зарегистрирован)");
+            return Unauthorized(new { refreshModel.UserId });
 
 
         // если пользователь не входил в учётную запись или его токен
         // обновления не соответствует - вернуть сообщение об ошибке
         if (!user.IsLogin || user.UserToken != refreshModel.UserToken)
-            return Unauthorized("Invalid token (Требуется повторный вход)");
+            return Unauthorized(new { refreshModel.UserId, refreshModel.UserToken });
 
 
         // создать jwt-токен безопасности для пользователя
@@ -222,23 +222,29 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
 
         // поиск пользователя по логину (логин=телефону)
-        var regUserByLogin = await _dbService
+        var registeredUserByLogin = await _dbService
             .GetUserByLoginAsync(loginModel.Login);
 
-        var regPhone = regUserByLogin.Id != 0 ? loginModel.Phone : "";
+        // если пользователь найден(Id != 0),
+        // вернуть объект с совпадающим параметром
+        if (registeredUserByLogin.Id != 0)
+            return BadRequest(new { loginModel.Phone });
 
 
         // поиск пользователя по email
-        var regUserByEmail = await _dbService
+        var registeredUserByEmail = await _dbService
             .GetUserByEmailAsync(loginModel.Email);
 
-        var regEmail = regUserByEmail.Id != 0 ? loginModel.Email : "";
+        // если пользователь найден(Id != 0),
+        // вернуть объект с совпадающим параметром
+        if (registeredUserByEmail.Id != 0)
+            return BadRequest(new { loginModel.Email });
 
 
         // если хотя бы один пользователь найден(Id != 0),
         // вернуть объект с совпадающими параметрами
-        if (regUserByLogin.Id != 0 || regUserByEmail.Id != 0)
-            return new JsonResult(new { Phone = regPhone, Email = regEmail });
+        /*if (regUserByLogin.Id != 0 || regUserByEmail.Id != 0)
+            return new JsonResult(new { Phone = regPhone, Email = regEmail });*/
 
 
         // данные для регистрации
@@ -257,12 +263,12 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
         // 5 - пароль учётной записи пользователя
         // TODO: сформировать и отправить на email
-        var password = $"{_jwtService.CreateUserToken()}-" +
-            $"{_jwtService.CreateUserToken()}";
+        var password = Utils.GetRandomString(17);
 
         // 6 - путь к файлу аватарки пользователя
-        // TODO: проработать download
-        var avatar = "http://...";
+        // (значение по умолчанию)
+        var avatar =
+            "http://localhost:5297/download/userphoto/users/photos/photo.ico";
 
         // 7 - пользовательский токен обновления
         var userToken = _jwtService.CreateUserToken();

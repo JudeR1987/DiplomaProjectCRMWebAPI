@@ -14,7 +14,11 @@ public class AuthOptions
     public const string AUDIENCE = "http://localhost:5297";
 
 
-    // ключ для шифрации
+    // время существования токена
+    public const int LIFETIME = 1;
+
+
+    // секретный ключ для шифрации
     private const string KEY = "mysupersecret_secretsecretsecretkey!123";
 
 
@@ -22,5 +26,10 @@ public class AuthOptions
     // генерации токена) из массива байт(созданного по секретному ключу)
     public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
+
+
+    // метод получения даты и времени окончания срока существования токена
+    public static DateTime TokenExpires(int minutes = LIFETIME) =>
+        DateTime.Now.AddMinutes(minutes);
 
 } // class AuthOptions
