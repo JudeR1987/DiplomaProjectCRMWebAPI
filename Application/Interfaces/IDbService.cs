@@ -27,7 +27,7 @@ public interface IDbService
 
     // 2.3. получить зарегистрированного пользователя с совпадающим логином
     // (если пользователь не найден - вернуть new User() с Id=0)
-    Task<User> GetUserByLoginAsync(string phone);
+    Task<User> GetUserByLoginAsync(string login);
 
     // 2.4. получить зарегистрированного пользователя с совпадающим email
     // (если пользователь не найден - вернуть new User() с Id=0)

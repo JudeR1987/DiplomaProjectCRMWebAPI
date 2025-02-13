@@ -34,7 +34,8 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
-            (string.IsNullOrEmpty(loginModel.Login) && string.IsNullOrEmpty(loginModel.Email)))
+            (string.IsNullOrEmpty(loginModel.Login) &&
+            string.IsNullOrEmpty(loginModel.Email)))
             return BadRequest(new { loginModel });
 
 
@@ -160,10 +161,11 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel) {
 
         // имитация временной задержки
-        //Task.Delay(1_500).Wait();
+        Task.Delay(1_500).Wait();
 
+        //refreshModel = new RefreshModel(refreshModel.UserId, ""); // для проверки
         // если данных о пользователе нет - вернуть некорректные данные
-        if (refreshModel == null || refreshModel.UserId == 0 ||
+        if (refreshModel == null || refreshModel.UserId <= 0 ||
             string.IsNullOrEmpty(refreshModel.UserToken))
             return BadRequest(new { refreshModel });
 
@@ -173,12 +175,14 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
+        //user.Id = 0; // для проверки
         if (user.Id == 0)
             return Unauthorized(new { refreshModel.UserId });
 
 
         // если пользователь не входил в учётную запись или его токен
         // обновления не соответствует - вернуть сообщение об ошибке
+        //user.IsLogin = false; // для проверки
         if (!user.IsLogin || user.UserToken != refreshModel.UserToken)
             return Unauthorized(new { refreshModel.UserId, refreshModel.UserToken });
 
@@ -192,6 +196,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // установить пользователю новое значение токена обновления
         user.UserToken = newUserToken;
 
+        //user.Password = "1"; // для проверки
         // сохранить изменённые данные пользователя в базе данных
         await _dbService.UpdateUserAsync(user);
         
