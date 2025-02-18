@@ -24,9 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 // добавление функционала контроллеров API
 builder.Services.AddControllers();
 
-// поставщик данных об объектах из базы данных
-// builder.Services.AddScoped<DbService>();
-
 // репозиторий-поставщик данных из базы данных
 builder.Services.AddScoped<IDbRepository, DbRepository>();
 
@@ -38,6 +35,9 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 
 // сервис отправки электронных писем на почту
 builder.Services.AddSingleton<IMailService, MailService>();
+
+// сервис для работы с загрузкой/выгрузкой файлов
+builder.Services.AddSingleton<ILoadService, LoadService>();
 
 // добавление функционала EF Core как сервиса приложения
 // строку подключения определяем в appsettings.json  
@@ -124,6 +124,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "Default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "Images",
+    pattern: "{controller}/{action}/{directory1?}/{directory2?}/{directory3?}/{fileName?}");
 
 // запуск приложения
 app.Run();

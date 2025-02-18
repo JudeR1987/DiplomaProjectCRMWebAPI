@@ -30,7 +30,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Login([FromBody] LoginModel loginModel) {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        //Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
@@ -101,7 +101,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         var displayUser = Domain.Models.Entities.User.UserToDto(user);
 
 
-        // вернуть Ok с JWT-токеном
+        // вернуть Ok с Jwt-токеном
         return Ok(new { Token = jwtTokenString, User = displayUser });
 
     } // Login
@@ -113,7 +113,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> LogOut([FromBody] LogOutModel logOutModel) {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        //Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (logOutModel == null || logOutModel.UserId <= 0 ||
@@ -161,7 +161,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel) {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        //Task.Delay(1_500).Wait();
 
         //refreshModel = new RefreshModel(refreshModel.UserId, ""); // для проверки
         // если данных о пользователе нет - вернуть некорректные данные
@@ -204,7 +204,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         var displayUser = Domain.Models.Entities.User.UserToDto(user);
 
 
-        // вернуть Ok с JWT-токеном
+        // вернуть Ok с Jwt-токеном
         return Ok(new { Token = jwtTokenString, User = displayUser });
 
     } // Refresh
@@ -216,7 +216,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Registration([FromBody] LoginModel loginModel) {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        //Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (loginModel == null ||

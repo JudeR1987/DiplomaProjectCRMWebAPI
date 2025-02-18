@@ -19,7 +19,7 @@ public class UsersController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> GetAllAsync() {
 
         // имитация временной задержки
-        Task.Delay(1_500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllUsersAsync())
