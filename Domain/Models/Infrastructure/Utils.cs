@@ -19,6 +19,18 @@ public static class Utils
 
     // формирование строки из n-ого количества случайных символов
     public static string GetRandomString(int characters = 8) =>
-        $"{Guid.NewGuid().ToString().Substring(0, characters)}";
+        Guid.NewGuid().ToString().Substring(0, characters);
+
+
+    // формирование случайного прошедшего даты и времени
+    public static DateTime GetRandomDateTime() =>
+        new DateTime(
+            new DateOnly(
+                DateTime.Now.Year,
+                DateTime.Now.Month,
+                DateTime.Now.AddDays(-GetRandom(1, 3)).Day
+            ),
+            new TimeOnly(GetRandom(0, 23), GetRandom(0, 59), GetRandom(0, 59))
+        );
 
 } // Utils

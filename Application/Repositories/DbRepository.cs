@@ -12,17 +12,30 @@ public class DbRepository(CrmContext db) : IDbRepository
     private CrmContext _db = db;
 
 
+
     // 1. получить все записи таблицы "РОЛИ" из БД
     public async Task<List<Role>> GetAllRolesAsync() =>
         await _db.Roles.AsNoTracking().ToListAsync();
 
 
-    // 2. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+
+    // 2.1.1. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
     public async Task<List<User>> GetAllUsersAsync() =>
-        //await _db.Users.AsNoTracking().ToListAsync();
+        await _db.Users
+        .Where(user => user.Deleted == null)
+        .ToListAsync();
+
+    // 2.1.2. получить все(включая удалённые) записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    public async Task<List<User>> GetAllUsersWithDeletedAsync() =>
         await _db.Users.ToListAsync();
 
-    // 2.1. добавить новую запись о пользователе в БД
+    // 2.1.3. получить все удалённые записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    public async Task<List<User>> GetAllDeletedUsersAsync() =>
+        await _db.Users
+        .Where(user => user.Deleted != null)
+        .ToListAsync();
+
+    // 2.2. добавить новую запись о пользователе в БД
     public async Task CreateUserAsync(User user) {
 
         // добавление записи в БД
@@ -31,7 +44,7 @@ public class DbRepository(CrmContext db) : IDbRepository
 
     } // CreateUserAsync
 
-    // 2.2. изменить данные пользователя в БД
+    // 2.3. изменить данные пользователя в БД
     public async Task UpdateUserAsync(User user) {
 
         // изменение записи в БД

@@ -9,13 +9,20 @@ public interface IDbRepository
     Task<List<Role>> GetAllRolesAsync();
 
 
-    // 2. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+
+    // 2.1.1 получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
     Task<List<User>> GetAllUsersAsync();
 
-    // 2.1. добавить новую запись о пользователе в БД
+    // 2.1.2. получить все(включая удалённые) записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    Task<List<User>> GetAllUsersWithDeletedAsync();
+
+    // 2.1.3. получить все удалённые записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    Task<List<User>> GetAllDeletedUsersAsync();
+
+    // 2.2. добавить новую запись о пользователе в БД
     Task CreateUserAsync(User user);
 
-    // 2.2. изменить данные пользователя в БД
+    // 2.3. изменить данные пользователя в БД
     Task UpdateUserAsync(User user);
 
 

@@ -286,7 +286,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // создать нового пользователя
         var newUser = new User(
             userName, login, phone, email, password,
-            avatar, userToken, isLogin
+            avatar, userToken, isLogin, null
         );
 
 

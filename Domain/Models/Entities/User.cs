@@ -9,7 +9,7 @@ namespace Domain.Models.Entities;
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(UserConfiguration))]
 public class User(string userName, string login, string phone, string email,
-    string password, string avatar, string userToken, bool isLogin)
+    string password, string avatar, string userToken, bool isLogin, DateTime? deleted)
 {
     // первичный ключ - идентификатор пользователя
     public int Id { get; set; }
@@ -48,6 +48,10 @@ public class User(string userName, string login, string phone, string email,
     public bool IsLogin { get; set; } = isLogin;
 
 
+    // дата и время удаления учётной записи
+    public DateTime? Deleted { get; set; } = deleted;
+
+
     // навигационные свойства для связи "многие ко многим" Users <--> Roles
     // связь через таблицу "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UsersRoles)
 
@@ -66,7 +70,7 @@ public class User(string userName, string login, string phone, string email,
 
 
     // конструктор по умолчанию
-    public User() : this("", "", "", "", "", "", "", false) {
+    public User() : this("", "", "", "", "", "", "", false, null) {
     } // User
 
 
@@ -79,7 +83,8 @@ public class User(string userName, string login, string phone, string email,
             srcUser.Password,
             srcUser.Avatar,
             srcUser.UserToken,
-            srcUser.IsLogin) {
+            srcUser.IsLogin,
+            srcUser.Deleted) {
             Id = srcUser.Id,
             UsersRoles = srcUser.UsersRoles,
             Roles = srcUser.Roles
@@ -98,6 +103,7 @@ public class User(string userName, string login, string phone, string email,
             srcUser.Avatar,
             srcUser.UserToken,
             srcUser.IsLogin,
+            srcUser.Deleted,
             Role.RolesToDto(srcUser.Roles));
 
 } // class User

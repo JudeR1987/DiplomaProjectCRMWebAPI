@@ -256,4 +256,54 @@ public class ProfileController(
 
     } // DeleteTempUserPhotos
 
+
+    // 4. по DELETE-запросу удалить данные о пользователе (учётную запись)
+    // и вернуть клиенту Ok, или сообщение об ошибке
+    [HttpDelete]
+    [Authorize]
+    public async Task<IActionResult> DeleteUserAsync([FromQuery] int userId) {
+
+        // имитация временной задержки
+        //Task.Delay(500).Wait();
+
+        // если данных о пользователе нет - вернуть некорректные данные
+        // userId = 0; // для проверки
+        if (userId <= 0)
+            return BadRequest(new { UserId = 0 });
+
+
+        // поиск пользователя по Id
+        var user = await _dbService.GetUserByIdAsync(userId);
+
+        // если пользователь не найден(Id=0) - вернуть сообщение
+        // об ошибке 401(НЕ АВТОРИЗОВАН)
+        //user.Id = 0; // для проверки
+        if (user.Id == 0)
+            return Unauthorized(new { userId });
+
+
+        // если пользователь не входил в учётную запись - вернуть
+        // сообщение об ошибке 401(НЕ АВТОРИЗОВАН)
+        user.IsLogin = false; // для проверки
+        if (!user.IsLogin)
+            return Unauthorized(new { user.IsLogin });
+
+
+        // установить в записи данных о пользователе
+        // время и дату удаления записи
+        var dateTimeDeleting = DateTime.Now;
+        user.Deleted = dateTimeDeleting;
+
+        // установить пользователю состояние выхода из учётной записи
+        user.IsLogin = false;
+
+        // сохранить изменённые данные пользователя в базе данных
+        await _dbService.UpdateUserAsync(user);
+
+
+        // вернуть Ok
+        return Ok();
+
+    } // DeleteUserAsync
+
 } // class ProfileController

@@ -15,7 +15,7 @@ public class AuthOptions
 
 
     // время существования токена
-    public const int LIFETIME = 1;
+    public const int LIFETIME = 10;
 
 
     // секретный ключ для шифрации

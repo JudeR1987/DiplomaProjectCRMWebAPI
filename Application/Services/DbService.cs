@@ -16,54 +16,52 @@ public class DbService(IDbRepository dbRepository) : IDbService
         await _dbRepository.GetAllRolesAsync();
 
 
-    // 2. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+
+    // 2.1.1. получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
     public async Task<List<User>> GetAllUsersAsync() =>
         await _dbRepository.GetAllUsersAsync();
 
-    // 2.1. получить запись о пользователе из БД по Id
+    // 2.1.2. получить все(включая удалённые) записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    public async Task<List<User>> GetAllUsersWithDeletedAsync() =>
+        await _dbRepository.GetAllUsersWithDeletedAsync();
+
+    // 2.1.3. получить все удалённые записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
+    public async Task<List<User>> GetAllDeletedUsersAsync() =>
+        await _dbRepository.GetAllDeletedUsersAsync();
+
+    // 2.2. получить запись о пользователе из БД по Id
     // (если запись не найдена - вернуть new User() с Id=0)
     public async Task<User> GetUserByIdAsync(int userId) =>
         (await GetAllUsersAsync())
         .FirstOrDefault(user => user.Id == userId)
         ?? new User() { Id = 0 };
 
-    // 2.2. получить пользователя по логину и паролю
+    // 2.3. получить пользователя по логину и паролю
     // (если пользователь не найден - вернуть new User() с Id=0)
     public async Task<User> GetUserToLoginAsync(string login, string password) =>
         (await GetAllUsersAsync())
         .Find(user => user.Login == login && user.Password == password)
         ?? new User() { Id = 0 };
 
-    // 2.3. получить зарегистрированного пользователя с совпадающими данными
-    // (если пользователь не найден - вернуть new User() с Id=0)
-    /*public async Task<User> GetRegisteredUserAsync(string phone, string email) =>
-        (await GetAllUsersAsync())
-        .Find(
-            user => user.Login == phone ||
-                    user.Login == email ||
-                    user.Email == email
-        )
-        ?? new User() { Id = 0 };*/
-
-    // 2.3. получить зарегистрированного пользователя с совпадающим логином
+    // 2.4. получить зарегистрированного пользователя с совпадающим логином
     // (если пользователь не найден - вернуть new User() с Id=0)
     public async Task<User> GetUserByLoginAsync(string login) =>
         (await GetAllUsersAsync())
         .Find(user => user.Login == login)
         ?? new User() { Id = 0 };
 
-    // 2.4. получить зарегистрированного пользователя с совпадающим email
+    // 2.5. получить зарегистрированного пользователя с совпадающим email
     // (если пользователь не найден - вернуть new User() с Id=0)
     public async Task<User> GetUserByEmailAsync(string email) =>
         (await GetAllUsersAsync())
         .Find(user => user.Email == email)
         ?? new User() { Id = 0 };
 
-    // 2.5. добавить новую запись о пользователе в БД
+    // 2.6. добавить новую запись о пользователе в БД
     public async Task CreateUserAsync(User user) =>
         await _dbRepository.CreateUserAsync(user);
 
-    // 2.6. изменить данные пользователя в БД
+    // 2.7. изменить данные пользователя в БД
     public async Task UpdateUserAsync(User user) =>
         await _dbRepository.UpdateUserAsync(user);
 

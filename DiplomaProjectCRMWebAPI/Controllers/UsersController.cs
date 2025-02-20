@@ -31,4 +31,42 @@ public class UsersController(IDbService dbService) : ControllerBase
 
     } // GetAllAsync
 
+
+    // 2. по GET-запросу вернуть клиенту данные о коллекции записей
+    // о пользователях(включая удалённые) из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllWithDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllUsersWithDeletedAsync())
+            .Select(Domain.Models.Entities.User.UserToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllWithDeletedAsync
+
+
+    // 3. по GET-запросу вернуть клиенту данные о коллекции
+    // удалённых записей о пользователях из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllDeletedUsersAsync())
+            .Select(Domain.Models.Entities.User.UserToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllDeletedAsync
+
 } // class UsersController

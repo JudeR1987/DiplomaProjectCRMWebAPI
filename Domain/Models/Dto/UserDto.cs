@@ -32,6 +32,9 @@ public record UserDto(
     // (true - вошёл, false - вышел)
     bool IsLogin,
 
+    // дата и время удаления учётной записи
+    DateTime? Deleted,
+
     // роли пользователя
     List<RoleDto> Roles
 
