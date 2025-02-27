@@ -24,22 +24,25 @@ public record ServiceDto(
 
     // доступность для онлайн записи
     // (1 - доступна для онлайн записи, 0 - не доступна)
-    int ServiceType,
+    //int ServiceType,
 
     // комментарий к услуге
     string Comment,
+
+    // дата и время удаления записи об услуге
+    DateTime? Deleted
 
     // ?
     // api_service_id  Integer Внешний идентификатор услуги
 
     // ? вес категории(используется для сортировки категорий при отображении)
-    int Weight,
+    //int Weight,
 
     // ?
     // staff array   Список сотрудников, оказывающих услугу и длительность сеанса
 
     // список имён файлов изображений услуги
-    List<string> ImageGroup
+    //List<string> ImageGroup
 
     );
 // record ServiceDto

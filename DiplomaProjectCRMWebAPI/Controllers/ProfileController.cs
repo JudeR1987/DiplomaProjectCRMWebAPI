@@ -119,7 +119,7 @@ public class ProfileController(
         // если номер не совпадает с номером пользователя
         if (phone != user.Phone) {
 
-            // поиск пользователя по логину (логин=телефону)
+            // поиск пользователя по логину (логин=телефону) // ИСПРАВИТЬ!!!
             var registeredUserByLogin =
                 await _dbService.GetUserByLoginAsync(phone);
 
@@ -284,7 +284,7 @@ public class ProfileController(
 
         // если пользователь не входил в учётную запись - вернуть
         // сообщение об ошибке 401(НЕ АВТОРИЗОВАН)
-        user.IsLogin = false; // для проверки
+        //user.IsLogin = false; // для проверки
         if (!user.IsLogin)
             return Unauthorized(new { user.IsLogin });
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models.Dto;
 using Application.Interfaces;
+using Domain.Models.Entities;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -24,20 +24,50 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
         // все записи таблицы
         var source = (await _dbService.GetAllServicesAsync())
-            .Select(service => new ServiceDto(
-                service.Id, service.Name,
-                new ServicesCategoryDto(
-                    service.ServicesCategory.Id,
-                    service.ServicesCategory.Name,
-                    service.ServicesCategory.Weight),
-                service.PriceMin, service.PriceMax, service.Duration,
-                service.ServiceType, service.Comment, service.Weight,
-                new List<string>(service.ImageGroup)))
+            .Select(Service.ServiceToDto)
             .ToList();
 
         // вернуть данные в JSON-формате
         return new JsonResult(source);
 
     } // GetAllAsync
+
+
+    // 2. по GET-запросу вернуть клиенту данные о коллекции записей
+    // об услугах(включая удалённые) из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllWithDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllServicesWithDeletedAsync())
+            .Select(Service.ServiceToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllWithDeletedAsync
+
+
+    // 3. по GET-запросу вернуть клиенту данные о коллекции
+    // удалённых записей об услугах из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllDeletedServicesAsync())
+            .Select(Service.ServiceToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllDeletedAsync
 
 } // class ServicesController

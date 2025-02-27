@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models.Dto;
 using Application.Interfaces;
+using Domain.Models.Entities;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -24,16 +24,50 @@ public class ClientsController(IDbService dbService) : ControllerBase
 
         // все записи таблицы
         var source = (await _dbService.GetAllClientsAsync())
-            .Select(client => new ClientDto(
-                client.Id, client.Surname, client.Name, client.Patronymic,
-                client.Phone, client.Email, client.Gender, client.ImportanceId,
-                client.Discount, client.Card, client.BirthDate, client.Comment,
-                client.Spent, client.Balance, client.SmsBirthday, client.SmsNot))
+            .Select(Client.ClientToDto)
             .ToList();
 
         // вернуть данные в JSON-формате
         return new JsonResult(source);
 
     } // GetAllAsync
+
+
+    // 2. по GET-запросу вернуть клиенту данные о коллекции записей
+    // о клиентах(включая удалённые) из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllWithDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllClientsWithDeletedAsync())
+            .Select(Client.ClientToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllWithDeletedAsync
+
+
+    // 3. по GET-запросу вернуть клиенту данные о коллекции
+    // удалённых записей о клиентах из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllDeletedClientsAsync())
+            .Select(Client.ClientToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllDeletedAsync
 
 } // class ClientsController

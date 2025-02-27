@@ -98,16 +98,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         #region Задание отношений между таблицами при помощи Fluent API
 
         // Настройка отношения "многие ко многим"
-        // Users <-UsersRoles-> Roles
+        // Users <-UserRole-> Roles
         builder
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users)
-            .UsingEntity<UsersRoles>(
-                usersRoles => usersRoles
+            .UsingEntity<UserRole>(
+                userRole => userRole
                     .HasOne(uR => uR.Role)
                     .WithMany(role => role.UsersRoles)
                     .HasForeignKey(uR => uR.RoleId),
-                usersRoles => usersRoles
+                userRole => userRole
                     .HasOne(uR => uR.User)
                     .WithMany(user => user.UsersRoles)
                     .HasForeignKey(uR => uR.UserId)

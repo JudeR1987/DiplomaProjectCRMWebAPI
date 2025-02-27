@@ -226,7 +226,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
             return BadRequest(new { loginModel });
 
 
-        // поиск пользователя по логину (логин=телефону)
+        // поиск пользователя по логину (логин=телефону только при регистрации) // ИСПРАВИТЬ???
         var registeredUserByLogin = await _dbService
             .GetUserByLoginAsync(loginModel.Login);
 

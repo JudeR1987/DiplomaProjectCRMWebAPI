@@ -8,13 +8,13 @@ public record ClientDto(
     int Id,
 
     // фамилия клиента
-    string Surname,
+    string? Surname,
 
     // имя клиента
     string Name,
 
     // отчество клиента
-    string Patronymic,
+    string? Patronymic,
 
     // номер телефона клиента
     string Phone,
@@ -34,7 +34,7 @@ public record ClientDto(
     double Discount,
 
     // номер карты клиента
-    string Card,
+    string? Card,
 
     // birth_date string Дата рождения клиента в формате yyyy-mm-dd
 
@@ -42,7 +42,7 @@ public record ClientDto(
     DateTime BirthDate,
 
     // комментарий к записи о клиенте
-    string Comment,
+    string? Comment,
 
     // ? сумма потраченных средств в компании на момент добавления
     int Spent,
@@ -50,13 +50,16 @@ public record ClientDto(
     // баланс клиента
     int Balance,
 
+    // дата и время удаления записи о клиенте
+    DateTime? Deleted
+
     // признак отправки поздравления на День Рождения клиента по SMS
     // (0 - не поздравлять, 1 - поздравлять)
-    int SmsBirthday,
+    //int SmsBirthday,
 
     // признак исключения клиента из SMS-рассылок
     // (0 - не исключать, 1 - исключить)
-    int SmsNot
+    //int SmsNot
 
     // ? categories object Массив идентификаторов категорий клиента
 

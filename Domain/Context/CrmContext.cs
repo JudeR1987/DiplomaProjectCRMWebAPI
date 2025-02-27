@@ -15,37 +15,87 @@ public class CrmContext : DbContext
     // 2. таблица "ПОЛЬЗОВАТЕЛИ"
     public DbSet<User> Users => Set<User>();
 
-
-    // 3. таблица "ЛОГИНЫ"
-    //public DbSet<Login> Logins => Set<Login>();
-
-
-    // 4. таблица "ПОЛЬЗОВАТЕЛИ_РОЛИ"
-    //public DbSet<UsersRoles> UsersRoles => Set<UsersRoles>();
+    // 3. таблица связей "ПОЛЬЗОВАТЕЛИ_РОЛИ"
+    public DbSet<UserRole> UsersRoles => Set<UserRole>();
 
 
-    // 4. таблица "КАТЕГОРИИ_УСЛУГ"
+
+    // 4. таблица "СТРАНЫ"
+    public DbSet<Country> Countries => Set<Country>();
+    
+    
+    // 5. таблица "ГОРОДА"
+    public DbSet<City> Cities => Set<City>();
+
+
+    // 6. таблица "УЛИЦЫ"
+    public DbSet<Street> Streets => Set<Street>();
+
+
+    // 7. таблица "АДРЕСА"
+    public DbSet<Address> Addresses => Set<Address>();
+
+
+
+    // 8. таблица "КОМПАНИИ"
+    public DbSet<Company> Companies => Set<Company>();
+
+
+
+    // 9. таблица "СПЕЦИАЛЬНОСТИ"
+    public DbSet<Specialization> Specializations => Set<Specialization>();
+
+
+    // 10. таблица "ДОЛЖНОСТИ"
+    public DbSet<Position> Positions => Set<Position>();
+
+
+
+    // 11. таблица "КАТЕГОРИИ_УСЛУГ"
     public DbSet<ServicesCategory> ServicesCategories => Set<ServicesCategory>();
 
 
-    // 5. таблица "УСЛУГИ"
+    // 12. таблица "УСЛУГИ"
     public DbSet<Service> Services => Set<Service>();
 
 
-    // 6. таблица "КЛИЕНТЫ"
+
+    // 13. таблица "СОТРУДНИКИ"
+    public DbSet<Employee> Employees => Set<Employee>();
+
+    // 14. таблица связей "СОТРУДНИКИ_УСЛУГИ"
+    public DbSet<EmployeeService> EmployeesServices => Set<EmployeeService>();
+
+
+
+    // 15. таблица "КЛИЕНТЫ"
     public DbSet<Client> Clients => Set<Client>();
 
 
-    // 3. таблица "ПЕРСОНЫ"
-    //public DbSet<Person> People => Set<Person>();
+
+    // 16. таблица "ЗАПИСИ_НА_СЕАНС"
+    public DbSet<Record> Records => Set<Record>();
 
 
-    // 5. таблица "МАРШРУТЫ"
-    //public DbSet<Route> Routes => Set<Route>();
+    // 17. таблица связей "ЗАПИСИ_УСЛУГИ"
+    public DbSet<RecordService> RecordsServices => Set<RecordService>();
 
 
-    // 6. таблица "ПОЕЗДКИ"
-    //public DbSet<Trip> Trips => Set<Trip>();
+
+    // 18. таблица "РАСПИСАНИЕ"
+    public DbSet<WorkDay> Schedule => Set<WorkDay>();
+
+
+    // 19. таблица "ПРОМЕЖУТКИ_ВРЕМЕНИ"
+    public DbSet<Slot> Slots => Set<Slot>();
+
+
+    // 20. таблица связей "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ"
+    public DbSet<WorkDayFreeSlot> WorkDaysFreeSlots => Set<WorkDayFreeSlot>();
+
+
+    // 21. таблица связей "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ"
+    public DbSet<WorkDayBreakSlot> WorkDaysBreakSlots => Set<WorkDayBreakSlot>();
 
     #endregion
 
@@ -54,7 +104,7 @@ public class CrmContext : DbContext
     public CrmContext(DbContextOptions<CrmContext> options) : base(options) {
 
         // гарантированное удаление БД, если она есть
-        //Database.EnsureDeleted();
+        Database.EnsureDeleted();
 
         // гарантированное создание БД, если её нет
         Database.EnsureCreated();

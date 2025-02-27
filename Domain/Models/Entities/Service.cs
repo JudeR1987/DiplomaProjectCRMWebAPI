@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain.Configurations;
+using Domain.Models.Dto;
 
 namespace Domain.Models.Entities;
 
@@ -8,9 +9,9 @@ namespace Domain.Models.Entities;
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(ServiceConfiguration))]
 public class Service(string name, int servicesCategoryId, int priceMin, int priceMax,
-    int duration, int serviceType, string comment, int weight, List<string> imageGroup)
+    int duration/*, int serviceType*/, string comment, DateTime? deleted/*, int weight, List<string> imageGroup*/)
 {
-    // первичный ключ - идентификатор услуги
+    // первичный ключ - идентификатор записи об услуге
     public int Id { get; set; }
 
 
@@ -18,7 +19,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
     public string Name { get; set; } = name;
 
 
-    // идентификатор категории услуг, в которой состоит услуга
+    // данные о категории услуг
     // свойство внешнего ключа
     public int ServicesCategoryId { get; set; } = servicesCategoryId;
 
@@ -41,11 +42,37 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
     // доступность для онлайн записи
     // (1 - доступна для онлайн записи, 0 - не доступна)
-    public int ServiceType { get; set; } = serviceType;
+    //public int ServiceType { get; set; } = serviceType;
 
 
     // комментарий к услуге
     public string Comment { get; set; } = comment;
+
+
+    // дата и время удаления записи об услуге
+    public DateTime? Deleted { get; set; } = deleted;
+
+
+    // навигационные свойства для связи "многие ко многим" Services <--> Employees
+
+    // связное свойство для таблицы "СОТРУДНИКИ_УСЛУГИ", связь 1:M
+    // (одна услуга может быть во многих связях)
+    public virtual List<EmployeeService> EmployeesServices { get; set; } = [];
+
+    // связное свойство для таблицы "СОТРУДНИКИ", связь M:M
+    // (многие услуги могут быть оказаны множеством сотрудников)
+    public virtual List<Employee> Employees { get; set; } = [];
+
+
+    // навигационные свойства для связи "многие ко многим" Services <--> Records
+
+    // связное свойство для таблицы "ЗАПИСИ_УСЛУГИ", связь 1:M
+    // (одна услуга может быть во многих связях)
+    public virtual List<RecordService> RecordsServices { get; set; } = [];
+
+    // связное свойство для таблицы "ЗАПИСИ_НА_СЕАНС", связь M:M
+    // (многие услуги могут быть во многих записях)
+    public virtual List<Record> Records { get; set; } = [];
 
 
     // ?
@@ -53,7 +80,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
 
     // ? вес категории(используется для сортировки категорий при отображении)
-    public int Weight { get; set; } = weight;
+    //public int Weight { get; set; } = weight;
 
 
     // ?
@@ -61,7 +88,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
 
     // список имён файлов изображений услуги
-    public List<string> ImageGroup { get; set; } = imageGroup;
+    //public List<string> ImageGroup { get; set; } = imageGroup;
 
 
     // * id	number	Идентификатор услуги
@@ -79,7 +106,43 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
 
     // конструктор по умолчанию
-    public Service() : this("", 0, 0, 0, 3600, 0, "", 0, []) {
+    public Service() : this("", 0, 0, 0, 3600, "", null/*0, "", 0, []*/) {
     } // Service
+
+
+    // статический метод, возвращающий новый объект-копию
+    public static Service NewService(Service srcService) =>
+        new(srcService.Name,
+            srcService.ServicesCategoryId,
+            srcService.PriceMin,
+            srcService.PriceMax,
+            srcService.Duration,
+            srcService.Comment,
+            srcService.Deleted) {
+            Id = srcService.Id,
+            ServicesCategory = srcService.ServicesCategory,
+            EmployeesServices = srcService.EmployeesServices,
+            Employees = srcService.Employees,
+            RecordsServices = srcService.RecordsServices,
+            Records = srcService.Records
+        };
+
+
+    // статический метод, возвращающий объект-DTO
+    public static ServiceDto ServiceToDto(Service srcService) =>
+        new(srcService.Id,
+            srcService.Name,
+            ServicesCategory.ServicesCategoryToDto(srcService.ServicesCategory),
+            srcService.PriceMin,
+            srcService.PriceMax,
+            srcService.Duration,
+            srcService.Comment,
+            srcService.Deleted
+        );
+
+
+    // статический метод, возвращающий список объектов-DTO
+    public static List<ServiceDto> ServicesToDto(List<Service> srcServices) =>
+        srcServices.Select(ServiceToDto).ToList();
 
 } // class Service

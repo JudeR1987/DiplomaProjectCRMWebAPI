@@ -11,7 +11,7 @@ namespace Domain.Models.Entities;
 public class User(string userName, string login, string phone, string email,
     string password, string avatar, string userToken, bool isLogin, DateTime? deleted)
 {
-    // первичный ключ - идентификатор пользователя
+    // первичный ключ - идентификатор записи о данных пользователя
     public int Id { get; set; }
 
 
@@ -19,7 +19,7 @@ public class User(string userName, string login, string phone, string email,
     public string UserName { get; set; } = userName;
 
 
-    // логин пользователя (логин=телефону)
+    // логин пользователя (логин=телефону только при регистрации) // ИСПРАВИТЬ???
     public string Login { get; set; } = login;
 
 
@@ -53,15 +53,25 @@ public class User(string userName, string login, string phone, string email,
 
 
     // навигационные свойства для связи "многие ко многим" Users <--> Roles
-    // связь через таблицу "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UsersRoles)
+    // связь через таблицу "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UserRole)
 
     // связное свойство для таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ", связь 1:M
     // (один пользователь может использоваться во многих связях)
-    public virtual List<UsersRoles> UsersRoles { get; set; } = [];
+    public virtual List<UserRole> UsersRoles { get; set; } = [];
 
     // связное свойство для таблицы "РОЛИ", связь M:M
     // (многие пользователи могут иметь множество ролей)
     public virtual List<Role> Roles { get; set; } = [];
+
+
+    // связное свойство для таблицы "КОМПАНИИ", связь 1:M
+    // (один пользователь-владелец может быть у многих компаний)
+    public virtual List<Company> Companies { get; set; } = [];
+
+
+    // связное свойство для таблицы "СОТРУДНИКИ", связь 1:1
+    // (одни данные о пользователе могут быть у одного сотрудника)
+    public virtual Employee Employee { get; set; } = null!;
 
 
     // связное свойство для таблицы "ЛОГИНЫ", связь 1:M
@@ -87,14 +97,15 @@ public class User(string userName, string login, string phone, string email,
             srcUser.Deleted) {
             Id = srcUser.Id,
             UsersRoles = srcUser.UsersRoles,
-            Roles = srcUser.Roles
+            Roles = srcUser.Roles,
+            Companies = srcUser.Companies,
+            Employee = srcUser.Employee
         };
 
 
     // статический метод, возвращающий объект-DTO
     public static UserDto UserToDto(User srcUser) =>
-        new UserDto(
-            srcUser.Id,
+        new(srcUser.Id,
             srcUser.UserName,
             srcUser.Login,
             srcUser.Phone,
@@ -104,6 +115,7 @@ public class User(string userName, string login, string phone, string email,
             srcUser.UserToken,
             srcUser.IsLogin,
             srcUser.Deleted,
-            Role.RolesToDto(srcUser.Roles));
+            Role.RolesToDto(srcUser.Roles)
+        );
 
 } // class User

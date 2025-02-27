@@ -8,7 +8,10 @@ public record RoleDto(
     int Id,
 
     // наименование роли пользователя
-    string Name
+    string Name,
+
+    // дата и время удаления записи о роли пользователя
+    DateTime? Deleted
 
     );
 // record RoleDto

@@ -5,11 +5,19 @@ namespace Application.Interfaces;
 // интерфейс репозитория данных базы данных
 public interface IDbRepository
 {
-    // 1. получить все записи таблицы "РОЛИ" из БД
+    // 1. таблица "РОЛИ"
+    // 1.1.1. получить все записи таблицы "РОЛИ" из БД
     Task<List<Role>> GetAllRolesAsync();
 
+    // 1.1.2. получить все(включая удалённые) записи таблицы "РОЛИ" из БД
+    Task<List<Role>> GetAllRolesWithDeletedAsync();
+
+    // 1.1.3. получить все удалённые записи таблицы "РОЛИ" из БД
+    Task<List<Role>> GetAllDeletedRolesAsync();
 
 
+
+    // 2. таблица "ПОЛЬЗОВАТЕЛИ"
     // 2.1.1 получить все записи таблицы "ПОЛЬЗОВАТЕЛИ" из БД
     Task<List<User>> GetAllUsersAsync();
 
@@ -27,17 +35,228 @@ public interface IDbRepository
 
 
 
+    // 3. таблица "ПОЛЬЗОВАТЕЛИ_РОЛИ"
 
 
-    // 3. получить все записи таблицы "КЛИЕНТЫ" из БД
-    Task<List<Client>> GetAllClientsAsync();
+
+    // 4. таблица "СТРАНЫ"
+    // 4.1.1 получить все записи таблицы "СТРАНЫ" из БД
+    Task<List<Country>> GetAllCountriesAsync();
+
+    // 4.1.2. получить все(включая удалённые) записи таблицы "СТРАНЫ" из БД
+    Task<List<Country>> GetAllCountriesWithDeletedAsync();
+
+    // 4.1.3. получить все удалённые записи таблицы "СТРАНЫ" из БД
+    Task<List<Country>> GetAllDeletedCountriesAsync();
 
 
-    // 4. получить все записи таблицы "УСЛУГИ" из БД
+
+    // 5. таблица "ГОРОДА"
+    // 5.1.1 получить все записи таблицы "ГОРОДА" из БД
+    Task<List<City>> GetAllCitiesAsync();
+
+    // 5.1.2. получить все(включая удалённые) записи таблицы "ГОРОДА" из БД
+    Task<List<City>> GetAllCitiesWithDeletedAsync();
+
+    // 5.1.3. получить все удалённые записи таблицы "ГОРОДА" из БД
+    Task<List<City>> GetAllDeletedCitiesAsync();
+
+
+
+    // 6. таблица "УЛИЦЫ"
+    // 6.1.1 получить все записи таблицы "УЛИЦЫ" из БД
+    Task<List<Street>> GetAllStreetsAsync();
+
+    // 6.1.2. получить все(включая удалённые) записи таблицы "УЛИЦЫ" из БД
+    Task<List<Street>> GetAllStreetsWithDeletedAsync();
+
+    // 6.1.3. получить все удалённые записи таблицы "УЛИЦЫ" из БД
+    Task<List<Street>> GetAllDeletedStreetsAsync();
+
+
+
+    // 7. таблица "АДРЕСА"
+    // 7.1.1 получить все записи таблицы "АДРЕСА" из БД
+    Task<List<Address>> GetAllAddressesAsync();
+
+    // 7.1.2. получить все(включая удалённые) записи таблицы "АДРЕСА" из БД
+    Task<List<Address>> GetAllAddressesWithDeletedAsync();
+
+    // 7.1.3. получить все удалённые записи таблицы "АДРЕСА" из БД
+    Task<List<Address>> GetAllDeletedAddressesAsync();
+
+
+
+    // 8. таблица "КОМПАНИИ"
+    // 8.1.1 получить все записи таблицы "КОМПАНИИ" из БД
+    Task<List<Company>> GetAllCompaniesAsync();
+
+    // 8.1.2. получить все(включая удалённые) записи таблицы "КОМПАНИИ" из БД
+    Task<List<Company>> GetAllCompaniesWithDeletedAsync();
+
+    // 8.1.3. получить все удалённые записи таблицы "КОМПАНИИ" из БД
+    Task<List<Company>> GetAllDeletedCompaniesAsync();
+
+
+
+    // 9. таблица "СПЕЦИАЛЬНОСТИ"
+    // 9.1.1 получить все записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
+    Task<List<Specialization>> GetAllSpecializationsAsync();
+
+    // 9.1.2. получить все(включая удалённые) записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
+    Task<List<Specialization>> GetAllSpecializationsWithDeletedAsync();
+
+    // 9.1.3. получить все удалённые записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
+    Task<List<Specialization>> GetAllDeletedSpecializationsAsync();
+
+
+
+    // 10. таблица "ДОЛЖНОСТИ"
+    // 10.1.1 получить все записи таблицы "ДОЛЖНОСТИ" из БД
+    Task<List<Position>> GetAllPositionsAsync();
+
+    // 10.1.2. получить все(включая удалённые) записи таблицы "ДОЛЖНОСТИ" из БД
+    Task<List<Position>> GetAllPositionsWithDeletedAsync();
+
+    // 10.1.3. получить все удалённые записи таблицы "ДОЛЖНОСТИ" из БД
+    Task<List<Position>> GetAllDeletedPositionsAsync();
+
+
+
+    // 11. таблица "КАТЕГОРИИ_УСЛУГ"
+    // 11.1.1 получить все записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
+    Task<List<ServicesCategory>> GetAllServicesCategoriesAsync();
+
+    // 11.1.2. получить все(включая удалённые) записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
+    Task<List<ServicesCategory>> GetAllServicesCategoriesWithDeletedAsync();
+
+    // 11.1.3. получить все удалённые записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
+    Task<List<ServicesCategory>> GetAllDeletedServicesCategoriesAsync();
+
+
+
+    // 12. таблица "УСЛУГИ"
+    // 12.1.1 получить все записи таблицы "УСЛУГИ" из БД
     Task<List<Service>> GetAllServicesAsync();
 
+    // 12.1.2. получить все(включая удалённые) записи таблицы "УСЛУГИ" из БД
+    Task<List<Service>> GetAllServicesWithDeletedAsync();
 
-    // 5. получить все записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
-    Task<List<ServicesCategory>> GetAllServicesCategoriesAsync();
+    // 12.1.3. получить все удалённые записи таблицы "УСЛУГИ" из БД
+    Task<List<Service>> GetAllDeletedServicesAsync();
+
+
+
+    // 13. таблица "СОТРУДНИКИ"
+    // 13.1.1 получить все записи таблицы "СОТРУДНИКИ" из БД
+    Task<List<Employee>> GetAllEmployeesAsync();
+
+    // 13.1.2. получить все(включая удалённые) записи таблицы "СОТРУДНИКИ" из БД
+    Task<List<Employee>> GetAllEmployeesWithDeletedAsync();
+
+    // 13.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ" из БД
+    Task<List<Employee>> GetAllDeletedEmployeesAsync();
+
+
+
+    // 14. таблица "СОТРУДНИКИ_УСЛУГИ"
+    // 14.1.1 получить все записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
+    Task<List<EmployeeService>> GetAllEmployeesServicesAsync();
+
+    // 14.1.2. получить все(включая удалённые) записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
+    Task<List<EmployeeService>> GetAllEmployeesServicesWithDeletedAsync();
+
+    // 14.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
+    Task<List<EmployeeService>> GetAllDeletedEmployeesServicesAsync();
+
+
+
+    // 15. таблица "КЛИЕНТЫ"
+    // 15.1.1 получить все записи таблицы "КЛИЕНТЫ" из БД
+    Task<List<Client>> GetAllClientsAsync();
+
+    // 15.1.2. получить все(включая удалённые) записи таблицы "КЛИЕНТЫ" из БД
+    Task<List<Client>> GetAllClientsWithDeletedAsync();
+
+    // 15.1.3. получить все удалённые записи таблицы "КЛИЕНТЫ" из БД
+    Task<List<Client>> GetAllDeletedClientsAsync();
+
+
+
+    // 16. таблица "ЗАПИСИ_НА_СЕАНС"
+    // 16.1.1 получить все записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
+    Task<List<Record>> GetAllRecordsAsync();
+
+    // 16.1.2. получить все(включая удалённые) записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
+    Task<List<Record>> GetAllRecordsWithDeletedAsync();
+
+    // 16.1.3. получить все удалённые записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
+    Task<List<Record>> GetAllDeletedRecordsAsync();
+
+
+
+    // 17. таблица "ЗАПИСИ_УСЛУГИ"
+    // 17.1.1 получить все записи таблицы "ЗАПИСИ_УСЛУГИ" из БД
+    Task<List<RecordService>> GetAllRecordsServicesAsync();
+
+    // 17.1.2. получить все(включая удалённые) записи таблицы "ЗАПИСИ_УСЛУГИ" из БД
+    Task<List<RecordService>> GetAllRecordsServicesWithDeletedAsync();
+
+    // 17.1.3. получить все удалённые записи таблицы "ЗАПИСИ_УСЛУГИ" из БД
+    Task<List<RecordService>> GetAllDeletedRecordsServicesAsync();
+
+
+
+    // 18. таблица "РАСПИСАНИЕ"
+    // 18.1.1 получить все записи таблицы "РАСПИСАНИЕ" из БД
+    Task<List<WorkDay>> GetAllScheduleAsync();
+
+    // 18.1.2. получить все(включая удалённые) записи таблицы "РАСПИСАНИЕ" из БД
+    Task<List<WorkDay>> GetAllScheduleWithDeletedAsync();
+
+    // 18.1.3. получить все удалённые записи таблицы "РАСПИСАНИЕ" из БД
+    Task<List<WorkDay>> GetAllDeletedScheduleAsync();
+
+
+
+    // 19. таблица "ПРОМЕЖУТКИ_ВРЕМЕНИ"
+    // 19.1.1 получить все записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<Slot>> GetAllSlotsAsync();
+
+    // 19.1.2. получить все(включая удалённые) записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<Slot>> GetAllSlotsWithDeletedAsync();
+
+    // 19.1.3. получить все удалённые записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<Slot>> GetAllDeletedSlotsAsync();
+
+
+
+    // 20. таблица "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ"
+    // 20.1.1 получить все записи таблицы
+    // "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<WorkDayFreeSlot>> GetAllWorkDaysFreeSlotsAsync();
+
+    // 20.1.2. получить все(включая удалённые) записи таблицы
+    // "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<WorkDayFreeSlot>> GetAllWorkDaysFreeSlotsWithDeletedAsync();
+
+    // 20.1.3. получить все удалённые записи таблицы
+    // "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
+    Task<List<WorkDayFreeSlot>> GetAllDeletedWorkDaysFreeSlotsAsync();
+
+
+
+    // 21. таблица "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ"
+    // 21.1.1 получить все записи таблицы
+    // "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ" из БД
+    Task<List<WorkDayBreakSlot>> GetAllWorkDaysBreakSlotsAsync();
+
+    // 21.1.2. получить все(включая удалённые) записи таблицы
+    // "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ" из БД
+    Task<List<WorkDayBreakSlot>> GetAllWorkDaysBreakSlotsWithDeletedAsync();
+
+    // 21.1.3. получить все удалённые записи таблицы
+    // "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ" из БД
+    Task<List<WorkDayBreakSlot>> GetAllDeletedWorkDaysBreakSlotsAsync();
 
 } // interface IDbRepository

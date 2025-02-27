@@ -3,13 +3,13 @@ using Domain.Configurations;
 
 namespace Domain.Models.Entities;
 
-// сущность для таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UsersRoles)
+// сущность для таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ"(UserRole)
 // связь "многие ко многим" между таблицами
 // "ПОЛЬЗОВАТЕЛИ" (Users) и "РОЛИ" (Roles)
 
 // Атрибут задания класса конфигурирования сущности
-[EntityTypeConfiguration(typeof(UsersRolesConfiguration))]
-public class UsersRoles(int userId, int roleId)
+[EntityTypeConfiguration(typeof(UserRoleConfiguration))]
+public class UserRole(int userId, int roleId)
 {
     // первичный ключ - идентификатор связи
     public int Id { get; set; }
@@ -34,7 +34,7 @@ public class UsersRoles(int userId, int roleId)
 
 
     // конструктор по умолчанию
-    public UsersRoles() : this(0, 0) {
-    } // UsersRoles
+    public UserRole() : this(0, 0) {
+    } // UserRole
 
-} // class UsersRoles
+} // class UserRole

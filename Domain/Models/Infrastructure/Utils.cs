@@ -33,4 +33,12 @@ public static class Utils
             new TimeOnly(GetRandom(0, 23), GetRandom(0, 59), GetRandom(0, 59))
         );
 
+
+    // вернуть строку с датой в формате yyyy-mm-dd
+    public static string DateToYYYYMMDD(DateTime date, string separator = "-") =>
+        string.Join(
+            separator,
+            date.Date.ToString().Substring(0, 10).Split(".").Reverse()
+        );
+
 } // Utils

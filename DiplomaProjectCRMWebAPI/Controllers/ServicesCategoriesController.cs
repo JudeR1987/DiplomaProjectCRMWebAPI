@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Domain.Models.Dto;
 using Application.Interfaces;
+using Domain.Models.Entities;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -25,15 +26,50 @@ public class ServicesCategoriesController(IDbService dbService) : ControllerBase
 
         // все записи таблицы
         var source = (await _dbService.GetAllServicesCategoriesAsync())
-            .Select(servicesCategory => new ServicesCategoryDto(
-                servicesCategory.Id,
-                servicesCategory.Name,
-                servicesCategory.Weight))
+            .Select(ServicesCategory.ServicesCategoryToDto)
             .ToList();
 
         // вернуть данные в JSON-формате
         return new JsonResult(source);
 
     } // GetAllAsync
+
+
+    // 2. по GET-запросу вернуть клиенту данные о коллекции записей
+    // о категориях услуг(включая удалённые) из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllWithDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllServicesCategoriesWithDeletedAsync())
+            .Select(ServicesCategory.ServicesCategoryToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllWithDeletedAsync
+
+
+    // 3. по GET-запросу вернуть клиенту данные о коллекции
+    // удалённых записей о категориях услуг из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllDeletedAsync() {
+
+        // имитация временной задержки
+        // Task.Delay(1_500).Wait();
+
+        // все записи таблицы
+        var source = (await _dbService.GetAllDeletedServicesCategoriesAsync())
+            .Select(ServicesCategory.ServicesCategoryToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(source);
+
+    } // GetAllDeletedAsync
 
 } // class ServicesCategoriesController

@@ -4,10 +4,10 @@ using Domain.Models.Entities;
 
 namespace Domain.Configurations;
 
-// конфигурация для сущности UsersRoles, задаётся атрибутом в классе сущности
-public class UsersRolesConfiguration : IEntityTypeConfiguration<UsersRoles>
+// конфигурация для сущности UserRole, задаётся атрибутом в классе сущности
+public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {
-    void IEntityTypeConfiguration<UsersRoles>.Configure(EntityTypeBuilder<UsersRoles> builder) {
+    void IEntityTypeConfiguration<UserRole>.Configure(EntityTypeBuilder<UserRole> builder) {
 
         #region Задание ограничений полей таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ" при помощи Fluent API
 
@@ -21,7 +21,7 @@ public class UsersRolesConfiguration : IEntityTypeConfiguration<UsersRoles>
 
         #region Инициализация таблицы "ПОЛЬЗОВАТЕЛИ_РОЛИ"
 
-        var usersRoles = new List<UsersRoles> {
+        var usersRoles = new List<UserRole> {
             new() { Id = 1, UserId = 1, RoleId = 1 },
             new() { Id = 2, UserId = 1, RoleId = 3 },
             new() { Id = 3, UserId = 1, RoleId = 4 },
@@ -39,4 +39,4 @@ public class UsersRolesConfiguration : IEntityTypeConfiguration<UsersRoles>
 
     } // Configure
 
-} // class UsersRolesConfiguration
+} // class UserRoleConfiguration

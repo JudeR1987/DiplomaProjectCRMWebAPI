@@ -38,12 +38,14 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         #region Инициализация таблицы "РОЛИ"
 
         var roles = new List<Role> {
-            new() { Id = 1, Name = "owner"         },
-            new() { Id = 2, Name = "worker"        },
-            new() { Id = 3, Name = "administrator" },
-            new() { Id = 4, Name = "accountant"    },
-            new() { Id = 5, Name = "manager"       },
-            new() { Id = 6, Name = "master"        }
+            new() { Id = 1, Name = "owner",            Deleted = null },
+            new() { Id = 2, Name = "director",         Deleted = null },
+            new() { Id = 3, Name = "administrator",    Deleted = null },
+            new() { Id = 4, Name = "accountant",       Deleted = null },
+            new() { Id = 5, Name = "manager",          Deleted = null },
+            new() { Id = 6, Name = "master",           Deleted = null },
+            new() { Id = 7, Name = "cleaning_manager", Deleted = null },
+            new() { Id = 8, Name = "worker",           Deleted = null }
         };
 
         // инициализация таблицы "РОЛИ"
