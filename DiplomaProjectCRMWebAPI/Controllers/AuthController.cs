@@ -2,26 +2,30 @@
 using Application.Interfaces;
 using Domain.Models.Infrastructure;
 using Domain.Models.Entities;
+using Application.Services;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
 // контроллер для аутентификации и авторизации пользователей
 [ApiController]
 [Route("api/{controller}/{action}")]
-public class AuthController(IDbService dbService, IJwtService jwtService,
-    IMailService mailService) : ControllerBase
+public class AuthController(
+    IDbService dbService,
+    IJwtService jwtService,
+    IMailService mailService,
+    ILoadService loadService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
-    // получение ссылки на сервис-поставщик jwt-токенов
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик jwt-токенов
     private readonly IJwtService _jwtService = jwtService;
 
-    // получение ссылки на сервис отправки электронных писем на почту
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис отправки электронных писем на почту
     private readonly IMailService _mailService = mailService;
+
+    // ссылка на сервис для работы с загрузкой/выгрузкой файлов
+    private readonly ILoadService _loadService = loadService;
 
 
     // по POST-запросу при успешной аутентификации вернуть
@@ -30,11 +34,15 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Login([FromBody] LoginModel loginModel) {
 
         // имитация временной задержки
-        //Task.Delay(1_500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
-        if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
+        /*if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
             (string.IsNullOrEmpty(loginModel.Login) &&
+            string.IsNullOrEmpty(loginModel.Email)))
+            return BadRequest(new { loginModel });*/
+        if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
+            (string.IsNullOrEmpty(loginModel.Phone) &&
             string.IsNullOrEmpty(loginModel.Email)))
             return BadRequest(new { loginModel });
 
@@ -62,7 +70,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
         // если в данных указан логин(телефон), то найдём пользователя
         // по логину и паролю
-        if (!string.IsNullOrEmpty(loginModel.Login)) {
+        /*if (!string.IsNullOrEmpty(loginModel.Login)) {
             
             user = await _dbService
                 .GetUserByLoginAsync(loginModel.Login);
@@ -76,6 +84,24 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
             // об ошибке 401(НЕ АВТОРИЗОВАН)
             if (user.Password != loginModel.Password)
                 return Unauthorized(new { loginModel.Login, loginModel.Password });
+
+        } // if*/
+        // если в данных указан телефон, то найдём пользователя
+        // по телефону и паролю
+        if (!string.IsNullOrEmpty(loginModel.Phone)) {
+            
+            user = await _dbService
+                .GetUserByPhoneAsync(loginModel.Phone);
+
+            // если пользователь не найден(Id=0) - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Id == 0)
+                return Unauthorized(new { loginModel.Phone });
+
+            // если пароль найденного пользователя не совпадает - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Password != loginModel.Password)
+                return Unauthorized(new { loginModel.Phone, loginModel.Password });
 
         } // if
 
@@ -113,7 +139,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> LogOut([FromBody] LogOutModel logOutModel) {
 
         // имитация временной задержки
-        //Task.Delay(1_500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (logOutModel == null || logOutModel.UserId <= 0 ||
@@ -161,7 +187,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel) {
 
         // имитация временной задержки
-        //Task.Delay(1_500).Wait();
+        // Task.Delay(1_500).Wait();
 
         //refreshModel = new RefreshModel(refreshModel.UserId, ""); // для проверки
         // если данных о пользователе нет - вернуть некорректные данные
@@ -216,23 +242,33 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
     public async Task<IActionResult> Registration([FromBody] LoginModel loginModel) {
 
         // имитация временной задержки
-        //Task.Delay(1_500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
-        if (loginModel == null ||
+        /*if (loginModel == null ||
             string.IsNullOrEmpty(loginModel.Login) ||
+            string.IsNullOrEmpty(loginModel.Phone) ||
+            string.IsNullOrEmpty(loginModel.Email))
+            return BadRequest(new { loginModel });*/
+        if (loginModel == null ||
             string.IsNullOrEmpty(loginModel.Phone) ||
             string.IsNullOrEmpty(loginModel.Email))
             return BadRequest(new { loginModel });
 
 
         // поиск пользователя по логину (логин=телефону только при регистрации) // ИСПРАВИТЬ???
-        var registeredUserByLogin = await _dbService
-            .GetUserByLoginAsync(loginModel.Login);
+        /*var registeredUserByLogin = await _dbService
+            .GetUserByLoginAsync(loginModel.Login);*/
+
+        // поиск пользователя по телефону
+        var registeredUserByPhone = await _dbService
+            .GetUserByPhoneAsync(loginModel.Phone);
 
         // если пользователь найден(Id != 0),
         // вернуть объект с совпадающим параметром
-        if (registeredUserByLogin.Id != 0)
+        /*if (registeredUserByLogin.Id != 0)
+            return BadRequest(new { loginModel.Phone });*/
+        if (registeredUserByPhone.Id != 0)
             return BadRequest(new { loginModel.Phone });
 
 
@@ -255,10 +291,11 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         // данные для регистрации
 
         // 1 - имя пользователя
-        var userName = loginModel.Login;
+        //var userName = loginModel.Login;
+        var userName = loginModel.Phone;
 
         // 2 - логин пользователя
-        var login = loginModel.Login;
+        //var login = loginModel.Login;
 
         // 3 - номер телефона пользователя
         var phone = loginModel.Phone;
@@ -267,13 +304,12 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
         var email = loginModel.Email;
 
         // 5 - пароль учётной записи пользователя
-        // TODO: сформировать и отправить на email
         var password = Utils.GetRandomString(17);
 
         // 6 - путь к файлу аватарки пользователя
         // (значение по умолчанию)
-        var avatar =
-            "http://localhost:5297/download/userphoto/users/photos/photo.ico";
+        /*var avatar = "http://localhost:5297/download/getimage/users/photos/photo.ico";*/
+        var avatar = _loadService.GetPathToUserAvatar(LoadService.DEFAULT_PHOTO);
 
         // 7 - пользовательский токен обновления
         var userToken = _jwtService.CreateUserToken();
@@ -285,7 +321,7 @@ public class AuthController(IDbService dbService, IJwtService jwtService,
 
         // создать нового пользователя
         var newUser = new User(
-            userName, login, phone, email, password,
+            userName, /*login, */phone, email, password,
             avatar, userToken, isLogin, null
         );
 

@@ -17,8 +17,23 @@ public class LoadService : ILoadService
     public const string PHOTOS = "photos";
     public const string TEMP_PHOTO = "tempPhoto";
 
+    // имена папок для хранения файлов с изображениями
+    // логотипов компаний и их основных изображений
+    public const string COMPANIES = "companies";
+    public const string LOGOS = "logos";
+    public const string IMAGES = "images";
+    public const string TEMP_LOGO = "tempLogo";
+    public const string TEMP_IMAGE = "tempImage";
+
     // имя файла с изображением по умолчанию
+    // для пользователей
     public const string DEFAULT_PHOTO = "photo.ico";
+
+    // для логотипов
+    public const string DEFAULT_LOGO = "logo.ico";
+
+    // для компаний
+    public const string DEFAULT_COMPANY = "company.jpg";
 
     // тип контента
     // text/plain для текста или универсальный тип application/octet-stream
@@ -30,8 +45,11 @@ public class LoadService : ILoadService
     // контроллер для выгрузки данных
     public const string DOWNLOAD = "download";
 
-    // метод действия для выгрузки фотографий пользователя из временной папки
-    public const string GET_TEMP_PHOTO = "getTempPhoto";
+    // метод действия для выгрузки изображений из основной папки
+    public const string GET_IMAGE = "getImage";
+
+    // метод действия для выгрузки изображений из временной папки
+    public const string GET_TEMP_IMAGE = "getTempImage";
 
 
     // ссылка на серверное окружение - для получения папки хоста
@@ -57,10 +75,53 @@ public class LoadService : ILoadService
         $"{Path.GetExtension(fileName)}";
 
 
-    // получить название временной папки для хранения
+    // получить путь к файлу аватарки пользователя
+    public string GetPathToUserAvatar(string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_IMAGE}/" +
+        $"{USERS}/{PHOTOS}/{fileName}";
+
+    // получить путь к временному файлу аватарки пользователя
+    public string GetPathToTempUserAvatar(int userId, string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_TEMP_IMAGE}/" +
+        $"{USERS}/{PHOTOS}/{TEMP_PHOTO}_{userId}/{fileName}";
+
+
+    // получить путь к файлу изображения компании
+    public string GetPathToCompanyImage(string imageType, string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_IMAGE}/{COMPANIES}/" +
+        $"{(imageType == "logo" ? LOGOS : IMAGES)}/{fileName}";
+
+    // получить путь к временному файлу изображения компании
+    public string GetPathToTempCompanyImage(
+        string imageType, string tempDir, string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_TEMP_IMAGE}/{COMPANIES}/" +
+        $"{(imageType == "logo" ? LOGOS : IMAGES)}/" +
+        $"{tempDir}/{fileName}";
+
+
+    // получить имя временной папки для хранения
     // фотографий пользователя с учётом его идентификатора
-    public string GetTempPhotoDirectoryById(int userId) =>
+    public string GetTempUserPhotoDirectoryById(int userId) =>
         $"{TEMP_PHOTO}_{userId}";
+
+
+    // получить имя временной папки для хранения
+    // изображений компании с учётом типа изображения
+    // и идентификаторов пользователя и компании
+    public string GetTempCompanyImageDirectoryByParams(
+        string imageType, int userId, int companyId) {
+
+        // при разных типах изображений применяем разные имена временных папок
+        // (для логотипа и основного изображения компании)
+        var tempDirName = imageType == "logo" ? TEMP_LOGO : TEMP_IMAGE;
+
+        // при режиме создания компании (companyId == 0) добавляем уникальный суффикс
+        var randomString = companyId == 0 ? $"_{Utils.GetRandomString()}" : "";
+        var tempDir = $"{tempDirName}_{userId}_{companyId}{randomString}";
+
+        return tempDir;
+
+    } // GetTempCompanyImageDirectoryByParams
 
 
     // копирование файла
@@ -146,6 +207,22 @@ public class LoadService : ILoadService
         // путь к папке с фотографиями пользователей
         var path = Path.Combine(_environment.ContentRootPath,
             APP_DATA, USERS, PHOTOS);
+
+        // создание каталогов при их отсутствии
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        // путь к папкам с изображениями логотипов компаний
+        path = Path.Combine(_environment.ContentRootPath,
+            APP_DATA, COMPANIES, LOGOS);
+
+        // создание каталогов при их отсутствии
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        // путь к папкам с основными изображениями компаний
+        path = Path.Combine(_environment.ContentRootPath,
+            APP_DATA, COMPANIES, IMAGES);
 
         // создание каталогов при их отсутствии
         if (!Directory.Exists(path))

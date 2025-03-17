@@ -8,10 +8,9 @@ namespace Domain.Models.Entities;
 
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(CompanyConfiguration))]
-public class Company(int ownerUserId, string name, int addressId,
-    string phone, string description, DateTime? deleted/*,
-    string clientName, string clientEmail,
-    string? comment, int staffId*/)
+public class Company(int userOwnerId, string name, int addressId,
+    string phone, string? description, string logo, string titleImage,
+    string schedule, string site, DateTime? deleted)
 {
     // первичный ключ - идентификатор записи о компании
     public int Id { get; set; }
@@ -19,11 +18,11 @@ public class Company(int ownerUserId, string name, int addressId,
 
     // данные о пользователе-владельце
     // свойство внешнего ключа
-    public int OwnerUserId { get; set; } = ownerUserId;
+    public int UserOwnerId { get; set; } = userOwnerId;
 
     // связное свойство для таблицы "ПОЛЬЗОВАТЕЛИ", связь М:1
     // (у многих компаний может быть только один пользователь-владелец)
-    public virtual User OwnerUser { get; set; } = null!;
+    public virtual User UserOwner { get; set; } = null!;
 
 
     // название компании
@@ -44,7 +43,23 @@ public class Company(int ownerUserId, string name, int addressId,
 
 
     // описание компании
-    public string Description { get; set; } = description;
+    public string? Description { get; set; } = description;
+
+
+    // путь к файлу изображения логотипа компании
+    public string Logo { get; set; } = logo;
+
+
+    // путь к файлу основного изображения компании
+    public string TitleImage { get; set; } = titleImage;
+
+
+    // график работы компании
+    public string Schedule { get; set; } = schedule;
+
+
+    // сайт компании
+    public string Site { get; set; } = site;
 
 
     // дата и время удаления записи о компании
@@ -71,20 +86,24 @@ public class Company(int ownerUserId, string name, int addressId,
 
 
     // конструктор по умолчанию
-    public Company() : this(0, "", 0, "", "", null) {
+    public Company() : this(0, "", 0, "", null, "", "", "", "", null) {
     } // Company
 
 
     // статический метод, возвращающий новый объект-копию
     public static Company NewCompany(Company srcCompany) =>
-        new(srcCompany.OwnerUserId,
+        new(srcCompany.UserOwnerId,
             srcCompany.Name,
             srcCompany.AddressId,
             srcCompany.Phone,
             srcCompany.Description,
+            srcCompany.Logo,
+            srcCompany.TitleImage,
+            srcCompany.Schedule,
+            srcCompany.Site,
             srcCompany.Deleted) {
             Id = srcCompany.Id,
-            OwnerUser = srcCompany.OwnerUser,
+            UserOwner = srcCompany.UserOwner,
             Address = srcCompany.Address,
             Employees = srcCompany.Employees
         };
@@ -92,11 +111,15 @@ public class Company(int ownerUserId, string name, int addressId,
     // статический метод, возвращающий объект-DTO
     public static CompanyDto CompanyToDto(Company srcCompany) =>
         new(srcCompany.Id,
-            srcCompany.OwnerUserId,
+            srcCompany.UserOwnerId,
             srcCompany.Name,
             Address.AddressToDto(srcCompany.Address),
             srcCompany.Phone,
             srcCompany.Description,
+            srcCompany.Logo,
+            srcCompany.TitleImage,
+            srcCompany.Schedule,
+            srcCompany.Site,
             srcCompany.Deleted
         );
 

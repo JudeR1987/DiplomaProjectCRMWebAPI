@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Models.Entities;
+using System.ComponentModel.Design;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Services;
 
@@ -48,16 +50,23 @@ public class DbService(IDbRepository dbRepository) : IDbService
 
     // 2.3. получить пользователя по логину и паролю
     // (если пользователь не найден - вернуть new User() с Id=0)
-    public async Task<User> GetUserToLoginAsync(string login, string password) =>
+    /*public async Task<User> GetUserToLoginAsync(string login, string password) =>
         (await GetAllUsersAsync())
         .Find(user => user.Login == login && user.Password == password)
-        ?? new User() { Id = 0 };
+        ?? new User() { Id = 0 };*/
 
     // 2.4. получить зарегистрированного пользователя с совпадающим логином
     // (если пользователь не найден - вернуть new User() с Id=0)
-    public async Task<User> GetUserByLoginAsync(string login) =>
+    /*public async Task<User> GetUserByLoginAsync(string login) =>
         (await GetAllUsersAsync())
         .Find(user => user.Login == login)
+        ?? new User() { Id = 0 };*/
+
+    // 2.4. получить зарегистрированного пользователя с совпадающим телефоном
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    public async Task<User> GetUserByPhoneAsync(string phone) =>
+        (await GetAllUsersAsync())
+        .Find(user => user.Phone == phone)
         ?? new User() { Id = 0 };
 
     // 2.5. получить зарегистрированного пользователя с совпадающим email
@@ -68,8 +77,8 @@ public class DbService(IDbRepository dbRepository) : IDbService
         ?? new User() { Id = 0 };
 
     // 2.6. добавить новую запись о пользователе в БД
-    public async Task CreateUserAsync(User user) =>
-        await _dbRepository.CreateUserAsync(user);
+    public async Task CreateUserAsync(User newUser) =>
+        await _dbRepository.CreateUserAsync(newUser);
 
     // 2.7. изменить данные пользователя в БД
     public async Task UpdateUserAsync(User user) =>
@@ -94,6 +103,13 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<Country>> GetAllDeletedCountriesAsync() =>
         await _dbRepository.GetAllDeletedCountriesAsync();
 
+    // 4.2. получить запись о стране из БД по Id
+    // (если запись не найдена - вернуть new Country() с Id=0)
+    public async Task<Country> GetCountryByIdAsync(int countryId) =>
+        (await GetAllCountriesAsync())
+        .FirstOrDefault(country => country.Id == countryId)
+        ?? new Country() { Id = 0 };
+
 
 
     // 5. таблица "ГОРОДА"
@@ -108,6 +124,17 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 5.1.3. получить все удалённые записи таблицы "ГОРОДА" из БД
     public async Task<List<City>> GetAllDeletedCitiesAsync() =>
         await _dbRepository.GetAllDeletedCitiesAsync();
+
+    // 5.2. получить запись о городе из БД по Id
+    // (если запись не найдена - вернуть new City() с Id=0)
+    public async Task<City> GetCityByIdAsync(int cityId) =>
+        (await GetAllCitiesAsync())
+        .FirstOrDefault(city => city.Id == cityId)
+        ?? new City() { Id = 0 };
+
+    // 5.3. добавить новую запись о городе в БД
+    public async Task<(bool, string)> CreateCityAsync(City newCity) =>
+        await _dbRepository.CreateCityAsync(newCity);
 
 
 
@@ -124,6 +151,17 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<Street>> GetAllDeletedStreetsAsync() =>
         await _dbRepository.GetAllDeletedStreetsAsync();
 
+    // 6.2. получить запись об улице из БД по Id
+    // (если запись не найдена - вернуть new Street() с Id=0)
+    public async Task<Street> GetStreetByIdAsync(int streetId) =>
+        (await GetAllStreetsAsync())
+        .FirstOrDefault(street => street.Id == streetId)
+        ?? new Street() { Id = 0 };
+
+    // 6.3. добавить новую запись об улице в БД
+    public async Task<(bool, string)> CreateStreetAsync(Street newStreet) =>
+        await _dbRepository.CreateStreetAsync(newStreet);
+
 
 
     // 7. таблица "АДРЕСА"
@@ -139,6 +177,24 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<Address>> GetAllDeletedAddressesAsync() =>
         await _dbRepository.GetAllDeletedAddressesAsync();
 
+    // 7.2. получить запись об адресе из БД по всем параметрам
+    // (если запись не найдена - вернуть new Address() с Id=0)
+    public async Task<Address> GetAddressByParamsAsync(/*int countryId,*/
+        int cityId, int streetId, string building, int? flat) =>
+        (await GetAllAddressesAsync())
+        .FirstOrDefault(
+            address =>
+            /*address.City.Country.Id == countryId &&*/
+            address.City.Id         == cityId &&
+            address.Street.Id       == streetId &&
+            address.Building        == building &&
+            address.Flat            == flat)
+        ?? new Address() { Id = 0 };
+
+    // 7.3. добавить новую запись об адресе в БД
+    public async Task<(bool, string)> CreateAddressAsync(Address newAddress) =>
+        await _dbRepository.CreateAddressAsync(newAddress);
+
 
 
     // 8. таблица "КОМПАНИИ"
@@ -153,6 +209,26 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 8.1.3. получить все удалённые записи таблицы "КОМПАНИИ" из БД
     public async Task<List<Company>> GetAllDeletedCompaniesAsync() =>
         await _dbRepository.GetAllDeletedCompaniesAsync();
+
+    // 8.2. получить все записи о компаниях из БД с заданным
+    // пользователем-владельцем
+    public async Task<List<Company>> GetAllCompaniesByUserIdAsync(int userId) =>
+        await _dbRepository.GetAllCompaniesByUserIdAsync(userId);
+
+    // 8.3. получить запись о компании из БД по Id
+    // (если запись не найдена - вернуть new Company() с Id=0)
+    public async Task<Company> GetCompanyByIdAsync(int companyId) =>
+        (await GetAllCompaniesAsync())
+        .FirstOrDefault(company => company.Id == companyId)
+        ?? new Company() { Id = 0 };
+
+    // 8.4. добавить новую запись о компании в БД
+    public async Task<(bool, string)> CreateCompanyAsync(Company newCompany) =>
+        await _dbRepository.CreateCompanyAsync(newCompany);
+
+    // 8.5. изменить данные о компании в БД
+    public async Task<(bool, string)> UpdateCompanyAsync(Company companyEdt) =>
+        await _dbRepository.UpdateCompanyAsync(companyEdt);
 
 
 

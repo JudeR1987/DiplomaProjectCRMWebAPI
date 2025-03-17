@@ -64,6 +64,7 @@ public class City(string name, int countryId, DateTime? deleted)
         new(srcCity.Id,
             srcCity.Name,
             Country.CountryToDto(srcCity.Country),
+            //srcCity.CountryId,
             srcCity.Deleted
         );
 

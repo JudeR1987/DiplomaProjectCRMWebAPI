@@ -8,7 +8,7 @@ public record CompanyDto(
     int Id,
 
     // идентификатор записи о пользователе-владельце
-    int OwnerUserId,
+    int UserOwnerId,
 
     // название компании
     string Name,
@@ -20,7 +20,19 @@ public record CompanyDto(
     string Phone,
 
     // описание компании
-    string Description,
+    string? Description,
+
+    // путь к файлу изображения логотипа компании
+    string Logo,
+
+    // путь к файлу основного изображения компании
+    string TitleImage,
+
+    // график работы компании
+    string Schedule,
+
+    // сайт компании
+    string Site,
 
     // дата и время удаления записи о компании
     DateTime? Deleted

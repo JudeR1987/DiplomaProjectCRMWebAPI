@@ -9,9 +9,31 @@ public interface ILoadService
     string GetUniqueFileName(string fileName);
 
 
-    // получить название временной папки для хранения
+    // получить путь к файлу аватарки пользователя
+    string GetPathToUserAvatar(string fileName);
+
+    // получить путь к временному файлу аватарки пользователя
+    string GetPathToTempUserAvatar(int userId, string fileName);
+
+
+    // получить путь к файлу изображения компании
+    string GetPathToCompanyImage(string imageType, string fileName);
+
+    // получить путь к временному файлу изображения компании
+    string GetPathToTempCompanyImage(
+        string imageType, string tempDir, string fileName);
+
+
+    // получить имя временной папки для хранения
     // фотографий пользователя с учётом его идентификатора
-    string GetTempPhotoDirectoryById(int userId);
+    string GetTempUserPhotoDirectoryById(int userId);
+
+
+    // получить имя временной папки для хранения
+    // изображений компании с учётом типа изображения
+    // и идентификаторов пользователя и компании
+    string GetTempCompanyImageDirectoryByParams(
+        string imageType, int userId, int companyId);
 
 
     // копирование файла

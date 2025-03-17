@@ -36,7 +36,7 @@ public class ProfileController(
         [FromForm] int userId, [FromForm] string newPassword) {
 
         // имитация временной задержки
-        //Task.Delay(500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // если данных нет - вернуть некорректные данные
         if (userId <= 0)
@@ -83,7 +83,7 @@ public class ProfileController(
         [FromForm] string email, [FromForm] string avatar) {
 
         // имитация временной задержки
-        //Task.Delay(500).Wait();
+        // Task.Delay(1_500).Wait();
         
         // если требуемых данных о пользователе нет - вернуть некорректные данные
         if (userId <= 0)
@@ -107,6 +107,7 @@ public class ProfileController(
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
+        //if (true) // для проверки
         if (user.Id == 0)
             return Unauthorized(new { userId });
 
@@ -120,18 +121,27 @@ public class ProfileController(
         if (phone != user.Phone) {
 
             // поиск пользователя по логину (логин=телефону) // ИСПРАВИТЬ!!!
-            var registeredUserByLogin =
-                await _dbService.GetUserByLoginAsync(phone);
+            /*var registeredUserByLogin =
+                await _dbService.GetUserByLoginAsync(phone);*/
+
+            // поиск пользователя по телефону
+            var registeredUserByPhone =
+                await _dbService.GetUserByPhoneAsync(phone);
 
             // если пользователь найден(Id != 0),
             // вернуть объект с совпадающим параметром
-            if (registeredUserByLogin.Id != 0)
+            /*if (registeredUserByLogin.Id != 0)
+                return BadRequest(new { phone });*/
+            if (registeredUserByPhone.Id != 0)
                 return BadRequest(new { phone });
 
             // установить новое значение номера телефона пользователя
             // ( и логина т.к. логин=телефону)
+            /*user.Phone = phone;
+            user.Login = phone;*/
+
+            // установить новое значение номера телефона пользователя
             user.Phone = phone;
-            user.Login = phone;
 
         } // if
 
@@ -158,17 +168,17 @@ public class ProfileController(
         // сохранить данные о фотографии, если выбрана новая фотография
         if (avatar != user.Avatar) {
 
-            // получить значения файла и папки его расположения
+            // получить имена файла и папки его расположения
             var items = avatar.Split("/", StringSplitOptions.RemoveEmptyEntries);
             
-            var tempDirectory = items[items.Length - 2];
-            
             var fileName = items[items.Length - 1];
+
+            var tempDirectory = items[items.Length - 2];
 
 
             // если файл находится не во временной папке,
             // вернуть объект и сообщение об ошибке
-            var tempPhotoDirectoryById = _loadService.GetTempPhotoDirectoryById(userId);
+            var tempPhotoDirectoryById = _loadService.GetTempUserPhotoDirectoryById(userId);
             if (tempDirectory != tempPhotoDirectoryById)
                 return BadRequest(new { avatar });
 
@@ -182,7 +192,7 @@ public class ProfileController(
 
             // путь к папке с временными фотографиями пользователя
             var tempDirectoryPath = Path.Combine(
-                usersPhotosDirectoryPath, $"{LoadService.TEMP_PHOTO}_{userId}");
+                usersPhotosDirectoryPath, tempDirectory);
 
             // полный путь к копируемому файлу
             var tempPath = Path.Combine(tempDirectoryPath, fileName);
@@ -198,11 +208,27 @@ public class ProfileController(
                 _loadService.DeleteDirectory(tempDirectoryPath);
 
 
+            // удалить файл со старой фотографией
+
+            // имя файла старой фотографии
+            items = user.Avatar.Split("/", StringSplitOptions.RemoveEmptyEntries);
+            var oldFileName = items[items.Length - 1];
+
+            // полный путь к удаляемому файлу
+            var oldFileNamePath = Path.Combine(usersPhotosDirectoryPath, oldFileName);
+
+            // удаление файла (если он не является файлом по умолчанию)
+            if (oldFileName != LoadService.DEFAULT_PHOTO)
+                System.IO.File.Delete(oldFileNamePath);
+
+
             // установить новое значение avatar пользователя, удалив имя
             // временной папки и подстроку "Temp" метода действия из пути
-            user.Avatar = avatar
-                .Replace($"{LoadService.TEMP_PHOTO}_{userId}/", "")
-                .Replace("Temp", "");
+            /* var avatar1 = avatar
+                 .Replace($"{LoadService.TEMP_PHOTO}_{userId}/", "")
+                 .Replace("Temp", "");
+             var avatar2 = _loadService.GetPathToUserAvatar(fileName);*/
+            user.Avatar = _loadService.GetPathToUserAvatar(fileName);
 
         } // if
 
@@ -226,7 +252,8 @@ public class ProfileController(
     public IActionResult DeleteTempUserPhotos([FromQuery] int userId) {
 
         // имитация временной задержки
-        //Task.Delay(500).Wait();
+        // Task.Delay(1_500).Wait();
+        var temp = Request;
 
         // если данных о пользователе нет - вернуть некорректные данные
         //userId = 0; // для проверки
@@ -264,7 +291,7 @@ public class ProfileController(
     public async Task<IActionResult> DeleteUserAsync([FromQuery] int userId) {
 
         // имитация временной задержки
-        //Task.Delay(500).Wait();
+        // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         // userId = 0; // для проверки
@@ -291,8 +318,7 @@ public class ProfileController(
 
         // установить в записи данных о пользователе
         // время и дату удаления записи
-        var dateTimeDeleting = DateTime.Now;
-        user.Deleted = dateTimeDeleting;
+        user.Deleted = DateTime.Now;
 
         // установить пользователю состояние выхода из учётной записи
         user.IsLogin = false;

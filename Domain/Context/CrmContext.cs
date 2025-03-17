@@ -104,7 +104,7 @@ public class CrmContext : DbContext
     public CrmContext(DbContextOptions<CrmContext> options) : base(options) {
 
         // гарантированное удаление БД, если она есть
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
 
         // гарантированное создание БД, если её нет
         Database.EnsureCreated();

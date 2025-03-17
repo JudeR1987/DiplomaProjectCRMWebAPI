@@ -1,4 +1,5 @@
-﻿using Domain.Models.Entities;
+﻿using Application.Repositories;
+using Domain.Models.Entities;
 
 namespace Application.Interfaces;
 
@@ -34,18 +35,22 @@ public interface IDbService
 
     // 2.3. получить пользователя по логину и паролю
     // (если пользователь не найден - вернуть new User() с Id=0)
-    Task<User> GetUserToLoginAsync(string login, string password);
+    //Task<User> GetUserToLoginAsync(string login, string password);
 
     // 2.4. получить зарегистрированного пользователя с совпадающим логином
     // (если пользователь не найден - вернуть new User() с Id=0)
-    Task<User> GetUserByLoginAsync(string login);
+    //Task<User> GetUserByLoginAsync(string login);
+
+    // 2.4. получить зарегистрированного пользователя с совпадающим телефоном
+    // (если пользователь не найден - вернуть new User() с Id=0)
+    Task<User> GetUserByPhoneAsync(string phone);
 
     // 2.5. получить зарегистрированного пользователя с совпадающим email
     // (если пользователь не найден - вернуть new User() с Id=0)
     Task<User> GetUserByEmailAsync(string email);
 
     // 2.6. добавить новую запись о пользователе в БД
-    Task CreateUserAsync(User user);
+    Task CreateUserAsync(User newUser);
 
     // 2.7. изменить данные пользователя в БД
     Task UpdateUserAsync(User user);
@@ -66,6 +71,10 @@ public interface IDbService
     // 4.1.3. получить все удалённые записи таблицы "СТРАНЫ" из БД
     Task<List<Country>> GetAllDeletedCountriesAsync();
 
+    // 4.2. получить запись о стране из БД по Id
+    // (если запись не найдена - вернуть new Country() с Id=0)
+    Task<Country> GetCountryByIdAsync(int countryId);
+
 
 
     // 5. таблица "ГОРОДА"
@@ -77,6 +86,13 @@ public interface IDbService
 
     // 5.1.3. получить все удалённые записи таблицы "ГОРОДА" из БД
     Task<List<City>> GetAllDeletedCitiesAsync();
+
+    // 5.2. получить запись о городе из БД по Id
+    // (если запись не найдена - вернуть new City() с Id=0)
+    Task<City> GetCityByIdAsync(int cityId);
+
+    // 5.3. добавить новую запись о городе в БД
+    Task<(bool, string)> CreateCityAsync(City newCity);
 
 
 
@@ -90,6 +106,13 @@ public interface IDbService
     // 6.1.3. получить все удалённые записи таблицы "УЛИЦЫ" из БД
     Task<List<Street>> GetAllDeletedStreetsAsync();
 
+    // 6.2. получить запись об улице из БД по Id
+    // (если запись не найдена - вернуть new Street() с Id=0)
+    Task<Street> GetStreetByIdAsync(int streetId);
+
+    // 6.3. добавить новую запись об улице в БД
+    Task<(bool, string)> CreateStreetAsync(Street newStreet);
+
 
 
     // 7. таблица "АДРЕСА"
@@ -102,6 +125,14 @@ public interface IDbService
     // 7.1.3. получить все удалённые записи таблицы "АДРЕСА" из БД
     Task<List<Address>> GetAllDeletedAddressesAsync();
 
+    // 7.2. получить запись об адресе из БД по всем параметрам
+    // (если запись не найдена - вернуть new Address() с Id=0)
+    Task<Address> GetAddressByParamsAsync(/*int countryId,*/
+        int cityId, int streetId, string building, int? flat);
+
+    // 7.3. добавить новую запись об адресе в БД
+    Task<(bool, string)> CreateAddressAsync(Address newAddress);
+
 
 
     // 8. таблица "КОМПАНИИ"
@@ -113,6 +144,20 @@ public interface IDbService
 
     // 8.1.3. получить все удалённые записи таблицы "КОМПАНИИ" из БД
     Task<List<Company>> GetAllDeletedCompaniesAsync();
+
+    // 8.2. получить все записи о компаниях из БД с заданным
+    // пользователем-владельцем
+    Task<List<Company>> GetAllCompaniesByUserIdAsync(int userId);
+
+    // 8.3. получить запись о компании из БД по Id
+    // (если запись не найдена - вернуть new Company() с Id=0)
+    Task<Company> GetCompanyByIdAsync(int companyId);
+
+    // 8.4. добавить новую запись о компании в БД
+    Task<(bool, string)> CreateCompanyAsync(Company newCompany);
+
+    // 8.5. изменить данные о компании в БД
+    Task<(bool, string)> UpdateCompanyAsync(Company companyEdt);
 
 
 

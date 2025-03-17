@@ -28,11 +28,12 @@ public class DownloadController(
     //private const string OCTET_STREAM = "application/octet-stream";
 
 
-    // по GET-запросу вернуть клиенту файл с фотографией пользователя
+    // 1. по GET-запросу вернуть клиенту файл с изображением
+    // (1. фотографии пользователей, 2. логотипы компаний, 3. изображения компаний)
     [HttpGet]
     [Route("{directory1}/{directory2}/{fileName}")]
     // .../users/photos/fileName
-    public async Task<IActionResult> GetPhoto(
+    public async Task<IActionResult> GetImage(
         string directory1, string directory2, string fileName) {
 
         // путь расположения фотографии
@@ -41,10 +42,17 @@ public class DownloadController(
 
 
         // если файла нет - заменить его на файл с изображением по умолчанию
-        if (!System.IO.File.Exists(path))
+        if (!System.IO.File.Exists(path)) {
+
+            // имя файла по умолчанию
+            var defaultImage = GetDefaultImage(directory1, directory2);
+
+            // путь к файлу по умолчанию
             path = Path.Combine(
                 _environment.ContentRootPath, LoadService.APP_DATA,
-                directory1, directory2, LoadService.DEFAULT_PHOTO);
+                directory1, directory2, defaultImage);
+
+        } // if
 
 
         // массив байтов для отправки на клиента
@@ -56,15 +64,15 @@ public class DownloadController(
 
         // вернуть клиенту файл с фотографией пользователя, как массив байтов
         return File(bytes, type, fileName);
+    } // GetImage
 
-    } // GetPhoto
 
-
-    // по GET-запросу вернуть клиенту файл с временной фотографией пользователя
+    // 2. по GET-запросу вернуть клиенту файл с временным изображением при выборе файла
+    // (1. фотографии пользователей, 2. логотипы компаний, 3. изображения компаний)
     [HttpGet]
     [Route("{directory1}/{directory2}/{directory3}/{fileName}")]
-    // .../users/photos/tempPhoto/fileName
-    public async Task<IActionResult> GetTempPhoto(string directory1,
+    // .../users/photos/tempImage/fileName
+    public async Task<IActionResult> GetTempImage(string directory1,
         string directory2, string directory3, string fileName) {
 
         // путь расположения временной фотографии
@@ -74,10 +82,17 @@ public class DownloadController(
 
 
         // если файла нет - заменить его на файл с изображением по умолчанию
-        if (!System.IO.File.Exists(path))
+        if (!System.IO.File.Exists(path)) {
+
+            // имя файла по умолчанию
+            var defaultImage = GetDefaultImage(directory1, directory2);
+
+            // путь к файлу по умолчанию
             path = Path.Combine(
                 _environment.ContentRootPath, LoadService.APP_DATA,
-                directory1, directory2, LoadService.DEFAULT_PHOTO);
+                directory1, directory2, defaultImage);
+
+        } // if
 
 
         // массив байтов для отправки на клиента
@@ -90,6 +105,28 @@ public class DownloadController(
         // вернуть клиенту файл с фотографией пользователя, как массив байтов
         return File(bytes, type, fileName);
 
-    } // GetTempPhoto
+    } // GetTempImage
+
+
+    // выбор имени файла с изображением по умолчанию
+    private string GetDefaultImage(string directory1, string directory2) {
+
+        // для пользователей
+        if (directory1 == LoadService.USERS)
+            return LoadService.DEFAULT_PHOTO;
+
+        // для логотипов
+        if (directory1 == LoadService.COMPANIES &&
+            directory2 == LoadService.LOGOS)
+            return LoadService.DEFAULT_LOGO;
+
+        // для компаний
+        if (directory1 == LoadService.COMPANIES &&
+            directory2 == LoadService.IMAGES)
+            return LoadService.DEFAULT_COMPANY;
+
+        return LoadService.DEFAULT_PHOTO;
+
+    } // GetDefaultImage
 
 } // class DownloadController

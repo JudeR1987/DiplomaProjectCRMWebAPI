@@ -11,7 +11,7 @@ public record UserDto(
     string UserName,
 
     // логин пользователя
-    string Login,
+    /*string Login,*/
 
     // номер телефона пользователя
     string Phone,
@@ -32,11 +32,11 @@ public record UserDto(
     // (true - вошёл, false - вышел)
     bool IsLogin,
 
-    // дата и время удаления учётной записи
-    DateTime? Deleted,
-
     // роли пользователя
-    List<RoleDto> Roles
+    List<RoleDto> Roles,
+
+    // дата и время удаления учётной записи
+    DateTime? Deleted
 
     );
 // record UserDto

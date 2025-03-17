@@ -49,10 +49,10 @@ public class DbRepository(CrmContext db) : IDbRepository
         .ToListAsync();
 
     // 2.2. добавить новую запись о пользователе в БД
-    public async Task CreateUserAsync(User user) {
+    public async Task CreateUserAsync(User newUser) {
 
         // добавление записи в БД
-        await _db.Users.AddAsync(user);
+        await _db.Users.AddAsync(newUser);
         await _db.SaveChangesAsync();
 
     } // CreateUserAsync
@@ -108,6 +108,33 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(city => city.Deleted != null)
         .ToListAsync();
 
+    // 5.2. добавить новую запись о городе в БД
+    public async Task<(bool, string)> CreateCityAsync(City newCity) {
+        
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Cities.AddAsync(newCity);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateCityAsync
+
 
 
     // 6. таблица "УЛИЦЫ"
@@ -126,6 +153,33 @@ public class DbRepository(CrmContext db) : IDbRepository
         await _db.Streets.AsNoTracking()
         .Where(street => street.Deleted != null)
         .ToListAsync();
+
+    // 6.2. добавить новую запись об улице в БД
+    public async Task<(bool, string)> CreateStreetAsync(Street newStreet) {
+        
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Streets.AddAsync(newStreet);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateStreetAsync
 
 
 
@@ -146,24 +200,112 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(address => address.Deleted != null)
         .ToListAsync();
 
+    // 7.2. добавить новую запись об адресе в БД
+    public async Task<(bool, string)> CreateAddressAsync(Address newAddress) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Addresses.AddAsync(newAddress);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateAddressAsync
+
 
 
     // 8. таблица "КОМПАНИИ"
     // 8.1.1 получить все записи таблицы "КОМПАНИИ" из БД
     public async Task<List<Company>> GetAllCompaniesAsync() =>
-        await _db.Companies.AsNoTracking()
+        await _db.Companies
         .Where(company => company.Deleted == null)
         .ToListAsync();
 
     // 8.1.2. получить все(включая удалённые) записи таблицы "КОМПАНИИ" из БД
     public async Task<List<Company>> GetAllCompaniesWithDeletedAsync() =>
-        await _db.Companies.AsNoTracking().ToListAsync();
+        await _db.Companies.ToListAsync();
 
     // 8.1.3. получить все удалённые записи таблицы "КОМПАНИИ" из БД
     public async Task<List<Company>> GetAllDeletedCompaniesAsync() =>
-        await _db.Companies.AsNoTracking()
+        await _db.Companies
         .Where(company => company.Deleted != null)
         .ToListAsync();
+
+    // 8.2. получить все записи о компаниях из БД с заданным
+    // пользователем-владельцем
+    public async Task<List<Company>> GetAllCompaniesByUserIdAsync(int userId) =>
+        await _db.Companies
+        .Where(company => company.UserOwnerId == userId && company.Deleted == null)
+        .ToListAsync();
+
+    // 8.3. добавить новую запись о компании в БД
+    public async Task<(bool, string)> CreateCompanyAsync(Company newCompany) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Companies.AddAsync(newCompany);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateCompanyAsync
+
+    // 8.4. изменить данные о компании в БД
+    public async Task<(bool, string)> UpdateCompanyAsync(Company companyEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Companies.Update(companyEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateCompanyAsync
 
 
 

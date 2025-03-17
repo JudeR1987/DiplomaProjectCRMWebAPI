@@ -13,6 +13,9 @@ public record CityDto(
     // данные о стране принадлежности
     CountryDto Country,
 
+    // идентификатор записи о стране принадлежности
+    //int CountryId,
+
     // дата и время удаления записи о городе
     DateTime? Deleted
 

@@ -28,7 +28,7 @@ public interface IDbRepository
     Task<List<User>> GetAllDeletedUsersAsync();
 
     // 2.2. добавить новую запись о пользователе в БД
-    Task CreateUserAsync(User user);
+    Task CreateUserAsync(User newUser);
 
     // 2.3. изменить данные пользователя в БД
     Task UpdateUserAsync(User user);
@@ -61,6 +61,9 @@ public interface IDbRepository
     // 5.1.3. получить все удалённые записи таблицы "ГОРОДА" из БД
     Task<List<City>> GetAllDeletedCitiesAsync();
 
+    // 5.2. добавить новую запись о городе в БД
+    Task<(bool, string)> CreateCityAsync(City newCity);
+
 
 
     // 6. таблица "УЛИЦЫ"
@@ -72,6 +75,9 @@ public interface IDbRepository
 
     // 6.1.3. получить все удалённые записи таблицы "УЛИЦЫ" из БД
     Task<List<Street>> GetAllDeletedStreetsAsync();
+
+    // 6.2. добавить новую запись об улице в БД
+    Task<(bool, string)> CreateStreetAsync(Street newStreet);
 
 
 
@@ -85,6 +91,9 @@ public interface IDbRepository
     // 7.1.3. получить все удалённые записи таблицы "АДРЕСА" из БД
     Task<List<Address>> GetAllDeletedAddressesAsync();
 
+    // 7.2. добавить новую запись об адресе в БД
+    Task<(bool, string)> CreateAddressAsync(Address newAddress);
+
 
 
     // 8. таблица "КОМПАНИИ"
@@ -96,6 +105,16 @@ public interface IDbRepository
 
     // 8.1.3. получить все удалённые записи таблицы "КОМПАНИИ" из БД
     Task<List<Company>> GetAllDeletedCompaniesAsync();
+
+    // 8.2. получить все записи о компаниях из БД с заданным
+    // пользователем-владельцем
+    Task<List<Company>> GetAllCompaniesByUserIdAsync(int userId);
+
+    // 8.3. добавить новую запись о компании в БД
+    Task<(bool, string)> CreateCompanyAsync(Company newCompany);
+
+    // 8.4. изменить данные о компании в БД
+    Task<(bool, string)> UpdateCompanyAsync(Company companyEdt);
 
 
 

@@ -8,7 +8,7 @@ namespace Domain.Models.Entities;
 
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(UserConfiguration))]
-public class User(string userName, string login, string phone, string email,
+public class User(string userName, /*string login, */string phone, string email,
     string password, string avatar, string userToken, bool isLogin, DateTime? deleted)
 {
     // первичный ключ - идентификатор записи о данных пользователя
@@ -20,7 +20,7 @@ public class User(string userName, string login, string phone, string email,
 
 
     // логин пользователя (логин=телефону только при регистрации) // ИСПРАВИТЬ???
-    public string Login { get; set; } = login;
+    /*public string Login { get; set; } = login;*/
 
 
     // номер телефона пользователя
@@ -80,14 +80,14 @@ public class User(string userName, string login, string phone, string email,
 
 
     // конструктор по умолчанию
-    public User() : this("", "", "", "", "", "", "", false, null) {
+    public User() : this("", /*"", */"", "", "", "", "", false, null) {
     } // User
 
 
     // статический метод, возвращающий новый объект-копию
     public static User NewUser(User srcUser) =>
         new(srcUser.UserName,
-            srcUser.Login,
+            /*srcUser.Login,*/
             srcUser.Phone,
             srcUser.Email,
             srcUser.Password,
@@ -107,15 +107,15 @@ public class User(string userName, string login, string phone, string email,
     public static UserDto UserToDto(User srcUser) =>
         new(srcUser.Id,
             srcUser.UserName,
-            srcUser.Login,
+            /*srcUser.Login,*/
             srcUser.Phone,
             srcUser.Email,
             srcUser.Password,
             srcUser.Avatar,
             srcUser.UserToken,
             srcUser.IsLogin,
-            srcUser.Deleted,
-            Role.RolesToDto(srcUser.Roles)
+            Role.RolesToDto(srcUser.Roles),
+            srcUser.Deleted
         );
 
 } // class User

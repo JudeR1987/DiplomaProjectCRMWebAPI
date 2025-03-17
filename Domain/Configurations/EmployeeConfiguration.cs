@@ -38,7 +38,9 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder
             .HasOne(employee => employee.User)
             .WithOne(user => user.Employee)
-            .HasForeignKey<Employee>(employee => employee.UserId);
+            .HasForeignKey<Employee>(employee => employee.UserId)
+            // !!! чтобы не было зацикливания !!!
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         // Настройка отношения "многие к одному"
