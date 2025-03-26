@@ -10,11 +10,11 @@ namespace Domain.Models.Entities;
 [EntityTypeConfiguration(typeof(ServicesCategoryConfiguration))]
 public class ServicesCategory(string name/*, int weight*/, DateTime? deleted)
 {
-    // первичный ключ - идентификатор категории услуг
+    // первичный ключ - идентификатор записи о категории услуг
     public int Id { get; set; }
 
 
-    // название категории услуг
+    // наименование категории услуг
     public string Name { get; set; } = name;
 
 

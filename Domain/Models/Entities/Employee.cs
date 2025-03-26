@@ -1,7 +1,6 @@
 ﻿using Domain.Configurations;
 using Domain.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Domain.Models.Entities;
 

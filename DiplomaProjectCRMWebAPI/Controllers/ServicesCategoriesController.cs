@@ -24,13 +24,15 @@ public class ServicesCategoriesController(IDbService dbService) : ControllerBase
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
 
-        // все записи таблицы
-        var source = (await _dbService.GetAllServicesCategoriesAsync())
+        // все записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
+        var allServicesCategories =
+            (await _dbService.GetAllServicesCategoriesAsync())
             .Select(ServicesCategory.ServicesCategoryToDto)
+            .OrderBy(servicesCategory => servicesCategory.Name)
             .ToList();
 
         // вернуть данные в JSON-формате
-        return new JsonResult(source);
+        return new JsonResult(new { allServicesCategories });
 
     } // GetAllAsync
 

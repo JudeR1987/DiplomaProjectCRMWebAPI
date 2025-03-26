@@ -152,6 +152,12 @@ public interface IDbRepository
     // 11.1.3. получить все удалённые записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
     Task<List<ServicesCategory>> GetAllDeletedServicesCategoriesAsync();
 
+    // 11.2. добавить новую запись о категории услуг в БД
+    Task<(bool, string)> CreateServicesCategoryAsync(ServicesCategory newServicesCategory);
+
+    // 11.3. изменить данные о категории услуг в БД
+    Task<(bool, string)> UpdateServicesCategoryAsync(ServicesCategory servicesCategoryEdt);
+
 
 
     // 12. таблица "УСЛУГИ"
@@ -163,6 +169,15 @@ public interface IDbRepository
 
     // 12.1.3. получить все удалённые записи таблицы "УСЛУГИ" из БД
     Task<List<Service>> GetAllDeletedServicesAsync();
+
+    // 12.2. получить все записи об услугах для заданной компании из БД
+    Task<List<Service>> GetAllServicesByCompanyIdAsync(int companyId);
+
+    // 12.3. добавить новую запись об услуге в БД
+    Task<(bool, string)> CreateServiceAsync(Service newService);
+
+    // 12.4. изменить данные об услуге в БД
+    Task<(bool, string)> UpdateServiceAsync(Service serviceEdt);
 
 
 

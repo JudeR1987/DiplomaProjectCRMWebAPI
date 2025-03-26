@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Services;
+using Domain.Models.Entities;
 using Domain.Models.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -288,25 +289,25 @@ public class ProfileController(
     // и вернуть клиенту Ok, или сообщение об ошибке
     [HttpDelete]
     [Authorize]
-    public async Task<IActionResult> DeleteUserAsync([FromQuery] int userId) {
+    public async Task<IActionResult> DeleteUserAsync([FromQuery] int id) {
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
-        // userId = 0; // для проверки
-        if (userId <= 0)
+        // id = 0; // для проверки
+        if (id <= 0)
             return BadRequest(new { UserId = 0 });
 
 
         // поиск пользователя по Id
-        var user = await _dbService.GetUserByIdAsync(userId);
+        var user = await _dbService.GetUserByIdAsync(id);
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
         //user.Id = 0; // для проверки
         if (user.Id == 0)
-            return Unauthorized(new { userId });
+            return Unauthorized(new { UserId = id });
 
 
         // если пользователь не входил в учётную запись - вернуть

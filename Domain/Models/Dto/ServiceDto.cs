@@ -7,11 +7,14 @@ public record ServiceDto(
     // идентификатор записи об услуге
     int Id,
 
-    // название услуги
+    // наименование услуги
     string Name,
 
     // категория услуг, в которой состоит услуга
     ServicesCategoryDto ServicesCategory,
+
+    // идентификатор записи о компании, для которой услуга определена
+    int CompanyId,
 
     // минимальная цена на услугу
     int PriceMin,
@@ -27,7 +30,7 @@ public record ServiceDto(
     //int ServiceType,
 
     // комментарий к услуге
-    string Comment,
+    string? Comment,
 
     // дата и время удаления записи об услуге
     DateTime? Deleted

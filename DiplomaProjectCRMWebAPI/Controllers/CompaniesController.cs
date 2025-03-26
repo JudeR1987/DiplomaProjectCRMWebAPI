@@ -503,7 +503,7 @@ public class CompaniesController(
 
         // если данных о компании нет - вернуть некорректные данные
         // if (true) // для проверки
-        if (company == null || company.Id < 0)
+        if (company == null || company.Id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
 
@@ -523,13 +523,7 @@ public class CompaniesController(
         // 1. данные о пользователе-владельце
         // companyEdt.UserOwnerId = 10; // для проверки
         if (companyEdt.UserOwnerId != company.UserOwnerId) {
-
-            // изменить данные
-            companyEdt.UserOwnerId = company.UserOwnerId;
-
-
-            // изменить ссылку на запись в БД
-
+            
             // получить запись в БД о пользователе по Id
             var user = await _dbService.GetUserByIdAsync(company.UserOwnerId);
 
@@ -537,6 +531,10 @@ public class CompaniesController(
             // user.Id = 0; // для проверки
             if (user.Id == 0)
                 return BadRequest(new { UserId = 0 });
+
+
+            // изменить данные
+            companyEdt.UserOwnerId = user.Id;
 
             // изменить ссылку
             companyEdt.UserOwner = user;

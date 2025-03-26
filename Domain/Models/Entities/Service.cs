@@ -8,14 +8,15 @@ namespace Domain.Models.Entities;
 
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(ServiceConfiguration))]
-public class Service(string name, int servicesCategoryId, int priceMin, int priceMax,
-    int duration/*, int serviceType*/, string comment, DateTime? deleted/*, int weight, List<string> imageGroup*/)
+public class Service(string name, int servicesCategoryId, int companyId,
+    int priceMin, int priceMax, int duration/*, int serviceType*/,
+    string? comment, DateTime? deleted/*, int weight, List<string> imageGroup*/)
 {
     // первичный ключ - идентификатор записи об услуге
     public int Id { get; set; }
 
 
-    // название услуги
+    // наименование услуги
     public string Name { get; set; } = name;
 
 
@@ -26,6 +27,15 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
     // связное свойство для таблицы "КАТЕГОРИИ_УСЛУГ", связь М:1
     // (у многих услуг может быть только одна категория услуг)
     public virtual ServicesCategory ServicesCategory { get; set; } = null!;
+
+
+    // данные о компании, для которой услуга определена
+    // свойство внешнего ключа
+    public int CompanyId { get; set; } = companyId;
+
+    // связное свойство для таблицы "КОМПАНИИ", связь М:1
+    // (у многих услуг может быть только одна компания, для которой она определена)
+    public virtual Company Company { get; set; } = null!;
 
 
     // минимальная цена на услугу
@@ -46,7 +56,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
 
     // комментарий к услуге
-    public string Comment { get; set; } = comment;
+    public string? Comment { get; set; } = comment;
 
 
     // дата и время удаления записи об услуге
@@ -106,7 +116,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
 
 
     // конструктор по умолчанию
-    public Service() : this("", 0, 0, 0, 3600, "", null/*0, "", 0, []*/) {
+    public Service() : this("", 0, 0, 0, 0, 3600, null, null/*0, "", 0, []*/) {
     } // Service
 
 
@@ -114,6 +124,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
     public static Service NewService(Service srcService) =>
         new(srcService.Name,
             srcService.ServicesCategoryId,
+            srcService.CompanyId,
             srcService.PriceMin,
             srcService.PriceMax,
             srcService.Duration,
@@ -121,6 +132,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
             srcService.Deleted) {
             Id = srcService.Id,
             ServicesCategory = srcService.ServicesCategory,
+            Company = srcService.Company,
             EmployeesServices = srcService.EmployeesServices,
             Employees = srcService.Employees,
             RecordsServices = srcService.RecordsServices,
@@ -133,6 +145,7 @@ public class Service(string name, int servicesCategoryId, int priceMin, int pric
         new(srcService.Id,
             srcService.Name,
             ServicesCategory.ServicesCategoryToDto(srcService.ServicesCategory),
+            srcService.CompanyId,
             srcService.PriceMin,
             srcService.PriceMax,
             srcService.Duration,

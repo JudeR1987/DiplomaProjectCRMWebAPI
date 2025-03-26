@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
+using Domain.Models.Dto;
 using Domain.Models.Entities;
-using System.ComponentModel.Design;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Services;
 
@@ -275,6 +274,21 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<ServicesCategory>> GetAllDeletedServicesCategoriesAsync() =>
         await _dbRepository.GetAllDeletedServicesCategoriesAsync();
 
+    // 11.2. получить запись о категории услуг из БД по Id
+    // (если запись не найдена - вернуть new ServicesCategory() с Id=0)
+    public async Task<ServicesCategory> GetServicesCategoryByIdAsync(int servicesCategoryId) =>
+        (await GetAllServicesCategoriesAsync())
+        .FirstOrDefault(servicesCategory => servicesCategory.Id == servicesCategoryId)
+        ?? new ServicesCategory() { Id = 0 };
+
+    // 11.3. добавить новую запись о категории услуг в БД
+    public async Task<(bool, string)> CreateServicesCategoryAsync(ServicesCategory newServicesCategory) =>
+        await _dbRepository.CreateServicesCategoryAsync(newServicesCategory);
+
+    // 11.4. изменить данные о категории услуг в БД
+    public async Task<(bool, string)> UpdateServicesCategoryAsync(ServicesCategory servicesCategoryEdt) =>
+        await _dbRepository.UpdateServicesCategoryAsync(servicesCategoryEdt);
+
 
 
     // 12. таблица "УСЛУГИ"
@@ -289,6 +303,44 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 12.1.3. получить все удалённые записи таблицы "УСЛУГИ" из БД
     public async Task<List<Service>> GetAllDeletedServicesAsync() =>
         await _dbRepository.GetAllDeletedServicesAsync();
+
+    // 12.2. получить все записи об услугах для заданной компании из БД
+    public async Task<List<Service>> GetAllServicesByCompanyIdAsync(int companyId) =>
+        await _dbRepository.GetAllServicesByCompanyIdAsync(companyId);
+
+    // 12.3. получить все записи об услугах для заданной
+    // компании из БД, сгруппированные по категориям услуг (DTO)
+    public async Task<List<DisplayServicesCategory>>
+        GetAllServicesByCompanyIdGroupByCategoriesAsync(int companyId) =>
+        (await GetAllServicesByCompanyIdAsync(companyId))
+        .GroupBy(service => service.ServicesCategory,
+            (key, group) => new {
+                ServicesCategory = key,
+                Services = group
+                    .OrderBy(service => service.Name)
+                    .ToList()
+            })
+        .Select(group => new DisplayServicesCategory(
+            ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
+            Service.ServicesToDto(group.Services)
+            ))
+        .OrderBy(displayServicesCategory => displayServicesCategory.ServicesCategory.Name)
+        .ToList();
+
+    // 12.4. получить запись об услуге из БД по Id
+    // (если запись не найдена - вернуть new Service() с Id=0)
+    public async Task<Service> GetServiceByIdAsync(int serviceId) =>
+        (await GetAllServicesAsync())
+        .FirstOrDefault(service => service.Id == serviceId)
+        ?? new Service() { Id = 0 };
+
+    // 12.5. добавить новую запись об услуге в БД
+    public async Task<(bool, string)> CreateServiceAsync(Service newService) =>
+        await _dbRepository.CreateServiceAsync(newService);
+
+    // 12.6. изменить данные об услуге в БД
+    public async Task<(bool, string)> UpdateServiceAsync(Service serviceEdt) =>
+        await _dbRepository.UpdateServiceAsync(serviceEdt);
 
 
 

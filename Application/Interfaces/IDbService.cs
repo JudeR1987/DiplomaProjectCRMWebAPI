@@ -1,4 +1,5 @@
 ﻿using Application.Repositories;
+using Domain.Models.Dto;
 using Domain.Models.Entities;
 
 namespace Application.Interfaces;
@@ -195,6 +196,16 @@ public interface IDbService
     // 11.1.3. получить все удалённые записи таблицы "КАТЕГОРИИ_УСЛУГ" из БД
     Task<List<ServicesCategory>> GetAllDeletedServicesCategoriesAsync();
 
+    // 11.2. получить запись о категории услуг из БД по Id
+    // (если запись не найдена - вернуть new ServicesCategory() с Id=0)
+    Task<ServicesCategory> GetServicesCategoryByIdAsync(int servicesCategoryId);
+
+    // 11.3. добавить новую запись о категории услуг в БД
+    Task<(bool, string)> CreateServicesCategoryAsync(ServicesCategory newServicesCategory);
+
+    // 11.4. изменить данные о категории услуг в БД
+    Task<(bool, string)> UpdateServicesCategoryAsync(ServicesCategory servicesCategoryEdt);
+
 
 
     // 12. таблица "УСЛУГИ"
@@ -206,6 +217,24 @@ public interface IDbService
 
     // 12.1.3. получить все удалённые записи таблицы "УСЛУГИ" из БД
     Task<List<Service>> GetAllDeletedServicesAsync();
+
+    // 12.2. получить все записи об услугах для заданной компании из БД
+    Task<List<Service>> GetAllServicesByCompanyIdAsync(int companyId);
+
+    // 12.3. получить все записи об услугах для заданной
+    // компании из БД, сгруппированные по категориям услуг (DTO)
+    Task<List<DisplayServicesCategory>>
+        GetAllServicesByCompanyIdGroupByCategoriesAsync(int companyId);
+
+    // 12.4. получить запись об услуге из БД по Id
+    // (если запись не найдена - вернуть new Service() с Id=0)
+    Task<Service> GetServiceByIdAsync(int serviceId);
+
+    // 12.5. добавить новую запись об услуге в БД
+    Task<(bool, string)> CreateServiceAsync(Service newService);
+
+    // 12.6. изменить данные об услуге в БД
+    Task<(bool, string)> UpdateServiceAsync(Service serviceEdt);
 
 
 

@@ -71,6 +71,11 @@ public class Company(int userOwnerId, string name, int addressId,
     public virtual List<Employee> Employees { get; set; } = [];
 
 
+    // связное свойство для таблицы "УСЛУГИ", связь 1:M
+    // (к одной компании могут относиться многие услуги)
+    public virtual List<Service> Services { get; set; } = [];
+
+
     /*
      * coordinate_lat number <double> Широта
      * 
@@ -105,7 +110,8 @@ public class Company(int userOwnerId, string name, int addressId,
             Id = srcCompany.Id,
             UserOwner = srcCompany.UserOwner,
             Address = srcCompany.Address,
-            Employees = srcCompany.Employees
+            Employees = srcCompany.Employees,
+            Services = srcCompany.Services
         };
 
     // статический метод, возвращающий объект-DTO

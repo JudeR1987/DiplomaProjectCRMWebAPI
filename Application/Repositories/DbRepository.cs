@@ -364,6 +364,60 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(servicesCategory => servicesCategory.Deleted != null)
         .ToListAsync();
 
+    // 11.2. добавить новую запись о категории услуг в БД
+    public async Task<(bool, string)> CreateServicesCategoryAsync(ServicesCategory newServicesCategory) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.ServicesCategories.AddAsync(newServicesCategory);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateServicesCategoryAsync
+
+    // 11.3. изменить данные о категории услуг в БД
+    public async Task<(bool, string)> UpdateServicesCategoryAsync(ServicesCategory servicesCategoryEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.ServicesCategories.Update(servicesCategoryEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateServicesCategoryAsync
+
 
 
     // 12. таблица "УСЛУГИ"
@@ -382,6 +436,66 @@ public class DbRepository(CrmContext db) : IDbRepository
         await _db.Services.AsNoTracking()
         .Where(service => service.Deleted != null)
         .ToListAsync();
+
+    // 12.2. получить все записи об услугах для заданной компании из БД
+    public async Task<List<Service>> GetAllServicesByCompanyIdAsync(int companyId) =>
+        await _db.Services
+        .Where(service => service.CompanyId == companyId && service.Deleted == null)
+        .ToListAsync();
+
+    // 12.3. добавить новую запись об услуге в БД
+    public async Task<(bool, string)> CreateServiceAsync(Service newService) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Services.AddAsync(newService);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateServiceAsync
+
+    // 12.4. изменить данные об услуге в БД
+    public async Task<(bool, string)> UpdateServiceAsync(Service serviceEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Services.Update(serviceEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateServiceAsync
 
 
 
