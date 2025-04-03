@@ -8,10 +8,10 @@ public record EmployeeDto(
     int Id,
 
     // имя сотрудника
-    string Name,
+    //string Name,
 
-    // идентификатор записи данных о пользователе
-    int UserId,
+    // данные о пользователе
+    UserDto User,
 
     // данные о компании
     CompanyDto Company,

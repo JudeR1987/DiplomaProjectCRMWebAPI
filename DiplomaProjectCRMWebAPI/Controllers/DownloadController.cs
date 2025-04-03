@@ -111,8 +111,9 @@ public class DownloadController(
     // выбор имени файла с изображением по умолчанию
     private string GetDefaultImage(string directory1, string directory2) {
 
-        // для пользователей
-        if (directory1 == LoadService.USERS)
+        // для пользователей и сотрудников
+        if (directory1 == LoadService.USERS ||
+            directory1 == LoadService.EMPLOYEES)
             return LoadService.DEFAULT_PHOTO;
 
         // для логотипов

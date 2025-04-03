@@ -48,7 +48,7 @@ public class ServicesCategoryConfiguration : IEntityTypeConfiguration<ServicesCa
             new() { Id = 5, Name = "Педикюр",                   Deleted = null/*, Weight = 1*/ },
             new() { Id = 6, Name = "Брови, ресницы, макияж",    Deleted = null/*, Weight = 3*/ },
             new() { Id = 7, Name = "Перманентный макияж",       Deleted = null/*, Weight = 7*/ },
-            new() { Id = 8, Name = "Макияж",                    Deleted = Utils.GetRandomDateTime()/*, Weight = 7*/ },
+            new() { Id = 8, Name = "Макияж",                    Deleted = null/*, Weight = 7*/ },
             new() { Id = 9, Name = "Эстетическая косметология", Deleted = null/*, Weight = 6*/ }
         };
 

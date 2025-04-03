@@ -8,15 +8,15 @@ namespace Domain.Models.Entities;
 
 // Атрибут задания класса конфигурирования сущности
 [EntityTypeConfiguration(typeof(EmployeeConfiguration))]
-public class Employee(string name, int userId, int companyId, int specializationId,
+public class Employee(/*string name,*/ int userId, int companyId, int specializationId,
     int positionId, int rating, string avatar, DateTime? deleted)
 {
     // первичный ключ - идентификатор записи о сотруднике
     public int Id { get; set; }
 
 
-    // имя сотрудника
-    public string Name { get; set; } = name;
+    // имя сотрудника                       // <-- используем имя пользователя
+    //public string Name { get; set; } = name;
 
 
     // данные о пользователе
@@ -106,13 +106,13 @@ public class Employee(string name, int userId, int companyId, int specialization
 
 
     // конструктор по умолчанию
-    public Employee() : this("", 0, 0, 0, 0, 0, "", null) {
+    public Employee() : this(/*"",*/ 0, 0, 0, 0, 0, "", null) {
     } // Employee()
 
 
     // статический метод, возвращающий новый объект-копию
     public static Employee NewEmployee(Employee srcEmployee) =>
-        new(srcEmployee.Name,
+        new(/*srcEmployee.Name,*/
             srcEmployee.UserId,
             srcEmployee.CompanyId,
             srcEmployee.SpecializationId,
@@ -136,14 +136,15 @@ public class Employee(string name, int userId, int companyId, int specialization
     // статический метод, возвращающий объект-DTO
     public static EmployeeDto EmployeeToDto(Employee srcEmployee) =>
         new(srcEmployee.Id,
-            srcEmployee.Name,
-            srcEmployee.UserId,
-            Company.CompanyToDto(srcEmployee.Company),
-            Specialization.SpecializationToDto(srcEmployee.Specialization),
-            Position.PositionToDto(srcEmployee.Position),
+            /*srcEmployee.Name,*/
+            //User.UserToDto(srcEmployee.User),
+            User.UserToDto(srcEmployee.User ?? new User()),
+            Company.CompanyToDto(srcEmployee.Company ?? new Company()),
+            Specialization.SpecializationToDto(srcEmployee.Specialization ?? new Specialization()),
+            Position.PositionToDto(srcEmployee.Position ?? new Position()),
             srcEmployee.Rating,
             srcEmployee.Avatar,
-            Service.ServicesToDto(srcEmployee.Services),
+            Service.ServicesToDto(srcEmployee.Services ?? []),
             srcEmployee.Deleted
         );
 

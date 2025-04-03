@@ -1,5 +1,4 @@
-﻿using Application.Repositories;
-using Domain.Models.Dto;
+﻿using Domain.Models.Dto;
 using Domain.Models.Entities;
 
 namespace Application.Interfaces;
@@ -172,6 +171,16 @@ public interface IDbService
     // 9.1.3. получить все удалённые записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
     Task<List<Specialization>> GetAllDeletedSpecializationsAsync();
 
+    // 9.2. получить запись о специальности из БД по Id
+    // (если запись не найдена - вернуть new Specialization() с Id=0)
+    Task<Specialization> GetSpecializationByIdAsync(int specializationId);
+
+    // 9.3. добавить новую запись о специальности в БД
+    Task<(bool, string)> CreateSpecializationAsync(Specialization newSpecialization);
+
+    // 9.4. изменить данные о специальности в БД
+    Task<(bool, string)> UpdateSpecializationAsync(Specialization specializationEdt);
+
 
 
     // 10. таблица "ДОЛЖНОСТИ"
@@ -183,6 +192,16 @@ public interface IDbService
 
     // 10.1.3. получить все удалённые записи таблицы "ДОЛЖНОСТИ" из БД
     Task<List<Position>> GetAllDeletedPositionsAsync();
+
+    // 10.2. получить запись о должности из БД по Id
+    // (если запись не найдена - вернуть new Position() с Id=0)
+    Task<Position> GetPositionByIdAsync(int positionId);
+
+    // 10.3. добавить новую запись о должности в БД
+    Task<(bool, string)> CreatePositionAsync(Position newPosition);
+
+    // 10.4. изменить данные о должности в БД
+    Task<(bool, string)> UpdatePositionAsync(Position positionEdt);
 
 
 
@@ -247,6 +266,23 @@ public interface IDbService
 
     // 13.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ" из БД
     Task<List<Employee>> GetAllDeletedEmployeesAsync();
+
+    // 13.2. получить все записи о сотрудниках для заданной компании из БД
+    Task<List<Employee>> GetAllEmployeesByCompanyIdAsync(int companyId);
+
+    // 13.3. получить запись о сотруднике из БД по Id
+    // (если запись не найдена - вернуть new Employee() с Id=0)
+    Task<Employee> GetEmployeeByIdAsync(int employeeId);
+
+    // 13.4. получить запись о сотруднике из БД по Id пользователя
+    // (если запись не найдена - вернуть new Employee() с Id=0)
+    Task<Employee> GetEmployeeByUserIdAsync(int userId);
+
+    // 13.5. добавить новую запись о сотруднике в БД
+    Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee);
+
+    // 13.6. изменить данные о сотруднике в БД
+    Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt);
 
 
 

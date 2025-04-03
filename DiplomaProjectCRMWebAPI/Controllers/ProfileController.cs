@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Services;
-using Domain.Models.Entities;
 using Domain.Models.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -254,10 +253,10 @@ public class ProfileController(
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
-        var temp = Request;
+        // var temp = Request;
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
+        // userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
@@ -272,8 +271,8 @@ public class ProfileController(
             return BadRequest(new { directory = false });
 
         // удалить временную папку со всеми временными фотографиями
-        (bool isOk, string message) =
-            _loadService.DeleteDirectory(tempDirectoryPath);
+        (bool isOk, string message) = _loadService
+            .DeleteDirectory(tempDirectoryPath);
 
         // если при удалении была ошибка - передать ошибку
         if (!isOk)

@@ -23,7 +23,27 @@ public static class Utils
 
 
     // формирование случайного прошедшего даты и времени
-    public static DateTime GetRandomDateTime() =>
+    public static DateTime GetRandomDateTime() {
+
+        // случайное количество дней
+        var randomDays = GetRandom(1, 4);
+        
+        // параметры даты с вычетом полученного количества дней
+        var year = DateTime.Now.AddDays(-randomDays).Year;
+        var month = DateTime.Now.AddDays(-randomDays).Month;
+        var day = DateTime.Now.AddDays(-randomDays).Day;
+
+        // дата
+        var date = new DateOnly(year, month, day);
+
+        // случайное время
+        var time = new TimeOnly(GetRandom(0, 23), GetRandom(0, 59), GetRandom(0, 59));
+
+        return new DateTime(date, time);
+
+    } // GetRandomDateTime
+    
+    /*public static DateTime GetRandomDateTime() =>
         new DateTime(
             new DateOnly(
                 DateTime.Now.Year,
@@ -31,7 +51,7 @@ public static class Utils
                 DateTime.Now.AddDays(-GetRandom(1, 3)).Day
             ),
             new TimeOnly(GetRandom(0, 23), GetRandom(0, 59), GetRandom(0, 59))
-        );
+        );*/
 
 
     // вернуть строку с датой в формате yyyy-mm-dd

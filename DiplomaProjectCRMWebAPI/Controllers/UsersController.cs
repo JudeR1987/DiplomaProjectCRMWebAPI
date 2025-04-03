@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
@@ -68,5 +69,55 @@ public class UsersController(IDbService dbService) : ControllerBase
         return new JsonResult(source);
 
     } // GetAllDeletedAsync
+
+
+    // 4. по GET-запросу вернуть клиенту данные о записи о пользователе
+    // по его номеру телефона из БД в JSON-формате
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetByPhoneAsync([FromQuery] string phone) {
+
+        // если данных о номере телефона пользователя нет - вернуть некорректные данные
+        // phone = ""; // для проверки
+        if (string.IsNullOrEmpty(phone))
+            return BadRequest(new { Phone = phone ?? "" });
+
+
+        // поиск записи о пользователе по номеру телефона
+        var user = await _dbService.GetUserByPhoneAsync(phone);
+
+
+        // получить отображаемые данные о пользователе(DTO)
+        var displayUser = Domain.Models.Entities.User.UserToDto(user);
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { User = displayUser });
+
+    } // GetByPhoneAsync
+
+
+    // 5. по GET-запросу вернуть клиенту данные о записи о пользователе
+    // по его email из БД в JSON-формате
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetByEmailAsync([FromQuery] string email) {
+
+        // если данных о email пользователя нет - вернуть некорректные данные
+        // email = ""; // для проверки
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new { Email = email ?? "" });
+
+
+        // поиск записи о пользователе по email
+        var user = await _dbService.GetUserByEmailAsync(email);
+
+
+        // получить отображаемые данные о пользователе(DTO)
+        var displayUser = Domain.Models.Entities.User.UserToDto(user);
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { User = displayUser });
+
+    } // GetByEmailAsync
 
 } // class UsersController

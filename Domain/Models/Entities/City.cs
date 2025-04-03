@@ -63,7 +63,7 @@ public class City(string name, int countryId, DateTime? deleted)
     public static CityDto CityToDto(City srcCity) =>
         new(srcCity.Id,
             srcCity.Name,
-            Country.CountryToDto(srcCity.Country),
+            Country.CountryToDto(srcCity.Country ?? new Country()),
             //srcCity.CountryId,
             srcCity.Deleted
         );

@@ -114,7 +114,8 @@ public class User(string userName, /*string login, */string phone, string email,
             srcUser.Avatar,
             srcUser.UserToken,
             srcUser.IsLogin,
-            Role.RolesToDto(srcUser.Roles),
+            //srcUser.Roles != null ? Role.RolesToDto(srcUser.Roles) : [],
+            Role.RolesToDto(srcUser.Roles ?? []),
             srcUser.Deleted
         );
 

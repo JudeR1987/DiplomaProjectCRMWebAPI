@@ -3,7 +3,6 @@ using Application.Interfaces;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Models.Dto;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -77,13 +76,13 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // 4. по GET-запросу вернуть клиенту данные о коллекции записей
     // об услугах для заданной компании из БД в JSON-формате
     [HttpGet]
-    public async Task<IActionResult> GetAllByCompanyIdAsync(int companyId) {
+    public async Task<IActionResult> GetAllByCompanyIdAsync(int id) {
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
 
         // все записи таблицы с указанным параметром
-        var source = (await _dbService.GetAllServicesByCompanyIdAsync(companyId))
+        var source = (await _dbService.GetAllServicesByCompanyIdAsync(id))
             .Select(Service.ServiceToDto)
             .ToList();
 
@@ -321,7 +320,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
 
         // 2. данные о категории услуг
-        // serviceEdt.CompanyId = 999; // для проверки
         if (serviceEdt.ServicesCategoryId != service.ServicesCategory.Id) {
 
             // получить данные о категории услуг компании

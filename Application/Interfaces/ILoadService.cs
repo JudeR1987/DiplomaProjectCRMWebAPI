@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Net.NetworkInformation;
 
 namespace Application.Interfaces;
 
@@ -9,11 +10,13 @@ public interface ILoadService
     string GetUniqueFileName(string fileName);
 
 
+
     // получить путь к файлу аватарки пользователя
     string GetPathToUserAvatar(string fileName);
 
     // получить путь к временному файлу аватарки пользователя
     string GetPathToTempUserAvatar(int userId, string fileName);
+
 
 
     // получить путь к файлу изображения компании
@@ -24,9 +27,19 @@ public interface ILoadService
         string imageType, string tempDir, string fileName);
 
 
+
+    // получить путь к файлу аватарки сотрудника
+    string GetPathToEmployeeAvatar(string fileName);
+
+    // получить путь к временному файлу аватарки сотрудника
+    string GetPathToTempEmployeeAvatar(string tempDir, string fileName);
+
+
+
     // получить имя временной папки для хранения
     // фотографий пользователя с учётом его идентификатора
     string GetTempUserPhotoDirectoryById(int userId);
+
 
 
     // получить имя временной папки для хранения
@@ -34,6 +47,13 @@ public interface ILoadService
     // и идентификаторов пользователя и компании
     string GetTempCompanyImageDirectoryByParams(
         string imageType, int userId, int companyId);
+
+
+
+    // получить имя временной папки для хранения фотографий сотрудника
+    // с учётом идентификаторов пользователя и сотрудника
+    string GetTempEmployeePhotoDirectoryByParams(int userId, int employeeId);
+
 
 
     // копирование файла

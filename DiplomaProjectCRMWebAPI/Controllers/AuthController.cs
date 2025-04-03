@@ -47,27 +47,6 @@ public class AuthController(
             return BadRequest(new { loginModel });
 
 
-        // если в данных указан адрес почты, то найдём пользователя
-        // по email и паролю
-        var user = new User();
-        if (!string.IsNullOrEmpty(loginModel.Email)) {
-            
-            user = await _dbService
-                .GetUserByEmailAsync(loginModel.Email);
-
-            // если пользователь не найден(Id=0) - вернуть сообщение
-            // об ошибке 401(НЕ АВТОРИЗОВАН)
-            if (user.Id == 0)
-                return Unauthorized(new { loginModel.Email });
-
-            // если пароль найденного пользователя не совпадает - вернуть сообщение
-            // об ошибке 401(НЕ АВТОРИЗОВАН)
-            if (user.Password != loginModel.Password)
-                return Unauthorized(new { loginModel.Email, loginModel.Password });
-
-        } // if
-
-
         // если в данных указан логин(телефон), то найдём пользователя
         // по логину и паролю
         /*if (!string.IsNullOrEmpty(loginModel.Login)) {
@@ -88,6 +67,7 @@ public class AuthController(
         } // if*/
         // если в данных указан телефон, то найдём пользователя
         // по телефону и паролю
+        var user = new User();
         if (!string.IsNullOrEmpty(loginModel.Phone)) {
             
             user = await _dbService
@@ -102,6 +82,26 @@ public class AuthController(
             // об ошибке 401(НЕ АВТОРИЗОВАН)
             if (user.Password != loginModel.Password)
                 return Unauthorized(new { loginModel.Phone, loginModel.Password });
+
+        } // if
+
+
+        // если в данных указан адрес почты, то найдём пользователя
+        // по email и паролю
+        if (!string.IsNullOrEmpty(loginModel.Email)) {
+            
+            user = await _dbService
+                .GetUserByEmailAsync(loginModel.Email);
+
+            // если пользователь не найден(Id=0) - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Id == 0)
+                return Unauthorized(new { loginModel.Email });
+
+            // если пароль найденного пользователя не совпадает - вернуть сообщение
+            // об ошибке 401(НЕ АВТОРИЗОВАН)
+            if (user.Password != loginModel.Password)
+                return Unauthorized(new { loginModel.Email, loginModel.Password });
 
         } // if
 
@@ -290,9 +290,12 @@ public class AuthController(
 
         // данные для регистрации
 
-        // 1 - имя пользователя
+        // 1 - имя пользователя (если не указано, то
+        // вместо имени используем номер телефона)
         //var userName = loginModel.Login;
-        var userName = loginModel.Phone;
+        var userName = string.IsNullOrEmpty(loginModel.UserName)
+            ? loginModel.Phone
+            : loginModel.UserName;
 
         // 2 - логин пользователя
         //var login = loginModel.Login;

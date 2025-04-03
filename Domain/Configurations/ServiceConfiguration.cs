@@ -142,12 +142,17 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
             new() { Id = 44, Name = "Перманентный макияж Межресничное пространство", ServicesCategoryId = 7, CompanyId = 1, PriceMin =  7_000, PriceMax =  7_000, /*ServiceType = 1,*/ Comment = "Описание 44", Deleted = null, /*Weight = 44*/ },
             new() { Id = 45, Name = "Коррекция перманентного макияжа",               ServicesCategoryId = 7, CompanyId = 3, PriceMin =  5_000, PriceMax =  7_000, /*ServiceType = 1,*/ Comment = "Описание 45", Deleted = null, /*Weight = 45*/ },
 
+            // категория "Макияж"
+            new() { Id = 46, Name = "Свадебный макияж",                              ServicesCategoryId = 8, CompanyId = 4, PriceMin =  4_500, PriceMax =  4_500, /*ServiceType = 1,*/ Comment = "Описание 46", Deleted = Utils.GetRandomDateTime(), /*Weight = 46 */},
+            new() { Id = 47, Name = "Праздничный макияж",                            ServicesCategoryId = 8, CompanyId = 1, PriceMin =  5_000, PriceMax =  5_000, /*ServiceType = 1,*/ Comment = "Описание 47", Deleted = null, /*Weight = 47,*/ Duration = 5_400 },
+            new() { Id = 48, Name = "Вечерний макияж",                               ServicesCategoryId = 8, CompanyId = 2, PriceMin =  5_500, PriceMax =  5_500, /*ServiceType = 1,*/ Comment = "Описание 48", Deleted = null, /*Weight = 48,*/ Duration = 7_200 },
+
             // категория "Эстетическая косметология"
-            new() { Id = 46, Name = "Уход для лица по типу кожи (60 мин.)",          ServicesCategoryId = 8, CompanyId = 4, PriceMin =  4_500, PriceMax =  4_500, /*ServiceType = 1,*/ Comment = "Описание 46", Deleted = Utils.GetRandomDateTime(), /*Weight = 46 */},
-            new() { Id = 47, Name = "Уход для лица по типу кожи (90 мин.)",          ServicesCategoryId = 8, CompanyId = 1, PriceMin =  5_000, PriceMax =  5_000, /*ServiceType = 1,*/ Comment = "Описание 47", Deleted = null, /*Weight = 47,*/ Duration = 5_400 },
-            new() { Id = 48, Name = "Уход для лица по типу кожи (120 мин.)",         ServicesCategoryId = 8, CompanyId = 2, PriceMin =  5_500, PriceMax =  5_500, /*ServiceType = 1,*/ Comment = "Описание 48", Deleted = null, /*Weight = 48,*/ Duration = 7_200 },
-            new() { Id = 49, Name = "Массаж лица, шеи и декольте (40 мин.)",         ServicesCategoryId = 8, CompanyId = 1, PriceMin =  2_500, PriceMax =  2_500, /*ServiceType = 1,*/ Comment = "Описание 49", Deleted = null, /*Weight = 49,*/ Duration = 2_400 },
-            new() { Id = 50, Name = "Комбинированная чистка лица",                   ServicesCategoryId = 8, CompanyId = 3, PriceMin =  6_000, PriceMax =  6_000, /*ServiceType = 1,*/ Comment = "Описание 50", Deleted = null, /*Weight = 50 */},
+            new() { Id = 49, Name = "Атравматичная чистка лица",                     ServicesCategoryId = 9, CompanyId = 4, PriceMin =  5_000, PriceMax =  5_000, /*ServiceType = 1,*/ Comment = "Описание 49", Deleted = null, /*Weight = 46 */},
+            new() { Id = 50, Name = "Пилинг Alpha-Beta Retinol (лицо, шея)",         ServicesCategoryId = 9, CompanyId = 1, PriceMin =  6_000, PriceMax =  6_000, /*ServiceType = 1,*/ Comment = "Описание 50", Deleted = null, /*Weight = 47,*/ Duration = 5_400 },
+            new() { Id = 51, Name = "Уход для лица по типу кожи (120 мин.)",         ServicesCategoryId = 9, CompanyId = 2, PriceMin =  5_500, PriceMax =  5_500, /*ServiceType = 1,*/ Comment = "Описание 51", Deleted = null, /*Weight = 48,*/ Duration = 7_200 },
+            new() { Id = 52, Name = "Массаж лица, шеи и декольте (40 мин.)",         ServicesCategoryId = 9, CompanyId = 1, PriceMin =  2_500, PriceMax =  2_500, /*ServiceType = 1,*/ Comment = "Описание 52", Deleted = null, /*Weight = 49,*/ Duration = 2_400 },
+            new() { Id = 53, Name = "Комбинированная чистка лица",                   ServicesCategoryId = 9, CompanyId = 3, PriceMin =  6_000, PriceMax =  6_000, /*ServiceType = 1,*/ Comment = "Описание 53", Deleted = null, /*Weight = 50 */},
         };
 
         // инициализация таблицы "УСЛУГИ"

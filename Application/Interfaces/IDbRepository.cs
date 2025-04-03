@@ -128,6 +128,12 @@ public interface IDbRepository
     // 9.1.3. получить все удалённые записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
     Task<List<Specialization>> GetAllDeletedSpecializationsAsync();
 
+    // 9.2. добавить новую запись о специальности в БД
+    Task<(bool, string)> CreateSpecializationAsync(Specialization newSpecialization);
+
+    // 9.3. изменить данные о специальности в БД
+    Task<(bool, string)> UpdateSpecializationAsync(Specialization specializationEdt);
+
 
 
     // 10. таблица "ДОЛЖНОСТИ"
@@ -139,6 +145,12 @@ public interface IDbRepository
 
     // 10.1.3. получить все удалённые записи таблицы "ДОЛЖНОСТИ" из БД
     Task<List<Position>> GetAllDeletedPositionsAsync();
+
+    // 10.2. добавить новую запись о должности в БД
+    Task<(bool, string)> CreatePositionAsync(Position newPosition);
+
+    // 10.3. изменить данные о должности в БД
+    Task<(bool, string)> UpdatePositionAsync(Position positionEdt);
 
 
 
@@ -190,6 +202,15 @@ public interface IDbRepository
 
     // 13.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ" из БД
     Task<List<Employee>> GetAllDeletedEmployeesAsync();
+
+    // 13.2. получить все записи о сотрудниках для заданной компании из БД
+    Task<List<Employee>> GetAllEmployeesByCompanyIdAsync(int companyId);
+
+    // 13.3. добавить новую запись о сотруднике в БД
+    Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee);
+
+    // 13.4. изменить данные о сотруднике в БД
+    Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt);
 
 
 

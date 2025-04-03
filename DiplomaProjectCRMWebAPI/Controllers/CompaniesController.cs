@@ -5,8 +5,6 @@ using Domain.Models.Entities;
 using Domain.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -43,14 +41,9 @@ public class CompaniesController(
         // Task.Delay(1_500).Wait();
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        //page = 0; // для проверки
+        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
-
-        // все записи таблицы
-        /*var source = (await _dbService.GetAllCompaniesAsync())
-            .Select(Company.CompanyToDto)
-            .ToList();*/
 
         // все записи таблицы
         var source = await _dbService.GetAllCompaniesAsync();
@@ -70,9 +63,6 @@ public class CompaniesController(
         var viewModel = new GetAllCompaniesViewModel(items, pageViewModel);
 
         // вернуть данные в JSON-формате
-        //return new JsonResult(new { Companies = source });
-
-        // вернуть данные в JSON-формате
         return new JsonResult(viewModel);
 
     } // GetAllAsync
@@ -83,23 +73,23 @@ public class CompaniesController(
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetAllByUserIdAsync(
-        [FromQuery] int userId, [FromQuery] int page) {
+        [FromQuery] int id, [FromQuery] int page) {
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
-        if (userId <= 0)
+        // id = 0; // для проверки
+        if (id <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        //page = 0; // для проверки
+        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
         // все записи о компаниях заданного пользователя
-        var source = await _dbService.GetAllCompaniesByUserIdAsync(userId);
+        var source = await _dbService.GetAllCompaniesByUserIdAsync(id);
 
         // часть коллекции для заданной страницы
         var items = source
@@ -271,7 +261,7 @@ public class CompaniesController(
 
         // если запись о стране не найдена - вернуть некорректные данные
         // country.Id = 0; // для проверки
-        if (country.Id == 0)
+        if (country.Id <= 0)
             return BadRequest(new { CountryId = 0 });
 
 
@@ -792,10 +782,6 @@ public class CompaniesController(
             companyEdt.Site = company.Site;
 
 
-        // 10. дата и время удаления записи о компании
-        //DateTime? deleted = null;
-
-
         // изменение записи в БД
         (bool isOk, string message) =
             await _dbService.UpdateCompanyAsync(companyEdt);
@@ -873,11 +859,13 @@ public class CompaniesController(
     [HttpDelete]
     [Authorize]
     public IActionResult DeleteTempCompanyImages(
-        [FromQuery] int userId, [FromQuery] int companyId, [FromQuery] string imageType) {
+        [FromQuery] int userId, [FromQuery] int id, [FromQuery] string imageType) {
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
         //var temp = Request;
+
+        // id -> companyId
 
         // если данных о пользователе нет - вернуть некорректные данные
         //userId = 0; // для проверки
@@ -885,9 +873,9 @@ public class CompaniesController(
             return BadRequest(new { UserId = 0 });
 
         // если данные о компании неверные - вернуть некорректные данные
-        // (companyId=0 - режим создания компании, иначе - режим изменения данных)
-        //companyId = -1; // для проверки
-        if (companyId < 0)
+        // (id=0 - режим создания компании, иначе - режим изменения данных)
+        // id = -1; // для проверки
+        if (id < 0)
             return BadRequest(new { CompanyId = 0 });
 
         // если данных о типе изображения нет - вернуть некорректные данные

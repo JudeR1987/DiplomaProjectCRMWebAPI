@@ -42,7 +42,7 @@ public class UploadController(
 
 
         // если файл не был выбран - вернуть некорректные данные
-        //tempPhoto = null!; // для проверки
+        //tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Avatar = "" });
 
@@ -98,19 +98,19 @@ public class UploadController(
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> TempCompanyImage(
-        [FromForm] IFormFile tempImage, [FromQuery] int userId,
-        [FromQuery] int companyId,      [FromQuery] string tempDir,
-        [FromQuery] string imageType) {
+        [FromForm] IFormFile tempImage, [FromQuery] int userId, [FromQuery] int id,
+        [FromQuery] string tempDir, [FromQuery] string imageType) {
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
+
+        // id -> companyId
 
 
         // если файл не был выбран - вернуть некорректные данные
         //tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Image = "" });
-
 
         // если данных о пользователе нет - вернуть некорректные данные
         //userId = 0; // для проверки
@@ -119,8 +119,8 @@ public class UploadController(
 
         // если данные о компании неверные - вернуть некорректные данные
         // (companyId=0 - режим создания компании, иначе - режим изменения данных)
-        //companyId = -1; // для проверки
-        if (companyId < 0)
+        // id = -1; // для проверки
+        if (id < 0)
             return BadRequest(new { CompanyId = 0 });
 
 
@@ -141,10 +141,9 @@ public class UploadController(
 
 
         tempDir = companyId == 0 ? tempDir : $"{tempDirName}_{userId}_{companyId}";*/
-        tempDir = companyId == 0 && !string.IsNullOrEmpty(tempDir)
+        tempDir = id == 0 && !string.IsNullOrEmpty(tempDir)
             ? tempDir
-            : _loadService.GetTempCompanyImageDirectoryByParams(
-                imageType, userId, companyId);
+            : _loadService.GetTempCompanyImageDirectoryByParams(imageType, userId, id);
 
 
         // путь расположения временного изображения компании
@@ -188,63 +187,69 @@ public class UploadController(
     } // TempCompanyImage
 
 
-    // 3. по POST-запросу принять от клиента файл с изображением компании
+    // 3. по POST-запросу принять от клиента файл с фотографией сотрудника
     // и сохранить её во временной папке, вернуть клиенту Ok с адресом
-    // расположения загруженного изображения, или сообщение об ошибке
-    /*[HttpPost]
+    // расположения загруженной фотографии, или сообщение об ошибке
+    [HttpPost]
     [Authorize]
-    public async Task<IActionResult> TempCompanyTitleImage(
-        [FromForm] IFormFile tempImage, [FromQuery] int id) {
+    public async Task<IActionResult> TempEmployeePhoto([FromForm] IFormFile tempImage,
+        [FromQuery] int userId, [FromQuery] int id, [FromQuery] string tempDir) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
+        // id -> employeeId
 
         // если файл не был выбран - вернуть некорректные данные
-        //tempPhoto = null!; // для проверки
+        // tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Avatar = "" });
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
-        if (id <= 0)
+        // userId = 0; // для проверки
+        if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
+        // если данные о сотруднике неверные - вернуть некорректные данные
+        // (id=0 - режим добавления данных, иначе - режим изменения данных)
+        // id = -1; // для проверки
+        if (id < 0)
+            return BadRequest(new { EmployeeId = 0 });
 
-        // путь расположения временной фотографии
+
+        // при режиме создания использовать значение временной папки,
+        // если значение временной папки отсутствует, то его нужно создать
+        tempDir = id == 0 && !string.IsNullOrEmpty(tempDir)
+            ? tempDir
+            : _loadService.GetTempEmployeePhotoDirectoryByParams(userId, id);
+
+
+        // путь расположения временной фотографии сотрудника
         var path = Path.Combine(_environment.ContentRootPath,
-            LoadService.APP_DATA, LoadService.USERS,
-            LoadService.PHOTOS, $"{LoadService.TEMP_PHOTO}_{id}");
+            LoadService.APP_DATA, LoadService.EMPLOYEES,
+            LoadService.PHOTOS, tempDir);
 
         // создание каталогов при их отсутствии
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
 
 
         // удалить ранее сохранённые файлы
-        *//*var files = Directory.GetFiles(path).ToList();
-        files.ForEach(System.IO.File.Delete);*//*
         _loadService.DeleteFilesByPath(path);
 
 
         // сделать имя файла более уникальным для исключения перезаписи
         var uniqueFileName = _loadService.GetUniqueFileName(tempImage.FileName);
 
-        // загрузить файл фотографии пользователя во временную папку
+        // загрузить файл изображения компании во временную папку
         await _loadService.UploadFileAsync(path, uniqueFileName, tempImage);
 
 
-        // формирование адреса размещения временной фотографии пользователя
-        var downloadController = LoadService.DOWNLOAD;
-        var downloadMethod = LoadService.GET_TEMP_IMAGE;
-        var tempAvatar =
-            $"{AuthOptions.ISSUER}/{downloadController}/{downloadMethod}" +
-            $"/{LoadService.USERS}/{LoadService.PHOTOS}" +
-            $"/{LoadService.TEMP_PHOTO}_{id}/{uniqueFileName}";
+        // формирование адреса размещения временной фотографии сотрудника
+        var tempAvatar = _loadService
+            .GetPathToTempEmployeeAvatar(tempDir, uniqueFileName);
 
 
         // вернуть Ok с адресом фотографии
         return Ok(new { Avatar = tempAvatar });
 
-    } // TempCompanyTitleImage*/
+    } // TempEmployeePhoto
 
 } // class UploadController

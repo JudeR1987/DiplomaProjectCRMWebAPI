@@ -2,7 +2,6 @@
 using Domain.Models.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 
 namespace Application.Services;
 
@@ -17,6 +16,10 @@ public class LoadService : ILoadService
     public const string PHOTOS = "photos";
     public const string TEMP_PHOTO = "tempPhoto";
 
+    // имена папок для хранения файлов с фотографиями сотрудников
+    // (PHOTOS="photos" и TEMP_PHOTO="tempPhoto" такие же как и у пользователей)
+    public const string EMPLOYEES = "employees";
+
     // имена папок для хранения файлов с изображениями
     // логотипов компаний и их основных изображений
     public const string COMPANIES = "companies";
@@ -26,7 +29,7 @@ public class LoadService : ILoadService
     public const string TEMP_IMAGE = "tempImage";
 
     // имя файла с изображением по умолчанию
-    // для пользователей
+    // для персон
     public const string DEFAULT_PHOTO = "photo.ico";
 
     // для логотипов
@@ -75,6 +78,7 @@ public class LoadService : ILoadService
         $"{Path.GetExtension(fileName)}";
 
 
+
     // получить путь к файлу аватарки пользователя
     public string GetPathToUserAvatar(string fileName) =>
         $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_IMAGE}/" +
@@ -84,6 +88,7 @@ public class LoadService : ILoadService
     public string GetPathToTempUserAvatar(int userId, string fileName) =>
         $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_TEMP_IMAGE}/" +
         $"{USERS}/{PHOTOS}/{TEMP_PHOTO}_{userId}/{fileName}";
+
 
 
     // получить путь к файлу изображения компании
@@ -99,10 +104,24 @@ public class LoadService : ILoadService
         $"{tempDir}/{fileName}";
 
 
+
+    // получить путь к файлу аватарки сотрудника
+    public string GetPathToEmployeeAvatar(string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_IMAGE}/" +
+        $"{EMPLOYEES}/{PHOTOS}/{fileName}";
+
+    // получить путь к временному файлу аватарки сотрудника
+    public string GetPathToTempEmployeeAvatar(string tempDir, string fileName) =>
+        $"{AuthOptions.ISSUER}/{DOWNLOAD}/{GET_TEMP_IMAGE}/" +
+        $"{EMPLOYEES}/{PHOTOS}/{tempDir}/{fileName}";
+
+
+
     // получить имя временной папки для хранения
     // фотографий пользователя с учётом его идентификатора
     public string GetTempUserPhotoDirectoryById(int userId) =>
         $"{TEMP_PHOTO}_{userId}";
+
 
 
     // получить имя временной папки для хранения
@@ -113,15 +132,40 @@ public class LoadService : ILoadService
 
         // при разных типах изображений применяем разные имена временных папок
         // (для логотипа и основного изображения компании)
-        var tempDirName = imageType == "logo" ? TEMP_LOGO : TEMP_IMAGE;
+        var tempDirName = imageType == "logo"
+            ? TEMP_LOGO
+            : TEMP_IMAGE;
 
-        // при режиме создания компании (companyId == 0) добавляем уникальный суффикс
-        var randomString = companyId == 0 ? $"_{Utils.GetRandomString()}" : "";
+        // при режиме создания компании (companyId == 0)
+        // добавляем уникальный суффикс
+        var randomString = companyId == 0
+            ? $"_{Utils.GetRandomString()}"
+            : "";
+        
         var tempDir = $"{tempDirName}_{userId}_{companyId}{randomString}";
 
         return tempDir;
 
     } // GetTempCompanyImageDirectoryByParams
+
+
+
+    // получить имя временной папки для хранения фотографий сотрудника
+    // с учётом идентификаторов пользователя и сотрудника
+    public string GetTempEmployeePhotoDirectoryByParams(int userId, int employeeId) {
+
+        // при режиме добавления сотрудника (employeeId == 0)
+        // добавляем уникальный суффикс
+        var randomString = employeeId == 0
+            ? $"_{Utils.GetRandomString()}"
+            : "";
+        
+        var tempDir = $"{TEMP_PHOTO}_{userId}_{employeeId}{randomString}";
+
+        return tempDir;
+
+    } // GetTempCompanyImageDirectoryByParams
+
 
 
     // копирование файла
@@ -223,6 +267,14 @@ public class LoadService : ILoadService
         // путь к папкам с основными изображениями компаний
         path = Path.Combine(_environment.ContentRootPath,
             APP_DATA, COMPANIES, IMAGES);
+
+        // создание каталогов при их отсутствии
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        // путь к папке с фотографиями сотрудников
+        path = Path.Combine(_environment.ContentRootPath,
+            APP_DATA, EMPLOYEES, PHOTOS);
 
         // создание каталогов при их отсутствии
         if (!Directory.Exists(path))

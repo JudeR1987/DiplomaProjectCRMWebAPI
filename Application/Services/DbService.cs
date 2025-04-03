@@ -244,6 +244,21 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<Specialization>> GetAllDeletedSpecializationsAsync() =>
         await _dbRepository.GetAllDeletedSpecializationsAsync();
 
+    // 9.2. получить запись о специальности из БД по Id
+    // (если запись не найдена - вернуть new Specialization() с Id=0)
+    public async Task<Specialization> GetSpecializationByIdAsync(int specializationId) =>
+        (await GetAllSpecializationsAsync())
+        .FirstOrDefault(specialization => specialization.Id == specializationId)
+        ?? new Specialization() { Id = 0 };
+
+    // 9.3. добавить новую запись о специальности в БД
+    public async Task<(bool, string)> CreateSpecializationAsync(Specialization newSpecialization) =>
+        await _dbRepository.CreateSpecializationAsync(newSpecialization);
+
+    // 9.4. изменить данные о специальности в БД
+    public async Task<(bool, string)> UpdateSpecializationAsync(Specialization specializationEdt) =>
+        await _dbRepository.UpdateSpecializationAsync(specializationEdt);
+
 
 
     // 10. таблица "ДОЛЖНОСТИ"
@@ -258,6 +273,21 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 10.1.3. получить все удалённые записи таблицы "ДОЛЖНОСТИ" из БД
     public async Task<List<Position>> GetAllDeletedPositionsAsync() =>
         await _dbRepository.GetAllDeletedPositionsAsync();
+
+    // 10.2. получить запись о должности из БД по Id
+    // (если запись не найдена - вернуть new Position() с Id=0)
+    public async Task<Position> GetPositionByIdAsync(int positionId) =>
+        (await GetAllPositionsAsync())
+        .FirstOrDefault(position => position.Id == positionId)
+        ?? new Position() { Id = 0 };
+
+    // 10.3. добавить новую запись о должности в БД
+    public async Task<(bool, string)> CreatePositionAsync(Position newPosition) =>
+        await _dbRepository.CreatePositionAsync(newPosition);
+
+    // 10.4. изменить данные о должности в БД
+    public async Task<(bool, string)> UpdatePositionAsync(Position positionEdt) =>
+        await _dbRepository.UpdatePositionAsync(positionEdt);
 
 
 
@@ -320,6 +350,7 @@ public class DbService(IDbRepository dbRepository) : IDbService
                     .OrderBy(service => service.Name)
                     .ToList()
             })
+        .Where(group => group.ServicesCategory.Deleted == null)
         .Select(group => new DisplayServicesCategory(
             ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
             Service.ServicesToDto(group.Services)
@@ -356,6 +387,32 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 13.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ" из БД
     public async Task<List<Employee>> GetAllDeletedEmployeesAsync() =>
         await _dbRepository.GetAllDeletedEmployeesAsync();
+
+    // 13.2. получить все записи о сотрудниках для заданной компании из БД
+    public async Task<List<Employee>> GetAllEmployeesByCompanyIdAsync(int companyId) =>
+        await _dbRepository.GetAllEmployeesByCompanyIdAsync(companyId);
+
+    // 13.3. получить запись о сотруднике из БД по Id
+    // (если запись не найдена - вернуть new Employee() с Id=0)
+    public async Task<Employee> GetEmployeeByIdAsync(int employeeId) =>
+        (await GetAllEmployeesAsync())
+        .FirstOrDefault(employee => employee.Id == employeeId)
+        ?? new Employee() { Id = 0 };
+
+    // 13.4. получить запись о сотруднике из БД по Id пользователя
+    // (если запись не найдена - вернуть new Employee() с Id=0)
+    public async Task<Employee> GetEmployeeByUserIdAsync(int userId) =>
+        (await GetAllEmployeesAsync())
+        .FirstOrDefault(employee => employee.UserId == userId)
+        ?? new Employee() { Id = 0 };
+
+    // 13.5. добавить новую запись о сотруднике в БД
+    public async Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee) =>
+        await _dbRepository.CreateEmployeeAsync(newEmployee);
+
+    // 13.6. изменить данные о сотруднике в БД
+    public async Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt) =>
+        await _dbRepository.UpdateEmployeeAsync(employeeEdt);
 
 
 

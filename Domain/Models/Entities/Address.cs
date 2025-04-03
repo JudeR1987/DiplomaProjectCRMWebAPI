@@ -73,8 +73,8 @@ public class Address(int cityId, int streetId, string building,
     // статический метод, возвращающий объект-DTO
     public static AddressDto AddressToDto(Address srcAddress) =>
         new(srcAddress.Id,
-            City.CityToDto(srcAddress.City),
-            Street.StreetToDto(srcAddress.Street),
+            City.CityToDto(srcAddress.City ?? new City()),
+            Street.StreetToDto(srcAddress.Street ?? new Street()),
             srcAddress.Building,
             srcAddress.Flat,
             srcAddress.Deleted

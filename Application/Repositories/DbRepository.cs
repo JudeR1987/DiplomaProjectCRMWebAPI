@@ -9,7 +9,7 @@ namespace Application.Repositories;
 public class DbRepository(CrmContext db) : IDbRepository
 {
     // ссылка на базу данных
-    private CrmContext _db = db;
+    private readonly CrmContext _db = db;
 
 
     // 1. таблица "РОЛИ"
@@ -326,6 +326,60 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(specialization => specialization.Deleted != null)
         .ToListAsync();
 
+    // 9.2. добавить новую запись о специальности в БД
+    public async Task<(bool, string)> CreateSpecializationAsync(Specialization newSpecialization) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Specializations.AddAsync(newSpecialization);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateSpecializationAsync
+
+    // 9.3. изменить данные о специальности в БД
+    public async Task<(bool, string)> UpdateSpecializationAsync(Specialization specializationEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Specializations.Update(specializationEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateSpecializationAsync
+
 
 
     // 10. таблица "ДОЛЖНОСТИ"
@@ -344,6 +398,60 @@ public class DbRepository(CrmContext db) : IDbRepository
         await _db.Positions.AsNoTracking()
         .Where(position => position.Deleted != null)
         .ToListAsync();
+
+    // 10.2. добавить новую запись о должности в БД
+    public async Task<(bool, string)> CreatePositionAsync(Position newPosition) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Positions.AddAsync(newPosition);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreatePositionAsync
+
+    // 10.3. изменить данные о должности в БД
+    public async Task<(bool, string)> UpdatePositionAsync(Position positionEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Positions.Update(positionEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdatePositionAsync
 
 
 
@@ -502,19 +610,79 @@ public class DbRepository(CrmContext db) : IDbRepository
     // 13. таблица "СОТРУДНИКИ"
     // 13.1.1 получить все записи таблицы "СОТРУДНИКИ" из БД
     public async Task<List<Employee>> GetAllEmployeesAsync() =>
-        await _db.Employees.AsNoTracking()
+        await _db.Employees
         .Where(employee => employee.Deleted == null)
         .ToListAsync();
 
     // 13.1.2. получить все(включая удалённые) записи таблицы "СОТРУДНИКИ" из БД
     public async Task<List<Employee>> GetAllEmployeesWithDeletedAsync() =>
-        await _db.Employees.AsNoTracking().ToListAsync();
+        await _db.Employees.ToListAsync();
 
     // 13.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ" из БД
     public async Task<List<Employee>> GetAllDeletedEmployeesAsync() =>
-        await _db.Employees.AsNoTracking()
+        await _db.Employees
         .Where(employee => employee.Deleted != null)
         .ToListAsync();
+
+    // 13.2. получить все записи о сотрудниках для заданной компании из БД
+    public async Task<List<Employee>> GetAllEmployeesByCompanyIdAsync(int companyId) =>
+        await _db.Employees
+        .Where(employee => employee.CompanyId == companyId && employee.Deleted == null)
+        .ToListAsync();
+
+    // 13.3. добавить новую запись о сотруднике в БД
+    public async Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Employees.AddAsync(newEmployee);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateEmployeeAsync
+
+    // 13.4. изменить данные о сотруднике в БД
+    public async Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Employees.Update(employeeEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateEmployeeAsync
 
 
 
