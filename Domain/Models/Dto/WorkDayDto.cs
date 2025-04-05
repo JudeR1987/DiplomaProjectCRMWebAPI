@@ -24,16 +24,16 @@ public record WorkDayDto(
     string EndTime,
 
     // длительность по времени всех промежутков для перерыва
-    TimeSpan BreakTime,
+    //TimeSpan BreakTime,
 
     // длительность по времени рабочего дня
-    TimeSpan WorkTime,
+    //TimeSpan WorkTime,
 
     // свободные для записи промежутки времени
-    List<SlotDto> FreeSlots,
+    //List<SlotDto> FreeSlots,
 
     // промежутки времени для перерывов
-    List<SlotDto> BreakSlots,
+    //List<SlotDto> BreakSlots,
 
     // дата и время удаления записи о рабочем дне
     DateTime? Deleted

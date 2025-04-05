@@ -111,9 +111,9 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
 
             // категория "Маникюр"
             new() { Id = 21, Name = "Маникюр + покрытие гель-лак",                   ServicesCategoryId = 4, CompanyId = 1, PriceMin =  2_700, PriceMax =  2_700, /*ServiceType = 1,*/ Comment = "Описание 21", Deleted = null, /*Weight = 21*/ },
-            new() { Id = 22, Name = "Снятие + маникюр + покрытие гель-лак",          ServicesCategoryId = 4, CompanyId = 2, PriceMin =  3_100, PriceMax =  3_100, /*ServiceType = 1,*/ Comment = "Описание 22", Deleted = null, /*Weight = 22*/ },
-            new() { Id = 23, Name = "Маникюр + покрытие лак",                        ServicesCategoryId = 4, CompanyId = 4, PriceMin =  2_100, PriceMax =  2_100, /*ServiceType = 1,*/ Comment = "Описание 23", Deleted = null, /*Weight = 23*/ },
-            new() { Id = 24, Name = "Снятие + маникюр",                              ServicesCategoryId = 4, CompanyId = 3, PriceMin =  1_800, PriceMax =  1_800, /*ServiceType = 1,*/ Comment = "Описание 24", Deleted = null, /*Weight = 24*/ },
+            new() { Id = 22, Name = "Снятие + маникюр + покрытие гель-лак",          ServicesCategoryId = 4, CompanyId = 1, PriceMin =  3_100, PriceMax =  3_100, /*ServiceType = 1,*/ Comment = "Описание 22", Deleted = null, /*Weight = 22*/ },
+            new() { Id = 23, Name = "Маникюр + покрытие лак",                        ServicesCategoryId = 4, CompanyId = 1, PriceMin =  2_100, PriceMax =  2_100, /*ServiceType = 1,*/ Comment = "Описание 23", Deleted = null, /*Weight = 23*/ },
+            new() { Id = 24, Name = "Снятие + маникюр",                              ServicesCategoryId = 4, CompanyId = 1, PriceMin =  1_800, PriceMax =  1_800, /*ServiceType = 1,*/ Comment = "Описание 24", Deleted = null, /*Weight = 24*/ },
             new() { Id = 25, Name = "Пилочный маникюр + покрытие гель-лак",          ServicesCategoryId = 4, CompanyId = 1, PriceMin =  3_100, PriceMax =  3_100, /*ServiceType = 1,*/ Comment = "Описание 25", Deleted = null, /*Weight = 25*/ },
             new() { Id = 26, Name = "Маникюр + наращивание + покрытие гель-лак",     ServicesCategoryId = 4, CompanyId = 1, PriceMin =  5_500, PriceMax =  5_500, /*ServiceType = 1,*/ Comment = "Описание 26", Deleted = null, /*Weight = 26*/ },
             new() { Id = 27, Name = "Маникюр мужской",                               ServicesCategoryId = 4, CompanyId = 3, PriceMin =  1_800, PriceMax =  1_800, /*ServiceType = 1,*/ Comment = "Описание 27", Deleted = null, /*Weight = 27*/ },

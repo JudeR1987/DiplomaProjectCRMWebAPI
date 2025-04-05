@@ -78,6 +78,12 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllByCompanyIdAsync(int id) {
 
+        
+        
+        // метод, вроде, НЕ ИСПОЛЬЗУЕТСЯ!?!?!?
+        
+        
+        
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
 
@@ -113,7 +119,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
         // для заданной компании, сгруппированные по категориям услуг
         var displayServicesCategories = await _dbService
             .GetAllServicesByCompanyIdGroupByCategoriesAsync(id);
-        
+
         /*var displayServicesCategories = await _db.Services
             .Where(service => service.CompanyId == companyId && service.Deleted == null)
             .GroupBy(service => service.ServicesCategory,
@@ -121,6 +127,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
                     ServicesCategory = key,
                     Services = group.ToList()
                 })
+            .Where(group => group.ServicesCategory.Deleted == null)
             .Select(group => new DisplayServicesCategory(
                 ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
                 Service.ServicesToDto(group.Services)

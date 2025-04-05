@@ -4,7 +4,7 @@ using Domain.Models.Dto;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.ComponentModel.Design;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -33,6 +33,75 @@ public class EmployeesController(
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
+
+
+        // -- потом удалить -----
+
+        var source2 = await _dbService.GetAllEmployeesAsync();
+
+        var employee = await _dbService.GetEmployeeByIdAsync(1);
+
+        var services = employee.Services
+            .Where(service => service.Deleted == null)
+            .ToList();
+        
+        var employeesServices = employee.EmployeesServices
+            .Where(employeeService => employeeService.Deleted == null)
+            .ToList();
+
+        var services2 = employeesServices
+            .Select(employeesService => employeesService.Service)
+            .ToList();
+
+        var services3 = employeesServices
+            .Where(employeesService => employeesService.Service.Deleted == null)
+            .Select(employeesService => employeesService.Service)
+            .ToList();
+
+
+        // var services_4 = employee.EmployeesServices
+        var services_4 = (await _dbService.GetEmployeeByIdAsync(1))
+            .EmployeesServices
+            .Where(employeeService => employeeService.Deleted == null &&
+                                      employeeService.Service.Deleted == null)
+            .Select(employeeService => employeeService.Service)
+            .ToList();
+
+
+        var displayServicesCategories_4 = (await _dbService.GetEmployeeByIdAsync(1))
+            .EmployeesServices
+            .Where(employeeService => employeeService.Deleted == null &&
+                                      employeeService.Service.Deleted == null)
+            .Select(employeeService => employeeService.Service)                 // = services_4
+            .GroupBy(service => service.ServicesCategory,
+                (key, group) => new {
+                    ServicesCategory = key,
+                    Services = group.ToList()
+                })
+            .Where(group => group.ServicesCategory.Deleted == null)
+            .Select(group => new DisplayServicesCategory(
+                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
+                Service.ServicesToDto(group.Services)
+                ))
+            .ToList();
+
+
+        /*var displayServicesCategories = await _db.Services
+            .Where(service => service.CompanyId == companyId && service.Deleted == null)
+            .GroupBy(service => service.ServicesCategory,
+                (key, group) => new {
+                    ServicesCategory = key,
+                    Services = group.ToList()
+                })
+            .Where(group => group.ServicesCategory.Deleted == null)
+            .Select(group => new DisplayServicesCategory(
+                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
+                Service.ServicesToDto(group.Services)
+                ))
+            .ToListAsync();*/
+
+
+        // -- потом удалить -----
 
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesAsync())
@@ -698,6 +767,72 @@ public class EmployeesController(
         return Ok();
 
     } // DeleteEmployeeAsync
+
+
+    // 12. по GET-запросу вернуть клиенту данные о коллекции записей
+    // об услугах для заданного сотрудника из БД в JSON-формате
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetAllServicesByEmployeeIdAsync([FromQuery] int id) {
+
+        // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
+        // id = 0; // для проверки
+        if (id <= 0)
+            return BadRequest(new { EmployeeId = 0 });
+
+
+        // получить отображаемые данные(DTO) об услугах
+        // для заданного сотрудника
+        var services = (await _dbService.GetAllServicesByEmployeeIdAsync(id))
+            .Select(Service.ServiceToDto)
+            .ToList();
+
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { services });
+
+    } // GetAllServicesByEmployeeIdAsync
+
+
+    // 12. по GET-запросу вернуть клиенту данные о коллекции записей об услугах
+    // для заданного сотрудника, сгруппированные по категориям услуг из БД в JSON-формате
+    /*[HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetAllServicesByEmployeeIdGroupByCategoriesAsync(
+        [FromQuery] int id) {
+
+        // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
+        // id = 0; // для проверки
+        if (id <= 0)
+            return BadRequest(new { EmployeeId = 0 });
+
+
+        // получить отображаемые данные(DTO) об услугах
+        // для заданного сотрудника, сгруппированные по категориям услуг
+        var displayServicesCategories = await _dbService
+            .GetAllServicesByEmployeeIdGroupByCategoriesAsync(id);
+
+        *//*var displayServicesCategories = (await _dbService.GetEmployeeByIdAsync(id))
+            .EmployeesServices
+            .Where(employeeService => employeeService.Deleted == null &&
+                                      employeeService.Service.Deleted == null)
+            .Select(employeeService => employeeService.Service)
+            .GroupBy(service => service.ServicesCategory,
+                (key, group) => new {
+                    ServicesCategory = key,
+                    Services = group.ToList()
+                })
+            .Where(group => group.ServicesCategory.Deleted == null)
+            .Select(group => new DisplayServicesCategory(
+                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
+                Service.ServicesToDto(group.Services)
+                ))
+            .ToList();*//*
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { displayServicesCategories });
+
+    } // GetAllServicesByEmployeeIdGroupByCategoriesAsync*/
 
 
     // метод копирования файла фотографии из временной папки в рабочую

@@ -49,14 +49,14 @@ public class WorkDay(int employeeId, DateTime date, bool isWorking,
     // вычисляемые свойства
 
     // длительность по времени всех промежутков для перерыва
-    public TimeSpan BreakTime =>
-        new(0, 0, BreakSlots.Sum(breakSlot => breakSlot.Length));
+    /*public TimeSpan BreakTime =>
+        new(0, 0, BreakSlots.Sum(breakSlot => breakSlot.Length));*/
 
 
     // длительность по времени рабочего дня
-    public TimeSpan WorkTime => IsWorking
+    /*public TimeSpan WorkTime => IsWorking
         ? EndTime - StartTime - BreakTime
-        : new TimeSpan(0, 0, 0);
+        : new TimeSpan(0, 0, 0);*/
 
 
     // навигационные свойства для связи "многие ко многим" Schedule <--> Slots
@@ -113,10 +113,10 @@ public class WorkDay(int employeeId, DateTime date, bool isWorking,
             srcWorkDay.IsWorking,
             srcWorkDay.StartTime.ToString(),
             srcWorkDay.EndTime.ToString(),
-            srcWorkDay.BreakTime,
-            srcWorkDay.WorkTime,
-            Slot.SlotsToDto(srcWorkDay.FreeSlots),
-            Slot.SlotsToDto(srcWorkDay.BreakSlots),
+            /*srcWorkDay.BreakTime,*/
+            /*srcWorkDay.WorkTime,*/
+            /*Slot.SlotsToDto(srcWorkDay.FreeSlots),
+            Slot.SlotsToDto(srcWorkDay.BreakSlots),*/
             srcWorkDay.Deleted
         );
 

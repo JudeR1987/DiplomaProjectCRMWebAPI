@@ -406,11 +406,39 @@ public class DbService(IDbRepository dbRepository) : IDbService
         .FirstOrDefault(employee => employee.UserId == userId)
         ?? new Employee() { Id = 0 };
 
-    // 13.5. добавить новую запись о сотруднике в БД
+    // 13.5. получить все записи об услугах заданного сотрудника из БД
+    public async Task<List<Service>> GetAllServicesByEmployeeIdAsync(int employeeId) =>
+        (await GetEmployeeByIdAsync(employeeId)).EmployeesServices
+        .Where(employeeService => employeeService.Deleted == null &&
+                                  employeeService.Service.Deleted == null)
+        .Select(employeeService => employeeService.Service)
+        .ToList();
+
+    // 13.5. получить все записи об услугах заданного сотрудника из БД,
+    // сгруппированные по категориям услуг (DTO)
+    /*public async Task<List<DisplayServicesCategory>>
+        GetAllServicesByEmployeeIdGroupByCategoriesAsync(int employeeId) =>
+        (await GetEmployeeByIdAsync(employeeId)).EmployeesServices
+        .Where(employeeService => employeeService.Deleted == null &&
+                                  employeeService.Service.Deleted == null)
+        .Select(employeeService => employeeService.Service)
+        .GroupBy(service => service.ServicesCategory,
+            (key, group) => new {
+                ServicesCategory = key,
+                Services = group.ToList()
+            })
+        .Where(group => group.ServicesCategory.Deleted == null)
+        .Select(group => new DisplayServicesCategory(
+            ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
+            Service.ServicesToDto(group.Services)
+            ))
+        .ToList();*/
+
+    // 13.6. добавить новую запись о сотруднике в БД
     public async Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee) =>
         await _dbRepository.CreateEmployeeAsync(newEmployee);
 
-    // 13.6. изменить данные о сотруднике в БД
+    // 13.7. изменить данные о сотруднике в БД
     public async Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt) =>
         await _dbRepository.UpdateEmployeeAsync(employeeEdt);
 
@@ -428,6 +456,25 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 14.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
     public async Task<List<EmployeeService>> GetAllDeletedEmployeesServicesAsync() =>
         await _dbRepository.GetAllDeletedEmployeesServicesAsync();
+
+    // 14.2. получить запись об услуге сотрудника из БД по Id сотрудника и Id услуги
+    // (если запись не найдена - вернуть new EmployeeService() с Id=0)
+    public async Task<EmployeeService> GetEmployeeServiceByEmployeeIdServiceIdAsync(
+        int employeeId, int serviceId) =>
+        (await GetAllEmployeesServicesAsync())
+        .FirstOrDefault(employeeService => employeeService.EmployeeId == employeeId &&
+                                           employeeService.ServiceId == serviceId)
+        ?? new EmployeeService() { Id = 0 };
+
+    // 14.3. добавить новую запись об услуге сотрудника в БД
+    public async Task<(bool, string)> CreateEmployeeServiceAsync(
+        EmployeeService newEmployeeService) =>
+        await _dbRepository.CreateEmployeeServiceAsync(newEmployeeService);
+
+    // 14.4. изменить данные об услуге сотрудника в БД
+    public async Task<(bool, string)> UpdateEmployeeServiceAsync(
+        EmployeeService employeeServiceEdt) =>
+        await _dbRepository.UpdateEmployeeServiceAsync(employeeServiceEdt);
 
 
 

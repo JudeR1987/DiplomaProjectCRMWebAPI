@@ -703,6 +703,62 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(employeeService => employeeService.Deleted != null)
         .ToListAsync();
 
+    // 14.2. добавить новую запись об услуге сотрудника в БД
+    public async Task<(bool, string)> CreateEmployeeServiceAsync(
+        EmployeeService newEmployeeService) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.EmployeesServices.AddAsync(newEmployeeService);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateEmployeeServiceAsync
+
+    // 14.3. изменить данные об услуге сотрудника в БД
+    public async Task<(bool, string)> UpdateEmployeeServiceAsync(
+        EmployeeService employeeServiceEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.EmployeesServices.Update(employeeServiceEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateEmployeeServiceAsync
+
 
 
     // 15. таблица "КЛИЕНТЫ"

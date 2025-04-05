@@ -38,7 +38,8 @@ public class EmployeeServiceConfiguration : IEntityTypeConfiguration<EmployeeSer
             new() { Id = 13, EmployeeId = 5, ServiceId = 34, Deleted = null },
             new() { Id = 14, EmployeeId = 6, ServiceId = 38, Deleted = null },
             new() { Id = 15, EmployeeId = 6, ServiceId = 39, Deleted = null },
-            new() { Id = 16, EmployeeId = 7, ServiceId = 13, Deleted = Utils.GetRandomDateTime() }
+            new() { Id = 16, EmployeeId = 7, ServiceId = 13, Deleted = Utils.GetRandomDateTime() },
+            new() { Id = 17, EmployeeId = 1, ServiceId = 24, Deleted = Utils.GetRandomDateTime() }
         };
 
         // инициализация таблицы "СОТРУДНИКИ_УСЛУГИ"

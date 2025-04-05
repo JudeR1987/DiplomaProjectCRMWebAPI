@@ -144,7 +144,7 @@ public class Employee(/*string name,*/ int userId, int companyId, int specializa
             Position.PositionToDto(srcEmployee.Position ?? new Position()),
             srcEmployee.Rating,
             srcEmployee.Avatar,
-            Service.ServicesToDto(srcEmployee.Services ?? []),
+            /*Service.ServicesToDto(srcEmployee.Services ?? []),*/
             srcEmployee.Deleted
         );
 

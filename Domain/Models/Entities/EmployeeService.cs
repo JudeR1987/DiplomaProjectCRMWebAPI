@@ -57,8 +57,10 @@ public class EmployeeService(int employeeId, int serviceId, DateTime? deleted)
     // статический метод, возвращающий объект-DTO
     public static EmployeeServiceDto EmployeeServiceToDto(EmployeeService srcEmployeeService) =>
         new(srcEmployeeService.Id,
-            Employee.EmployeeToDto(srcEmployeeService.Employee),
-            Service.ServiceToDto(srcEmployeeService.Service),
+            srcEmployeeService.EmployeeId,
+            // Employee.EmployeeToDto(srcEmployeeService.Employee),
+            srcEmployeeService.ServiceId,
+            // Service.ServiceToDto(srcEmployeeService.Service),
             srcEmployeeService.Deleted
         );
 

@@ -8,11 +8,17 @@ public record EmployeeServiceDto(
     // идентификатор записи о связи
     int Id,
 
+    // идентификатор записи о сотруднике
+    int EmployeeId,
+
     // данные о сотруднике
-    EmployeeDto Employee,
+    // EmployeeDto Employee,
+
+    // идентификатор записи об услуге
+    int ServiceId,
 
     // данные об услуге
-    ServiceDto Service,
+    // ServiceDto Service,
 
     // дата и время удаления записи о связи
     DateTime? Deleted

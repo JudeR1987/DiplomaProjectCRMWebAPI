@@ -224,6 +224,12 @@ public interface IDbRepository
     // 14.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
     Task<List<EmployeeService>> GetAllDeletedEmployeesServicesAsync();
 
+    // 14.2. добавить новую запись об услуге сотрудника в БД
+    Task<(bool, string)> CreateEmployeeServiceAsync(EmployeeService newEmployeeService);
+
+    // 14.3. изменить данные об услуге сотрудника в БД
+    Task<(bool, string)> UpdateEmployeeServiceAsync(EmployeeService employeeServiceEdt);
+
 
 
     // 15. таблица "КЛИЕНТЫ"

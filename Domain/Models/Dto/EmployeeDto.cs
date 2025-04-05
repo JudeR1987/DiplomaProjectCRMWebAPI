@@ -29,7 +29,7 @@ public record EmployeeDto(
     string Avatar,
 
     // услуги, предоставляемые сотрудником
-    List<ServiceDto> Services,
+    // List<ServiceDto> Services,
 
     // дата и время удаления записи о сотруднике
     DateTime? Deleted

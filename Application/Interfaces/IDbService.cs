@@ -278,10 +278,18 @@ public interface IDbService
     // (если запись не найдена - вернуть new Employee() с Id=0)
     Task<Employee> GetEmployeeByUserIdAsync(int userId);
 
-    // 13.5. добавить новую запись о сотруднике в БД
+    // 13.5. получить все записи об услугах заданного сотрудника из БД
+    Task<List<Service>> GetAllServicesByEmployeeIdAsync(int employeeId);
+
+    // 13.5. получить все записи об услугах заданного сотрудника из БД,
+    // сгруппированные по категориям услуг (DTO)
+    /*Task<List<DisplayServicesCategory>>
+        GetAllServicesByEmployeeIdGroupByCategoriesAsync(int employeeId);*/
+
+    // 13.6. добавить новую запись о сотруднике в БД
     Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee);
 
-    // 13.6. изменить данные о сотруднике в БД
+    // 13.7. изменить данные о сотруднике в БД
     Task<(bool, string)> UpdateEmployeeAsync(Employee employeeEdt);
 
 
@@ -295,6 +303,17 @@ public interface IDbService
 
     // 14.1.3. получить все удалённые записи таблицы "СОТРУДНИКИ_УСЛУГИ" из БД
     Task<List<EmployeeService>> GetAllDeletedEmployeesServicesAsync();
+
+    // 14.2. получить запись об услуге сотрудника из БД по Id сотрудника и Id услуги
+    // (если запись не найдена - вернуть new EmployeeService() с Id=0)
+    Task<EmployeeService> GetEmployeeServiceByEmployeeIdServiceIdAsync(
+        int employeeId, int serviceId);
+
+    // 14.3. добавить новую запись об услуге сотрудника в БД
+    Task<(bool, string)> CreateEmployeeServiceAsync(EmployeeService newEmployeeService);
+
+    // 14.4. изменить данные об услуге сотрудника в БД
+    Task<(bool, string)> UpdateEmployeeServiceAsync(EmployeeService employeeServiceEdt);
 
 
 
