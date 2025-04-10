@@ -61,4 +61,35 @@ public static class Utils
             date.Date.ToString().Substring(0, 10).Split(".").Reverse()
         );
 
+
+    // получить дату из строки формата "yyyy-mm-dd"
+    public static DateTime StringToDate(string dateString) {
+
+        // если получена строка формата "2024-07-02T08:46:37.808Z", то требуется обрезка
+        // если получена строка формата "2024-07-02", то обрезка не требуется
+        if (string.IsNullOrWhiteSpace(dateString)) return new DateTime();
+        if (dateString.Length > 10) dateString = dateString.Substring(0, 10);
+
+        var year = int.Parse(dateString.Split("-")[0]);
+        var month = int.Parse(dateString.Split("-")[1]);
+        var day = int.Parse(dateString.Split("-")[2]);
+
+        return new DateTime(year, month, day);
+
+    } // StringToDate
+
+
+    // получить время из строки формата "HH:mm"
+    public static TimeOnly StringToTime(string timeString) {
+
+        // если получена пустая строка, вернуть время по умолчанию
+        if (string.IsNullOrWhiteSpace(timeString)) return new TimeOnly(0, 0);
+
+        var hours = int.Parse(timeString.Split(":")[0]);
+        var minutes = int.Parse(timeString.Split(":")[1]);
+
+        return new TimeOnly(hours, minutes);
+
+    } // StringToTime
+
 } // Utils

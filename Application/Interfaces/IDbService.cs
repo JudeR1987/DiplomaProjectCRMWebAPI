@@ -363,6 +363,21 @@ public interface IDbService
     // 18.1.3. получить все удалённые записи таблицы "РАСПИСАНИЕ" из БД
     Task<List<WorkDay>> GetAllDeletedScheduleAsync();
 
+    // 18.2. получить все записи о рабочих днях
+    // заданного сотрудника за заданный период из БД
+    Task<List<WorkDay>> GetAllScheduleByEmployeeIdFromToAsync(
+        int employeeId, DateTime firstDay, DateTime lastDay);
+
+    // 18.3. получить запись о рабочем дне из БД по Id
+    // (если запись не найдена - вернуть new WorkDay() с Id=0)
+    Task<WorkDay> GetWorkDayByIdAsync(int workDayId);
+
+    // 18.4. добавить новую запись о рабочем дне сотрудника в БД
+    Task<(bool, string)> CreateWorkDayAsync(WorkDay newWorkDay);
+
+    // 18.5. изменить данные о рабочем дне сотрудника в БД
+    Task<(bool, string)> UpdateWorkDayAsync(WorkDay workDayEdt);
+
 
 
     // 19. таблица "ПРОМЕЖУТКИ_ВРЕМЕНИ"
@@ -374,6 +389,13 @@ public interface IDbService
 
     // 19.1.3. получить все удалённые записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     Task<List<Slot>> GetAllDeletedSlotsAsync();
+
+    // 19.2. получить запись о промежутке времени из БД по всем параметрам
+    // (если запись не найдена - вернуть new Slot() с Id=0)
+    Task<Slot> GetSlotByParamsAsync(Slot srcSlot);
+
+    // 19.3. добавить новую запись о промежутке времени в БД
+    Task<(bool, string)> CreateSlotAsync(Slot newSlot);
 
 
 
@@ -390,6 +412,16 @@ public interface IDbService
     // "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     Task<List<WorkDayFreeSlot>> GetAllDeletedWorkDaysFreeSlotsAsync();
 
+    // 20.2. добавить новую запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    Task<(bool, string)> CreateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot newWorkDayFreeSlot);
+
+    // 20.3. изменить запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    Task<(bool, string)> UpdateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot workDayFreeSlotEdt);
+
 
 
     // 21. таблица "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ"
@@ -404,5 +436,15 @@ public interface IDbService
     // 21.1.3. получить все удалённые записи таблицы
     // "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ" из БД
     Task<List<WorkDayBreakSlot>> GetAllDeletedWorkDaysBreakSlotsAsync();
+
+    // 21.2. добавить новую запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    Task<(bool, string)> CreateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot newWorkDayBreakSlot);
+
+    // 21.3. изменить запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    Task<(bool, string)> UpdateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot workDayBreakSlotEdt);
 
 } // interface IDbService

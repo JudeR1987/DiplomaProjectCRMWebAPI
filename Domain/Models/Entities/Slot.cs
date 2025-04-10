@@ -1,5 +1,6 @@
 ﻿using Domain.Configurations;
 using Domain.Models.Dto;
+using Domain.Models.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Models.Entities;
@@ -74,12 +75,21 @@ public class Slot(TimeOnly from, int length, DateTime? deleted)
         };
 
 
+    // статический метод, возвращающий новый объект из DTO
+    public static Slot NewSlotFromDto(SlotDto srcSlotDto) =>
+        new(Utils.StringToTime(srcSlotDto.From),
+            srcSlotDto.Length,
+            srcSlotDto.Deleted) {
+            Id = srcSlotDto.Id
+        };
+
+
     // статический метод, возвращающий объект-DTO
     public static SlotDto SlotToDto(Slot srcSlot) =>
         new(srcSlot.Id,
             srcSlot.From.ToString(),
             srcSlot.Length,
-            srcSlot.To.ToString(),
+            /*srcSlot.To.ToString(),*/
             srcSlot.Deleted
         );
 

@@ -14,7 +14,7 @@ public record SlotDto(
     int Length,
 
     // конец промежутка времени
-    string To,
+    //string To,
 
     // дата и время удаления записи о промежутке времени
     DateTime? Deleted

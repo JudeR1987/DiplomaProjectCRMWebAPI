@@ -536,6 +536,28 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<WorkDay>> GetAllDeletedScheduleAsync() =>
         await _dbRepository.GetAllDeletedScheduleAsync();
 
+    // 18.2. получить все записи о рабочих днях
+    // заданного сотрудника за заданный период из БД
+    public async Task<List<WorkDay>> GetAllScheduleByEmployeeIdFromToAsync(
+        int employeeId, DateTime firstDay, DateTime lastDay) =>
+        await _dbRepository.GetAllScheduleByEmployeeIdFromToAsync(
+            employeeId, firstDay, lastDay);
+
+    // 18.3. получить запись о рабочем дне из БД по Id
+    // (если запись не найдена - вернуть new WorkDay() с Id=0)
+    public async Task<WorkDay> GetWorkDayByIdAsync(int workDayId) =>
+        (await GetAllScheduleAsync())
+        .FirstOrDefault(workDay => workDay.Id == workDayId)
+        ?? new WorkDay() { Id = 0 };
+
+    // 18.4. добавить новую запись о рабочем дне сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayAsync(WorkDay newWorkDay) =>
+        await _dbRepository.CreateWorkDayAsync(newWorkDay);
+
+    // 18.5. изменить данные о рабочем дне сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayAsync(WorkDay workDayEdt) =>
+        await _dbRepository.UpdateWorkDayAsync(workDayEdt);
+
 
 
     // 19. таблица "ПРОМЕЖУТКИ_ВРЕМЕНИ"
@@ -550,6 +572,18 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 19.1.3. получить все удалённые записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     public async Task<List<Slot>> GetAllDeletedSlotsAsync() =>
         await _dbRepository.GetAllDeletedSlotsAsync();
+
+    // 19.2. получить запись о промежутке времени из БД по всем параметрам
+    // (если запись не найдена - вернуть new Slot() с Id=0)
+    public async Task<Slot> GetSlotByParamsAsync(Slot srcSlot) =>
+        (await GetAllSlotsAsync())
+        .FirstOrDefault(slot =>
+            slot.From == srcSlot.From && slot.Length == srcSlot.Length)
+        ?? new Slot() { Id = 0 };
+
+    // 19.3. добавить новую запись о промежутке времени в БД
+    public async Task<(bool, string)> CreateSlotAsync(Slot newSlot) =>
+        await _dbRepository.CreateSlotAsync(newSlot);
 
 
 
@@ -569,6 +603,20 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<WorkDayFreeSlot>> GetAllDeletedWorkDaysFreeSlotsAsync() =>
         await _dbRepository.GetAllDeletedWorkDaysFreeSlotsAsync();
 
+    // 20.2. добавить новую запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot newWorkDayFreeSlot) =>
+        await _dbRepository
+        .CreateWorkDayFreeSlotAsync(newWorkDayFreeSlot);
+
+    // 20.3. изменить запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot workDayFreeSlotEdt) =>
+        await _dbRepository
+        .UpdateWorkDayFreeSlotAsync(workDayFreeSlotEdt);
+
 
 
     // 21. таблица "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ"
@@ -586,5 +634,19 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ" из БД
     public async Task<List<WorkDayBreakSlot>> GetAllDeletedWorkDaysBreakSlotsAsync() =>
         await _dbRepository.GetAllDeletedWorkDaysBreakSlotsAsync();
+
+    // 21.2. добавить новую запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot newWorkDayBreakSlot) =>
+        await _dbRepository
+        .CreateWorkDayBreakSlotAsync(newWorkDayBreakSlot);
+
+    // 21.3. изменить запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot workDayBreakSlotEdt) =>
+        await _dbRepository
+        .UpdateWorkDayBreakSlotAsync(workDayBreakSlotEdt);
 
 } // class DbService

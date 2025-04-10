@@ -821,38 +821,130 @@ public class DbRepository(CrmContext db) : IDbRepository
     // 18. таблица "РАСПИСАНИЕ"
     // 18.1.1 получить все записи таблицы "РАСПИСАНИЕ" из БД
     public async Task<List<WorkDay>> GetAllScheduleAsync() =>
-        await _db.Schedule.AsNoTracking()
+        await _db.Schedule
         .Where(workDay => workDay.Deleted == null)
         .ToListAsync();
 
     // 18.1.2. получить все(включая удалённые) записи таблицы "РАСПИСАНИЕ" из БД
     public async Task<List<WorkDay>> GetAllScheduleWithDeletedAsync() =>
-        await _db.Schedule.AsNoTracking().ToListAsync();
+        await _db.Schedule.ToListAsync();
 
     // 18.1.3. получить все удалённые записи таблицы "РАСПИСАНИЕ" из БД
     public async Task<List<WorkDay>> GetAllDeletedScheduleAsync() =>
-        await _db.Schedule.AsNoTracking()
+        await _db.Schedule
         .Where(workDay => workDay.Deleted != null)
         .ToListAsync();
+
+    // 18.2. получить все записи о рабочих днях
+    // заданного сотрудника за заданный период из БД
+    public async Task<List<WorkDay>> GetAllScheduleByEmployeeIdFromToAsync(
+        int employeeId, DateTime firstDay, DateTime lastDay) =>
+        await _db.Schedule
+        .Where(workDay => workDay.EmployeeId == employeeId &&
+               workDay.Deleted == null &&
+               workDay.Date >= firstDay &&
+               workDay.Date <= lastDay)
+        .ToListAsync();
+
+    // 18.3. добавить новую запись о рабочем дне сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayAsync(WorkDay newWorkDay) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Schedule.AddAsync(newWorkDay);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateWorkDayAsync
+
+    // 18.4. изменить данные о рабочем дне сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayAsync(WorkDay workDayEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.Schedule.Update(workDayEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateWorkDayAsync
 
 
 
     // 19. таблица "ПРОМЕЖУТКИ_ВРЕМЕНИ"
     // 19.1.1 получить все записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     public async Task<List<Slot>> GetAllSlotsAsync() =>
-        await _db.Slots.AsNoTracking()
+        await _db.Slots
         .Where(slot => slot.Deleted == null)
         .ToListAsync();
 
     // 19.1.2. получить все(включая удалённые) записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     public async Task<List<Slot>> GetAllSlotsWithDeletedAsync() =>
-        await _db.Slots.AsNoTracking().ToListAsync();
+        await _db.Slots.ToListAsync();
 
     // 19.1.3. получить все удалённые записи таблицы "ПРОМЕЖУТКИ_ВРЕМЕНИ" из БД
     public async Task<List<Slot>> GetAllDeletedSlotsAsync() =>
-        await _db.Slots.AsNoTracking()
+        await _db.Slots
         .Where(slot => slot.Deleted != null)
         .ToListAsync();
+
+    // 19.2. добавить новую запись о промежутке времени в БД
+    public async Task<(bool, string)> CreateSlotAsync(Slot newSlot) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Slots.AddAsync(newSlot);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateSlotAsync
 
 
 
@@ -876,6 +968,64 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(workDayFreeSlot => workDayFreeSlot.Deleted != null)
         .ToListAsync();
 
+    // 20.2. добавить новую запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot newWorkDayFreeSlot) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.WorkDaysFreeSlots.AddAsync(newWorkDayFreeSlot);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateWorkDayFreeSlotAsync
+
+    // 20.3. изменить запись о промежутке времени свободного
+    // для записи клиентов конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayFreeSlotAsync(
+        WorkDayFreeSlot workDayFreeSlotEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.WorkDaysFreeSlots.Update(workDayFreeSlotEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateWorkDayFreeSlotAsync
+
 
 
     // 21. таблица "РАСПИСАНИЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ_ДЛЯ_ПЕРЕРЫВОВ"
@@ -897,5 +1047,63 @@ public class DbRepository(CrmContext db) : IDbRepository
         await _db.WorkDaysBreakSlots.AsNoTracking()
         .Where(workDayBreakSlot => workDayBreakSlot.Deleted != null)
         .ToListAsync();
+
+    // 21.2. добавить новую запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> CreateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot newWorkDayBreakSlot) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.WorkDaysBreakSlots.AddAsync(newWorkDayBreakSlot);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateWorkDayBreakSlotAsync
+
+    // 21.3. изменить запись о промежутке времени
+    // для перерыва конкретного рабочего дня сотрудника в БД
+    public async Task<(bool, string)> UpdateWorkDayBreakSlotAsync(
+        WorkDayBreakSlot workDayBreakSlotEdt) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // изменение записи в БД
+            _db.WorkDaysBreakSlots.Update(workDayBreakSlotEdt);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // UpdateWorkDayBreakSlotAsync
 
 } // class DbRepository

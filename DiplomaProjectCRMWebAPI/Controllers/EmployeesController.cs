@@ -4,7 +4,6 @@ using Domain.Models.Dto;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.Design;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -33,75 +32,6 @@ public class EmployeesController(
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
-
-
-        // -- потом удалить -----
-
-        var source2 = await _dbService.GetAllEmployeesAsync();
-
-        var employee = await _dbService.GetEmployeeByIdAsync(1);
-
-        var services = employee.Services
-            .Where(service => service.Deleted == null)
-            .ToList();
-        
-        var employeesServices = employee.EmployeesServices
-            .Where(employeeService => employeeService.Deleted == null)
-            .ToList();
-
-        var services2 = employeesServices
-            .Select(employeesService => employeesService.Service)
-            .ToList();
-
-        var services3 = employeesServices
-            .Where(employeesService => employeesService.Service.Deleted == null)
-            .Select(employeesService => employeesService.Service)
-            .ToList();
-
-
-        // var services_4 = employee.EmployeesServices
-        var services_4 = (await _dbService.GetEmployeeByIdAsync(1))
-            .EmployeesServices
-            .Where(employeeService => employeeService.Deleted == null &&
-                                      employeeService.Service.Deleted == null)
-            .Select(employeeService => employeeService.Service)
-            .ToList();
-
-
-        var displayServicesCategories_4 = (await _dbService.GetEmployeeByIdAsync(1))
-            .EmployeesServices
-            .Where(employeeService => employeeService.Deleted == null &&
-                                      employeeService.Service.Deleted == null)
-            .Select(employeeService => employeeService.Service)                 // = services_4
-            .GroupBy(service => service.ServicesCategory,
-                (key, group) => new {
-                    ServicesCategory = key,
-                    Services = group.ToList()
-                })
-            .Where(group => group.ServicesCategory.Deleted == null)
-            .Select(group => new DisplayServicesCategory(
-                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
-                Service.ServicesToDto(group.Services)
-                ))
-            .ToList();
-
-
-        /*var displayServicesCategories = await _db.Services
-            .Where(service => service.CompanyId == companyId && service.Deleted == null)
-            .GroupBy(service => service.ServicesCategory,
-                (key, group) => new {
-                    ServicesCategory = key,
-                    Services = group.ToList()
-                })
-            .Where(group => group.ServicesCategory.Deleted == null)
-            .Select(group => new DisplayServicesCategory(
-                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
-                Service.ServicesToDto(group.Services)
-                ))
-            .ToListAsync();*/
-
-
-        // -- потом удалить -----
 
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesAsync())
@@ -186,6 +116,8 @@ public class EmployeesController(
 
         // имитация временной задержки
         // Task.Delay(1_500).Wait();
+
+        var temp = DateTime.Now;
 
 
         // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
