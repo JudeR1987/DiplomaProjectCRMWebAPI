@@ -476,6 +476,16 @@ public class DbService(IDbRepository dbRepository) : IDbService
         EmployeeService employeeServiceEdt) =>
         await _dbRepository.UpdateEmployeeServiceAsync(employeeServiceEdt);
 
+    // 14.5. получить всех сотрудников заданной компании, выполняющих заданную услугу
+    public async Task<List<Employee>> GetAllEmployeesByCompanyIdByServiceIdAsync(
+        int companyId, int serviceId) =>
+        (await GetAllEmployeesServicesAsync())
+        .Where(employeeService => employeeService.ServiceId == serviceId &&
+                                  employeeService.Employee.CompanyId == companyId &&
+                                  employeeService.Employee.Deleted == null)
+        .Select(employeeService => employeeService.Employee)
+        .ToList();
+
 
 
     // 15. таблица "КЛИЕНТЫ"
@@ -491,6 +501,25 @@ public class DbService(IDbRepository dbRepository) : IDbService
     public async Task<List<Client>> GetAllDeletedClientsAsync() =>
         await _dbRepository.GetAllDeletedClientsAsync();
 
+    // 15.2. получить все записи о клиентах заданной компании из БД
+    public async Task<List<Client>> GetAllClientsByCompanyIdAsync(int companyId) =>
+        await _dbRepository.GetAllClientsByCompanyIdAsync(companyId);
+
+    // 15.3. получить запись о клиенте из БД по параметрам
+    // (если запись не найдена - вернуть new Client() с Id=0)
+    public async Task<Client> GetClientByParamsAsync(
+        string clientName, string clientPhone, string clientEmail) =>
+        (await GetAllClientsAsync())
+        .FirstOrDefault(
+            client => client.Name  == clientName &&
+                      client.Phone == clientPhone &&
+                      client.Email == clientEmail)
+        ?? new Client() { Id = 0 };
+
+    // 15.4. добавить новую запись о клиенте в БД
+    public async Task<(bool, string)> CreateClientAsync(Client newClient) =>
+        await _dbRepository.CreateClientAsync(newClient);
+
 
 
     // 16. таблица "ЗАПИСИ_НА_СЕАНС"
@@ -505,6 +534,14 @@ public class DbService(IDbRepository dbRepository) : IDbService
     // 16.1.3. получить все удалённые записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
     public async Task<List<Record>> GetAllDeletedRecordsAsync() =>
         await _dbRepository.GetAllDeletedRecordsAsync();
+
+    // 16.2. получить все записи о записях на сеанс заданной компании из БД
+    public async Task<List<Record>> GetAllRecordsByCompanyIdAsync(int companyId) =>
+        await _dbRepository.GetAllRecordsByCompanyIdAsync(companyId);
+
+    // 16.3. добавить новую запись о записи на сеанс в БД
+    public async Task<(bool, string)> CreateRecordAsync(Record newRecord) =>
+        await _dbRepository.CreateRecordAsync(newRecord);
 
 
 
@@ -550,11 +587,22 @@ public class DbService(IDbRepository dbRepository) : IDbService
         .FirstOrDefault(workDay => workDay.Id == workDayId)
         ?? new WorkDay() { Id = 0 };
 
-    // 18.4. добавить новую запись о рабочем дне сотрудника в БД
+    // 18.4. получить запись о рабочем дне заданного сотрудника
+    // за заданный день из БД
+    // (если запись не найдена - вернуть new WorkDay() с Id=0)
+    public async Task<WorkDay> GetWorkDayByEmployeeIdByDateAsync(
+        int employeeId, DateTime date) =>
+        (await GetAllScheduleAsync())
+        .FirstOrDefault(workDay => workDay.EmployeeId == employeeId &&
+                                   workDay.Date == date &&
+                                   workDay.Deleted == null)
+        ?? new WorkDay() { Id = 0 };
+
+    // 18.5. добавить новую запись о рабочем дне сотрудника в БД
     public async Task<(bool, string)> CreateWorkDayAsync(WorkDay newWorkDay) =>
         await _dbRepository.CreateWorkDayAsync(newWorkDay);
 
-    // 18.5. изменить данные о рабочем дне сотрудника в БД
+    // 18.6. изменить данные о рабочем дне сотрудника в БД
     public async Task<(bool, string)> UpdateWorkDayAsync(WorkDay workDayEdt) =>
         await _dbRepository.UpdateWorkDayAsync(workDayEdt);
 
@@ -616,6 +664,13 @@ public class DbService(IDbRepository dbRepository) : IDbService
         WorkDayFreeSlot workDayFreeSlotEdt) =>
         await _dbRepository
         .UpdateWorkDayFreeSlotAsync(workDayFreeSlotEdt);
+
+    // 20.4. получить коллекцию промежутков времени свободного
+    // для записи клиентов конкретного рабочего дня заданного сотрудника в БД
+    public async Task<List<Slot>> GetAllFreeSlotsByEmployeeIdByDateAsync(
+        int employeeId, DateTime date) =>
+        await _dbRepository
+        .GetAllFreeSlotsByEmployeeIdByDateAsync(employeeId, date);
 
 
 

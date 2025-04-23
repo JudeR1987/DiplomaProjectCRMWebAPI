@@ -54,15 +54,15 @@ public class Record(int employeeId, int clientId, DateTime date,
 
 
     // статус посещения клиентом записи на сеанс
-    // -1 - клиент не пришел на визит,
+    // -1 - клиент не пришёл на визит,
     //  0 - ожидание клиента,
-    //  1 - клиент пришел, услуги оказаны,
+    //  1 - клиент пришёл, услуги оказаны,
     //  2 - клиент подтвердил запись
     public int Attendance { get; set; } = attendance;
 
 
     // принадлежность записи на сеанс к онлайн-записи
-    // (true - онлайн-запись, false - запись внес администратор)
+    // (true - онлайн-запись, false - запись внёс администратор)
     public bool IsOnline { get; set; } = isOnline;
 
 
@@ -90,6 +90,7 @@ public class Record(int employeeId, int clientId, DateTime date,
 
     // итоговая стоимость всех предоставленных услуг в данной записи на сеанс
     public double TotalPrice => RecordsServices
+        .Where(recordService => recordService.Deleted == null)
         .Sum(recordService => recordService.TotalPrice);
 
 
@@ -134,7 +135,9 @@ public class Record(int employeeId, int clientId, DateTime date,
     public static RecordDto RecordToDto(Record srcRecord) =>
         new(srcRecord.Id,
             Employee.EmployeeToDto(srcRecord.Employee),
+            // srcRecord.EmployeeId,
             Client.ClientToDto(srcRecord.Client),
+            // srcRecord.ClientId,
             srcRecord.Date,
             srcRecord.CreateDate,
             srcRecord.Length,
@@ -142,7 +145,7 @@ public class Record(int employeeId, int clientId, DateTime date,
             srcRecord.Attendance,
             srcRecord.IsOnline,
             srcRecord.IsPaid,
-            RecordService.RecordsServicesToDto(srcRecord.RecordsServices),
+            // RecordService.RecordsServicesToDto(srcRecord.RecordsServices),
             srcRecord.TotalPrice,
             srcRecord.Deleted
         );

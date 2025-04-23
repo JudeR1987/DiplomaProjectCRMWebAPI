@@ -101,7 +101,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // 5. по GET-запросу вернуть клиенту данные о коллекции записей об услугах
     // для заданной компании, сгруппированные по категориям услуг из БД в JSON-формате
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetAllByCompanyIdGroupByCategoriesAsync(
         [FromQuery] int id) {
 
@@ -143,7 +143,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // 6. по GET-запросу вернуть клиенту данные о записи об услуге
     // по её идентификатору из БД в JSON-формате
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromQuery] int id) {
 
         // имитация временной задержки

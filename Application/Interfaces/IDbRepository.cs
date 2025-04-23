@@ -241,6 +241,12 @@ public interface IDbRepository
 
     // 15.1.3. получить все удалённые записи таблицы "КЛИЕНТЫ" из БД
     Task<List<Client>> GetAllDeletedClientsAsync();
+    
+    // 15.2. получить все записи о клиентах заданной компании из БД
+    Task<List<Client>> GetAllClientsByCompanyIdAsync(int companyId);
+
+    // 15.3. добавить новую запись о клиенте в БД
+    Task<(bool, string)> CreateClientAsync(Client newClient);
 
 
 
@@ -253,6 +259,12 @@ public interface IDbRepository
 
     // 16.1.3. получить все удалённые записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
     Task<List<Record>> GetAllDeletedRecordsAsync();
+
+    // 16.2. получить все записи о записях на сеанс заданной компании из БД
+    Task<List<Record>> GetAllRecordsByCompanyIdAsync(int companyId);
+
+    // 16.3. добавить новую запись о записи на сеанс в БД
+    Task<(bool, string)> CreateRecordAsync(Record newRecord);
 
 
 
@@ -328,6 +340,11 @@ public interface IDbRepository
     // для записи клиентов конкретного рабочего дня сотрудника в БД
     Task<(bool, string)> UpdateWorkDayFreeSlotAsync(
         WorkDayFreeSlot workDayFreeSlotEdt);
+
+    // 20.4. получить коллекцию промежутков времени свободного
+    // для записи клиентов конкретного рабочего дня заданного сотрудника в БД
+    Task<List<Slot>> GetAllFreeSlotsByEmployeeIdByDateAsync(
+        int employeeId, DateTime date);
 
 
 

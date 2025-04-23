@@ -315,6 +315,10 @@ public interface IDbService
     // 14.4. изменить данные об услуге сотрудника в БД
     Task<(bool, string)> UpdateEmployeeServiceAsync(EmployeeService employeeServiceEdt);
 
+    // 14.5. получить всех сотрудников заданной компании, выполняющих заданную услугу
+    Task<List<Employee>> GetAllEmployeesByCompanyIdByServiceIdAsync(
+        int companyId, int serviceId);
+
 
 
     // 15. таблица "КЛИЕНТЫ"
@@ -327,6 +331,17 @@ public interface IDbService
     // 15.1.3. получить все удалённые записи таблицы "КЛИЕНТЫ" из БД
     Task<List<Client>> GetAllDeletedClientsAsync();
 
+    // 15.2. получить все записи о клиентах заданной компании из БД
+    Task<List<Client>> GetAllClientsByCompanyIdAsync(int companyId);
+
+    // 15.3. получить запись о клиенте из БД по параметрам
+    // (если запись не найдена - вернуть new Client() с Id=0)
+    Task<Client> GetClientByParamsAsync(
+        string clientName, string clientPhone, string clientEmail);
+
+    // 15.4. добавить новую запись о клиенте в БД
+    Task<(bool, string)> CreateClientAsync(Client newClient);
+
 
 
     // 16. таблица "ЗАПИСИ_НА_СЕАНС"
@@ -338,6 +353,12 @@ public interface IDbService
 
     // 16.1.3. получить все удалённые записи таблицы "ЗАПИСИ_НА_СЕАНС" из БД
     Task<List<Record>> GetAllDeletedRecordsAsync();
+
+    // 16.2. получить все записи о записях на сеанс заданной компании из БД
+    Task<List<Record>> GetAllRecordsByCompanyIdAsync(int companyId);
+
+    // 16.3. добавить новую запись о записи на сеанс в БД
+    Task<(bool, string)> CreateRecordAsync(Record newRecord);
 
 
 
@@ -372,10 +393,16 @@ public interface IDbService
     // (если запись не найдена - вернуть new WorkDay() с Id=0)
     Task<WorkDay> GetWorkDayByIdAsync(int workDayId);
 
-    // 18.4. добавить новую запись о рабочем дне сотрудника в БД
+    // 18.4. получить запись о рабочем дне заданного сотрудника
+    // за заданный день из БД
+    // (если запись не найдена - вернуть new WorkDay() с Id=0)
+    Task<WorkDay> GetWorkDayByEmployeeIdByDateAsync(
+        int employeeId, DateTime date);
+
+    // 18.5. добавить новую запись о рабочем дне сотрудника в БД
     Task<(bool, string)> CreateWorkDayAsync(WorkDay newWorkDay);
 
-    // 18.5. изменить данные о рабочем дне сотрудника в БД
+    // 18.6. изменить данные о рабочем дне сотрудника в БД
     Task<(bool, string)> UpdateWorkDayAsync(WorkDay workDayEdt);
 
 
@@ -421,6 +448,11 @@ public interface IDbService
     // для записи клиентов конкретного рабочего дня сотрудника в БД
     Task<(bool, string)> UpdateWorkDayFreeSlotAsync(
         WorkDayFreeSlot workDayFreeSlotEdt);
+
+    // 20.4. получить коллекцию промежутков времени свободного
+    // для записи клиентов конкретного рабочего дня заданного сотрудника в БД
+    Task<List<Slot>> GetAllFreeSlotsByEmployeeIdByDateAsync(
+        int employeeId, DateTime date);
 
 
 

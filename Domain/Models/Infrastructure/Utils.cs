@@ -92,4 +92,24 @@ public static class Utils
 
     } // StringToTime
 
+
+    // получить дату из строки формата "yyyy-mm-dd" и строки формата "HH:mm"
+    public static DateTime StringToDateTime(string dateString, string timeString) {
+
+        // если получена строка формата "2024-07-02T08:46:37.808Z", то требуется обрезка
+        // если получена строка формата "2024-07-02", то обрезка не требуется
+        if (string.IsNullOrWhiteSpace(dateString)) return new DateTime();
+        if (dateString.Length > 10) dateString = dateString.Substring(0, 10);
+
+        var year = int.Parse(dateString.Split("-")[0]);
+        var month = int.Parse(dateString.Split("-")[1]);
+        var day = int.Parse(dateString.Split("-")[2]);
+
+        var hours = int.Parse(timeString.Split(":")[0]);
+        var minutes = int.Parse(timeString.Split(":")[1]);
+
+        return new DateTime(year, month, day, hours, minutes, 0);
+
+    } // StringToDateTime
+
 } // Utils

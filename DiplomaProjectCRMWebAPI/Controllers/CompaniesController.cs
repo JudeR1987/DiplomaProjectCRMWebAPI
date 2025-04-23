@@ -37,14 +37,12 @@ public class CompaniesController(
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] int page) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
         // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
+        
         // все записи таблицы
         var source = await _dbService.GetAllCompaniesAsync();
 
@@ -151,7 +149,7 @@ public class CompaniesController(
     // 5. по GET-запросу вернуть клиенту данные о записи о компании
     // по её идентификатору из БД в JSON-формате
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromQuery] int id) {
 
         // имитация временной задержки

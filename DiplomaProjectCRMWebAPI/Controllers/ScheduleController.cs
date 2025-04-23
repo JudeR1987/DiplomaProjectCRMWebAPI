@@ -4,10 +4,6 @@ using Domain.Models.Entities;
 using Domain.Models.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.Design;
-using System.IO;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -680,6 +676,37 @@ public class ScheduleController(IDbService dbService) : ControllerBase
         return Ok();
 
     } // EditWorkDayAsync
+
+
+    // 7. по GET-запросу вернуть клиенту данные о коллекции свободных для записи
+    // промежутков времени заданного сотрудника в заданную дату из БД в JSON-формате
+    [HttpGet]
+    // [Authorize]
+    public async Task<IActionResult> GetAllFreeSlotsByEmployeeIdByDateAsync(
+        int id, string firstDateString, string secondDateString) {
+
+        // id -> employeeId
+
+        // дата заданного дня
+        var selectedDay = Utils.StringToDate(firstDateString);
+
+        // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
+        // id = 0; // для проверки
+        if (id <= 0)
+            return BadRequest(new { EmployeeId = 0 });
+
+
+        // все промежутки
+        var freeSlots = (await _dbService
+            .GetAllFreeSlotsByEmployeeIdByDateAsync(id, selectedDay))
+            .OrderBy(slot => slot.From)
+            .Select(Slot.SlotToDto)
+            .ToList();
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { freeSlots });
+
+    } // GetAllWorkDaysBreakSlotsByEmployeeIdFromToAsync
 
 
     // метод "нарезки" промежутка времени на равномерные часовые промежутки

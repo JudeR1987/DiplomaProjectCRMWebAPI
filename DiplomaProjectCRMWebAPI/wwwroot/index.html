@@ -85,25 +85,6 @@
             <div class="collapse navbar-collapse justify-content-end mt-1 mt-lg-0"
                  id="appNavbar">
 
-                <!-- форма на панели навигации -->
-                <form class="d-flex justify-content-end align-items-center">
-                    <label class="me-2">
-                        <input class="form-control max-w-180px" type="text"
-                               id="id-search" placeholder="Search">
-                    </label>
-                    <button type="button"
-                            class="btn px-1 w-100px bg-back-color text-main-color
-                                   border border-main-color back-color-hover
-                                   fw-bold d-flex justify-content-center align-items-center"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="bottom"
-                            title="Поиск по сайту...">
-                        <i class="fa fa-search me-1" aria-hidden="true"></i>
-                        Найти...
-                    </button>
-                </form>
-
             </div>
 
             <!-- кнопка для перехода в начало страницы -->
@@ -129,218 +110,28 @@
 
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --->
 
+        <h5 class="text-secondary font-family-CalibriLight fw-bold">
+            Тема:
+        </h5>
         <h4 class="text-primary font-family-CalibriLight font-size-16pt fw-bold">
-            Практическая часть
+            CRM-система для салонов красоты
         </h4>
+        <hr />
+
+        <h5 class="text-secondary font-family-CalibriLight fw-bold">
+            Название проекта:
+        </h5>
+        <h4 class="text-primary font-family-CalibriLight font-size-16pt fw-bold">
+            &laquo;Платформа Красоты&raquo;
+        </h4>
+        <hr />
+
         <p>
-            Разработайте серверное приложение, формирующее WebAPI на ASP.NET
-            Core или PHP.
+            <strong>CRM-система (<i>Customer Relationship Management</i>)</strong> —
+            это программа для автоматизации и контроля взаимодействия компании с
+            клиентами. Она хранит и структурирует информацию о заказах и покупателях,
+            помогает оптимизировать маркетинг, повысить продажи и качество обслуживания.
         </p>
-        <p>
-            Разработайте клиентское приложение с использованием Angular, React
-            или jQuery для отправки запросов на серверное приложение.
-            Стилизацию разметки выполняйте при помощи Bootstrap. Реализуйте
-            вывод задания, вывод всех записей таблиц базы данных. Все таблицы
-            должны быть проинициированы не менее чем 10 записями.
-        </p>
-        <p>
-            Запросы по заданию. Параметры запросов задавать формами.
-        </p>
-        <table class="table table-bordered font-family-Tahoma font-size-14pt text-start">
-            <tbody class="border border-black">
-                <tr>
-                    <td class="px-1 py-0">
-                        <i>База данных&nbsp;<strong>&laquo;Туристическое
-                        агентство&raquo;</strong></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        <p class="m-0">
-                            <strong>Описание предметной области</strong>
-                        </p>
-                        <p class="m-0">
-                            Фирма предоставляет клиентам услуги по организации
-                            зарубежных поездок. При этом цели поездок могут быть
-                            различными (отдых, туризм, лечение и
-                            <span class="underline-double">т.д.</span>). При
-                            оформлении услуги устанавливается фиксированная стоимость
-                            1 дня пребывания в той или иной стране.
-                        </p>
-                        <p class="m-0">
-                            Стоимость поездки может быть вычислена как&nbsp;
-                            <strong>Стоимость 1 дня пребывания <sup>*</sup> Количество
-                            дней пребывания + Стоимость транспортных услуг + Стоимость
-                            оформления визы</strong>. Кроме того, клиент платит налог
-                            на добавленную стоимость (НДС) в размере 3% от стоимости
-                            поездки.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        <i><strong>База данных должна включать как минимум
-                        таблицы КЛИЕНТЫ, МАРШРУТЫ, ПОЕЗДКИ, содержащие следующую
-                        информацию:</strong></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Фамилия клиента
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Имя клиента
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Отчество клиента
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Серия - номер паспорта клиента
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Страна назначения
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Цель поездки
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Стоимость 1 дня пребывания в стране назначения
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Стоимость 1 дня пребывания в зависимости от цели поездки,
-                        не зависит от страны назначения
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Стоимость транспортных услуг (определяется выбором страны)
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Стоимость оформления визы (определяется выбором страны)
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Дата начала пребывания в стране назначения
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-1 py-0">
-                        Количество дней пребывания в стране назначения
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered font-family-Tahoma font-size-14pt">
-            <thead class="text-center align-middle">
-                <tr>
-                    <th class="p-0 border-2 border-black">
-                        Номер запроса
-                    </th>
-                    <th class="p-0 border-2 border-black">
-                        Тип запроса
-                    </th>
-                    <th class="p-0 border-2 border-black">
-                        Какую задачу решает запрос
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="text-start align-middle">
-                <tr>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        1
-                    </td>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        Запрос на выборку
-                    </td>
-                    <td class="p-0 ps-2 border-2 border-black">
-                        Выбирает информацию о маршрутах с заданной целью поездки
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        2
-                    </td>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        Запрос на выборку
-                    </td>
-                    <td class="p-0 ps-2 border-2 border-black">
-                        Выбирает информацию о маршрутах с заданной целью поездки
-                        и стоимостью транспортных услуг менее заданного значения
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        3
-                    </td>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        Запрос на выборку
-                    </td>
-                    <td class="p-0 ps-2 border-2 border-black">
-                        Выбирает информацию о клиентах, совершивших поездки
-                        с заданным количеством дней пребывания в стране
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-0 pt-2 pb-3 border-2 border-black"></td>
-                    <td class="px-0 pt-2 pb-3 border-2 border-black"></td>
-                    <td class="px-0 pt-2 pb-3 border-2 border-black"></td>
-                </tr>
-                <tr>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        4
-                    </td>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        Итоговый запрос – агрегатные функции
-                    </td>
-                    <td class="p-0 ps-2 border-2 border-black">
-                        Определяет минимальную, среднюю и максимальную
-                        стоимость 1 дня пребывания
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        5
-                    </td>
-                    <td class="p-0 ps-3 border-2 border-black">
-                        Итоговый запрос – агрегатные функции
-                    </td>
-                    <td class="p-0 ps-2 border-2 border-black">
-                        Для проданных поездок вычисляет среднюю стоимость
-                        транспортных услуг
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p>
-            Также требуется реализовать:
-        </p>
-        <ul class="ms-4 ps-3">
-            <li>
-                добавление, редактирование данных о клиенте
-            </li>
-            <li>
-                добавление, редактирование, удаление данных о поездке
-                (используйте существующих клиентов и маршруты).
-            </li>
-        </ul>
-        <p>&nbsp;</p>
 
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --->
 

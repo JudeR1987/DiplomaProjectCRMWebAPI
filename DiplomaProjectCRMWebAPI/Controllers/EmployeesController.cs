@@ -726,6 +726,40 @@ public class EmployeesController(
     } // GetAllServicesByEmployeeIdAsync
 
 
+    // 13. по GET-запросу вернуть клиенту данные о коллекции записей о сотрудниках
+    // для заданной компании, выполняющих заданную услугу, из БД в JSON-формате
+    [HttpGet]
+    public async Task<IActionResult> GetAllByCompanyIdByServiceIdAsync(
+        [FromQuery] int firstId, [FromQuery] int secondId) {
+
+        // получим данные запроса
+        var companyId = firstId;
+        var serviceId = secondId;
+
+        // если данных об идентификаторе компании нет - вернуть некорректные данные
+        // companyId = 0; // для проверки
+        if (companyId <= 0)
+            return BadRequest(new { CompanyId = 0 });
+
+        // если данных об идентификаторе услуги нет - вернуть некорректные данные
+        // serviceId = 0; // для проверки
+        if (serviceId <= 0)
+            return BadRequest(new { ServiceId = 0 });
+
+
+        // все записи таблицы с указанным идентификатором компании
+        var employees = (await _dbService
+            .GetAllEmployeesByCompanyIdByServiceIdAsync(companyId, serviceId))
+            .Select(Employee.EmployeeToDto)
+            .ToList();
+
+
+        // вернуть данные в JSON-формате
+        return new JsonResult(new { employees });
+
+    } // GetAllByCompanyIdByServiceIdAsync
+
+
     // 12. по GET-запросу вернуть клиенту данные о коллекции записей об услугах
     // для заданного сотрудника, сгруппированные по категориям услуг из БД в JSON-формате
     /*[HttpGet]

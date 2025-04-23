@@ -1,5 +1,4 @@
 ﻿using Domain.Models.Entities;
-using Domain.Models.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -84,10 +83,10 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         #region Инициализация таблицы "КОМПАНИИ"
 
         var companies = new List<Company>{
-            new() { Id = 1, UserOwnerId = 1, Name = "Красотка", AddressId = 12, Phone = "+79998887766", Description = "Описание 1", Logo = "http://localhost:5297/download/getimage/companies/logos/company001_123.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company001_123.jpg", Schedule = "Пн-Вс: 9:00-21:00",  Site = "https://www.donstep.com", Deleted = null },
-            new() { Id = 2, UserOwnerId = 1, Name = "Ноготок",  AddressId = 16, Phone = "+79998887755", Description = "Описание 2", Logo = "http://localhost:5297/download/getimage/companies/logos/company001_124.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company001_124.jpg", Schedule = "Пн-Вс: 8:00-20:00",  Site = "https://www.donstep.com", Deleted = null },
-            new() { Id = 3, UserOwnerId = 2, Name = "БЭБИ 21",  AddressId = 22, Phone = "+79998887744", Description = "Описание 3", Logo = "http://localhost:5297/download/getimage/companies/logos/company001_125.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company001_125.jpg", Schedule = "Пн-Вс: 10:00-22:00", Site = "https://www.donstep.com", Deleted = null },
-            new() { Id = 4, UserOwnerId = 2, Name = "Крис",     AddressId = 27, Phone = "+79998887733", Description = "Описание 4", Logo = "http://localhost:5297/download/getimage/companies/logos/company001_126.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company001_126.jpg", Schedule = "Пн-Вс: 8:00-21:00",  Site = "https://www.donstep.com", Deleted = Utils.GetRandomDateTime() }
+            new() { Id = 1, UserOwnerId = 1, Name = "Красотка", AddressId = 12, Phone = "+79998887766", Description = "Описание 1", Logo = "http://localhost:5297/download/getimage/companies/logos/logo001_121.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company001_121.jpg", Schedule = "Пн-Вс: 9:00-21:00",  Site = "https://www.donstep.com", Deleted = null },
+            new() { Id = 2, UserOwnerId = 1, Name = "Ноготок",  AddressId = 16, Phone = "+79998887755", Description = "Описание 2", Logo = "http://localhost:5297/download/getimage/companies/logos/logo002_122.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company002_122.jpg", Schedule = "Пн-Вс: 8:00-20:00",  Site = "https://www.donstep.com", Deleted = null },
+            new() { Id = 3, UserOwnerId = 2, Name = "БЭБИ 21",  AddressId = 22, Phone = "+79998887744", Description = "Описание 3", Logo = "http://localhost:5297/download/getimage/companies/logos/logo003_123.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company003_123.jpg", Schedule = "Пн-Вс: 10:00-22:00", Site = "https://www.donstep.com", Deleted = null },
+            new() { Id = 4, UserOwnerId = 2, Name = "Крис",     AddressId = 27, Phone = "+79998887733", Description = "Описание 4", Logo = "http://localhost:5297/download/getimage/companies/logos/logo004_124.png", TitleImage = "http://localhost:5297/download/getimage/companies/images/company004_124.jpg", Schedule = "Пн-Вс: 8:00-21:00",  Site = "https://www.donstep.com", Deleted = null }
         };
 
         // для тестов

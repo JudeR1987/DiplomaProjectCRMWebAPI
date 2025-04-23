@@ -55,8 +55,6 @@ public class Client(string? surname, string name, string? patronymic,
     public string? Card { get; set; } = card;
 
 
-    // birth_date string Дата рождения клиента в формате yyyy-mm-dd
-
     // дата рождения клиента (в формате yyyy-mm-dd)
     public DateTime BirthDate { get; set; } = birthDate;
 

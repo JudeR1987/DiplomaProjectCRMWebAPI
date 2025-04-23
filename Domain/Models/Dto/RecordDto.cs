@@ -11,8 +11,14 @@ public record RecordDto(
     // данные о сотруднике
     EmployeeDto Employee,
 
+    // идентификатор записи о сотруднике
+    // int EmployeeId,
+
     // данные о клиенте
     ClientDto Client,
+
+    // идентификатор записи о клиенте
+    // int ClientId,
 
     // дата и время начала записи на сеанс
     DateTime Date,
@@ -42,7 +48,7 @@ public record RecordDto(
     bool IsPaid,
 
     // услуги, предоставляемые клиенту
-    List<RecordServiceDto> RecordsServices,
+    // List<RecordServiceDto> RecordsServices,
 
     // итоговая стоимость всех предоставленных услуг в данной записи на сеанс
     double TotalPrice,

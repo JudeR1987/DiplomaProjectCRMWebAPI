@@ -2,6 +2,7 @@
 using Domain.Context;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Application.Repositories;
 
@@ -778,6 +779,53 @@ public class DbRepository(CrmContext db) : IDbRepository
         .Where(client => client.Deleted != null)
         .ToListAsync();
 
+    // 15.2. получить все записи о клиентах заданной компании из БД
+    public async Task<List<Client>> GetAllClientsByCompanyIdAsync(int companyId) {
+
+        var employees = await _db.Employees
+        .Where(employee => employee.CompanyId == companyId)
+        .ToListAsync();
+
+        List<Client> clients = [];
+
+        employees.ForEach(employee => clients.AddRange(employee.Clients));
+
+        clients = clients
+            .Distinct()
+            .OrderBy(client => client.Surname)
+            .ToList();
+
+        return clients;
+
+    } // GetAllClientsByCompanyIdAsync
+
+    // 15.3. добавить новую запись о клиенте в БД
+    public async Task<(bool, string)> CreateClientAsync(Client newClient) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Clients.AddAsync(newClient);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateClientAsync
+
 
 
     // 16. таблица "ЗАПИСИ_НА_СЕАНС"
@@ -796,6 +844,51 @@ public class DbRepository(CrmContext db) : IDbRepository
         await _db.Records.AsNoTracking()
         .Where(record => record.Deleted != null)
         .ToListAsync();
+
+    // 16.2. получить все записи о записях на сеанс заданной компании из БД
+    public async Task<List<Record>> GetAllRecordsByCompanyIdAsync(int companyId) {
+
+        var employees = await _db.Employees
+        .Where(employee => employee.CompanyId == companyId)
+        .ToListAsync();
+
+        List<Record> records = [];
+
+        employees.ForEach(employee => records.AddRange(employee.Records));
+
+        records = [.. records
+            .OrderBy(record => record.Date)];
+
+        return records;
+
+    } // GetAllRecordsByCompanyIdAsync
+
+    // 16.3. добавить новую запись о записи на сеанс в БД
+    public async Task<(bool, string)> CreateRecordAsync(Record newRecord) {
+
+        // вернём из метода результаты операции
+        bool isOk;
+        string message;
+
+        try {
+
+            // добавление записи в БД
+            await _db.Records.AddAsync(newRecord);
+            await _db.SaveChangesAsync();
+
+            isOk = true;
+            message = "Ok";
+
+        } catch (Exception ex) {
+
+            isOk = false;
+            message = ex.Message;
+
+        } // try-catch
+
+        return (isOk, message);
+
+    } // CreateRecordAsync
 
 
 
@@ -1025,6 +1118,20 @@ public class DbRepository(CrmContext db) : IDbRepository
         return (isOk, message);
 
     } // UpdateWorkDayFreeSlotAsync
+
+    // 20.4. получить коллекцию промежутков времени свободного
+    // для записи клиентов конкретного рабочего дня заданного сотрудника в БД
+    public async Task<List<Slot>> GetAllFreeSlotsByEmployeeIdByDateAsync(
+        int employeeId, DateTime date) =>
+        (await _db.Schedule
+        .FirstOrDefaultAsync(workDay => workDay.EmployeeId == employeeId &&
+                             workDay.Deleted == null &&
+                             workDay.Date == date)
+        ?? new WorkDay())
+        .WorkDaysFreeSlots
+        .Where(workDayFreeSlot => workDayFreeSlot.Deleted == null)
+        .Select(workDayFreeSlot => workDayFreeSlot.Slot)
+        .ToList();
 
 
 
