@@ -10,8 +10,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class WorkDaysBreakSlotsController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
 
@@ -20,9 +19,6 @@ public class WorkDaysBreakSlotsController(IDbService dbService) : ControllerBase
     // времени для перерыва из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllWorkDaysBreakSlotsAsync())
@@ -41,9 +37,6 @@ public class WorkDaysBreakSlotsController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllWorkDaysBreakSlotsWithDeletedAsync())
             .Select(WorkDayBreakSlot.WorkDayBreakSlotToDto)
@@ -60,9 +53,6 @@ public class WorkDaysBreakSlotsController(IDbService dbService) : ControllerBase
     // времени для перерыва из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedWorkDaysBreakSlotsAsync())

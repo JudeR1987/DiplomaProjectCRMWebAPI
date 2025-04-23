@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Services;
-using Domain.Models.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,22 +10,11 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 public class UploadController(
     IHostEnvironment environment, ILoadService loadService) : Controller
 {
-
     // ссылка на серверное окружение - для получения папки хоста
-    private IHostEnvironment _environment = environment;
+    private readonly IHostEnvironment _environment = environment;
 
-    // получение ссылки на сервис для работы с загрузкой файлов
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис для работы с загрузкой/выгрузкой файлов
     private readonly ILoadService _loadService = loadService;
-
-
-    // корневой каталог
-    //public const string APP_DATA = "App_Data";
-
-    // имена папок для временного хранения файла с фотографией пользователя
-    //public const string USERS      = "users";
-    //public const string PHOTOS     = "photos";
-    //public const string TEMP_PHOTO = "tempPhoto";
 
 
     // 1. по POST-запросу принять от клиента файл с фотографией пользователя
@@ -37,17 +25,11 @@ public class UploadController(
     public async Task<IActionResult> TempUserPhoto(
         [FromForm] IFormFile tempImage, [FromQuery] int userId) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-
         // если файл не был выбран - вернуть некорректные данные
-        //tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Avatar = "" });
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
@@ -63,8 +45,6 @@ public class UploadController(
 
 
         // удалить ранее сохранённые файлы
-        /*var files = Directory.GetFiles(path).ToList();
-        files.ForEach(System.IO.File.Delete);*/
         _loadService.DeleteFilesByPath(path);
 
 
@@ -76,12 +56,6 @@ public class UploadController(
 
 
         // формирование адреса размещения временной фотографии пользователя
-        /*var downloadController = LoadService.DOWNLOAD;
-        var downloadMethod = LoadService.GET_TEMP_IMAGE;
-        var tempAvatar =
-            $"{AuthOptions.ISSUER}/{downloadController}/{downloadMethod}" +
-            $"/{LoadService.USERS}/{LoadService.PHOTOS}" +
-            $"/{LoadService.TEMP_PHOTO}_{userId}/{uniqueFileName}";*/
         var tempAvatar = _loadService
             .GetPathToTempUserAvatar(userId, uniqueFileName);
 
@@ -101,46 +75,24 @@ public class UploadController(
         [FromForm] IFormFile tempImage, [FromQuery] int userId, [FromQuery] int id,
         [FromQuery] string tempDir, [FromQuery] string imageType) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // id -> companyId
 
-
         // если файл не был выбран - вернуть некорректные данные
-        //tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Image = "" });
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данные о компании неверные - вернуть некорректные данные
         // (companyId=0 - режим создания компании, иначе - режим изменения данных)
-        // id = -1; // для проверки
         if (id < 0)
             return BadRequest(new { CompanyId = 0 });
 
 
-        // при разных типах изображений применяем разные имена временных папок
-        // (для логотипа и основного изображения компании)
-        /*var tempDirName = imageType == "logo"
-            ? LoadService.TEMP_LOGO
-            : LoadService.TEMP_IMAGE;*/
-
-
         // при режиме создания использовать значение временной папки,
         // если значение временной папки отсутствует, то его нужно создать
-        /*if (companyId == 0 && string.IsNullOrEmpty(tempDir)) {
-
-            tempDir = $"{tempDirName}_{userId}_{companyId}_{Utils.GetRandomString()}";
-
-        } // if
-
-
-        tempDir = companyId == 0 ? tempDir : $"{tempDirName}_{userId}_{companyId}";*/
         tempDir = id == 0 && !string.IsNullOrEmpty(tempDir)
             ? tempDir
             : _loadService.GetTempCompanyImageDirectoryByParams(imageType, userId, id);
@@ -157,8 +109,6 @@ public class UploadController(
 
 
         // удалить ранее сохранённые файлы
-        /*var files = Directory.GetFiles(path).ToList();
-        files.ForEach(System.IO.File.Delete);*/
         _loadService.DeleteFilesByPath(path);
 
 
@@ -170,13 +120,6 @@ public class UploadController(
 
 
         // формирование адреса размещения временного изображения компании
-        /*var downloadController = LoadService.DOWNLOAD;
-        var downloadMethod = LoadService.GET_TEMP_IMAGE;
-        var tempImagePath =
-            $"{AuthOptions.ISSUER}/{downloadController}/{downloadMethod}" +
-            $"/{LoadService.COMPANIES}" +
-            $"/{(imageType == "logo" ? LoadService.LOGOS : LoadService.IMAGES)}" +
-            $"/{tempDir}/{uniqueFileName}";*/
         var tempImagePath = _loadService.GetPathToTempCompanyImage(
             imageType, tempDir, uniqueFileName);
 
@@ -198,18 +141,15 @@ public class UploadController(
         // id -> employeeId
 
         // если файл не был выбран - вернуть некорректные данные
-        // tempImage = null!; // для проверки
         if (tempImage == null)
             return BadRequest(new { Avatar = "" });
 
         // если данных о пользователе нет - вернуть некорректные данные
-        // userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данные о сотруднике неверные - вернуть некорректные данные
         // (id=0 - режим добавления данных, иначе - режим изменения данных)
-        // id = -1; // для проверки
         if (id < 0)
             return BadRequest(new { EmployeeId = 0 });
 

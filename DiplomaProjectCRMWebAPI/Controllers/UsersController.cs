@@ -9,8 +9,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class UsersController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
 
@@ -18,9 +17,6 @@ public class UsersController(IDbService dbService) : ControllerBase
     // о коллекции записей о пользователях из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllUsersAsync())
@@ -38,9 +34,6 @@ public class UsersController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllUsersWithDeletedAsync())
             .Select(Domain.Models.Entities.User.UserToDto)
@@ -56,9 +49,6 @@ public class UsersController(IDbService dbService) : ControllerBase
     // удалённых записей о пользователях из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedUsersAsync())
@@ -78,7 +68,6 @@ public class UsersController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> GetByPhoneAsync([FromQuery] string phone) {
 
         // если данных о номере телефона пользователя нет - вернуть некорректные данные
-        // phone = ""; // для проверки
         if (string.IsNullOrEmpty(phone))
             return BadRequest(new { Phone = phone ?? "" });
 
@@ -103,7 +92,6 @@ public class UsersController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> GetByEmailAsync([FromQuery] string email) {
 
         // если данных о email пользователя нет - вернуть некорректные данные
-        // email = ""; // для проверки
         if (string.IsNullOrEmpty(email))
             return BadRequest(new { Email = email ?? "" });
 

@@ -35,7 +35,7 @@ public class Street(string name, DateTime? deleted)
 
     // конструктор по умолчанию
     public Street() : this("", null) {
-    } // Street()
+    } // Street
 
 
     // статический метод, возвращающий новый объект-копию

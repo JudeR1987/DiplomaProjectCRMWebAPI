@@ -29,7 +29,7 @@ public class Country(string name, DateTime? deleted)
 
     // конструктор по умолчанию
     public Country() : this("", null) {
-    } // Country()
+    } // Country
 
 
     // статический метод, возвращающий новый объект-копию

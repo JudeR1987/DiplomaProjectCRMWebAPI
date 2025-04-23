@@ -59,7 +59,7 @@ public class Slot(TimeOnly from, int length, DateTime? deleted)
 
     // конструктор по умолчанию
     public Slot() : this(new TimeOnly(0, 0), 0, null) {
-    } // Slot()
+    } // Slot
 
 
     // статический метод, возвращающий новый объект-копию
@@ -89,13 +89,12 @@ public class Slot(TimeOnly from, int length, DateTime? deleted)
         new(srcSlot.Id,
             srcSlot.From.ToString(),
             srcSlot.Length,
-            /*srcSlot.To.ToString(),*/
             srcSlot.Deleted
         );
 
 
     // статический метод, возвращающий список объектов-DTO
     public static List<SlotDto> SlotsToDto(List<Slot> srcSlots) =>
-        srcSlots.Select(SlotToDto).ToList();
+        [.. srcSlots.Select(SlotToDto)];
 
 } // class Slot

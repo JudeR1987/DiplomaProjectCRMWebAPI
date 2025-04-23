@@ -3,7 +3,6 @@ using Domain.Models.Dto;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.Design;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -12,8 +11,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class EmployeesServicesController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
 
@@ -21,9 +19,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
     // о коллекции записей о связях сотрудников и услуг из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesServicesAsync())
@@ -41,9 +36,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesServicesWithDeletedAsync())
             .Select(EmployeeService.EmployeeServiceToDto)
@@ -59,9 +51,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
     // удалённых записей о связях сотрудников и услуг из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedEmployeesServicesAsync())
@@ -83,7 +72,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
 
         // если данных об услуге сотрудника нет или Id некорректный -
         // вернуть некорректные данные
-        // if (true) // для проверки
         if (employeeService == null || employeeService.Id != 0)
             return BadRequest(new { EmployeeServiceId = 0 });
 
@@ -92,7 +80,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
         var employeeId = employeeService.EmployeeId;
 
         // если данных о сотруднике нет - вернуть некорректные данные
-        // employeeId = 0; // для проверки
         if (employeeId <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -101,7 +88,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
         var serviceId = employeeService.ServiceId;
 
         // если данных об услуге нет - вернуть некорректные данные
-        // serviceId = 0; // для проверки
         if (serviceId <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -120,7 +106,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
             await _dbService.CreateEmployeeServiceAsync(newEmployeeService);
 
         // если при добавлении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { CreateMessage = message });
 
@@ -138,21 +123,16 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> DeleteEmployeeServiceByEmployeeIdServiceIdAsync(
         [FromQuery] int firstId, [FromQuery] int secondId) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // получим данные запроса
         var employeeId = firstId;
         var serviceId = secondId;
 
 
         // если данных о сотруднике нет - вернуть некорректные данные
-        // employeeId = 0; // для проверки
         if (employeeId <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
         // если данных об услуге нет - вернуть некорректные данные
-        // serviceId = 0; // для проверки
         if (serviceId <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -163,7 +143,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
 
         // если запись не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // employeeService.Id = 0; // для проверки
         if (employeeService.Id == 0)
             return Unauthorized(new { EmployeeServiceId = 0 });
 
@@ -177,7 +156,6 @@ public class EmployeesServicesController(IDbService dbService) : ControllerBase
             await _dbService.UpdateEmployeeServiceAsync(employeeService);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 

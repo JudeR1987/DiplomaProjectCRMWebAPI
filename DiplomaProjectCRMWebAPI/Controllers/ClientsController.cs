@@ -11,8 +11,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class ClientsController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
     // количество элементов на странице
@@ -26,7 +25,6 @@ public class ClientsController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> GetAllAsync([FromQuery] int page) {
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
@@ -58,9 +56,6 @@ public class ClientsController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllClientsWithDeletedAsync())
             .Select(Client.ClientToDto)
@@ -76,9 +71,6 @@ public class ClientsController(IDbService dbService) : ControllerBase
     // удалённых записей о клиентах из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedClientsAsync())
@@ -99,12 +91,10 @@ public class ClientsController(IDbService dbService) : ControllerBase
         [FromQuery] int id, [FromQuery] int page) {
 
         // если данных о компании нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 

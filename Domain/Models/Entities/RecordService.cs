@@ -59,7 +59,7 @@ public class RecordService(int recordId, int serviceId, int amount,
 
     // конструктор по умолчанию
     public RecordService() : this(0, 0, 0, 0, 0, null) {
-    } // RecordService()
+    } // RecordService
 
 
     // статический метод, возвращающий новый объект-копию
@@ -92,6 +92,6 @@ public class RecordService(int recordId, int serviceId, int amount,
     // статический метод, возвращающий список объектов-DTO
     public static List<RecordServiceDto> RecordsServicesToDto(
         List<RecordService> srcRecordsServices) =>
-        srcRecordsServices.Select(RecordServiceToDto).ToList();
+        [.. srcRecordsServices.Select(RecordServiceToDto)];
 
 } // class RecordService

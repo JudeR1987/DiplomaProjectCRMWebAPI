@@ -9,8 +9,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class CountriesController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
 
@@ -18,9 +17,6 @@ public class CountriesController(IDbService dbService) : ControllerBase
     // о коллекции записей о странах из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllCountriesAsync())
@@ -38,9 +34,6 @@ public class CountriesController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllCountriesWithDeletedAsync())
             .Select(Country.CountryToDto)
@@ -56,9 +49,6 @@ public class CountriesController(IDbService dbService) : ControllerBase
     // удалённых записей о странах из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedCountriesAsync())

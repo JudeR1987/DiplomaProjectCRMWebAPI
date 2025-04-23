@@ -5,27 +5,10 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 
 // контроллер для передачи ресурсов на клиента
 [Route("{controller}/{action}")]
-public class DownloadController(
-    IHostEnvironment environment/*, ILoadService loadService*/) : Controller
+public class DownloadController(IHostEnvironment environment) : Controller
 {
-
     // ссылка на серверное окружение - для получения папки хоста
-    private IHostEnvironment _environment = environment;
-
-    // получение ссылки на сервис для работы с выгрузкой файлов
-    // при помощи внедрения зависимости - через конструктор
-    //private readonly ILoadService _loadService = loadService;
-
-
-    // корневой каталог
-    //private const string APP_DATA = "App_Data";
-
-    // имя файла с изображением по умолчанию
-    //private const string DEFAULT_PHOTO = "photo.ico";
-
-    // тип контента
-    // text/plain для текста или универсальный тип application/octet-stream
-    //private const string OCTET_STREAM = "application/octet-stream";
+    private readonly IHostEnvironment _environment = environment;
 
 
     // 1. по GET-запросу вернуть клиенту файл с изображением
@@ -64,6 +47,7 @@ public class DownloadController(
 
         // вернуть клиенту файл с фотографией пользователя, как массив байтов
         return File(bytes, type, fileName);
+
     } // GetImage
 
 

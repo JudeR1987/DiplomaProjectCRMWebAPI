@@ -17,7 +17,7 @@ public class CompaniesController(
     ILoadService loadService) : ControllerBase
 {
     // ссылка на серверное окружение - для получения папки хоста
-    private IHostEnvironment _environment = environment;
+    private readonly IHostEnvironment _environment = environment;
 
     // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
@@ -38,7 +38,6 @@ public class CompaniesController(
     public async Task<IActionResult> GetAllAsync([FromQuery] int page) {
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
@@ -55,7 +54,6 @@ public class CompaniesController(
 
         // данные для пагинации
         var pageViewModel = new PageViewModel(page, source.Count, _pageSize);
-        //var pageViewModel = new PageViewModel(3, 43, _pageSize);
 
         // данные для вывода части коллекции
         var viewModel = new GetAllCompaniesViewModel(items, pageViewModel);
@@ -73,16 +71,11 @@ public class CompaniesController(
     public async Task<IActionResult> GetAllByUserIdAsync(
         [FromQuery] int id, [FromQuery] int page) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о пользователе нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
@@ -113,9 +106,6 @@ public class CompaniesController(
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllCompaniesWithDeletedAsync())
             .Select(Company.CompanyToDto)
@@ -131,9 +121,6 @@ public class CompaniesController(
     // удалённых записей о компаниях из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedCompaniesAsync())
@@ -152,12 +139,7 @@ public class CompaniesController(
     // [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-
         // если данных об идентификаторе компании нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -168,7 +150,6 @@ public class CompaniesController(
 
         // если компания не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // company.Id = 0; // для проверки
         if (company.Id == 0)
             return Unauthorized(new { CompanyId = id });
 
@@ -187,10 +168,6 @@ public class CompaniesController(
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetCompanyFormParamsAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
 
         // все записи таблицы "СТРАНЫ" из БД
         var allCountries = (await _dbService.GetAllCountriesAsync())
@@ -223,13 +200,7 @@ public class CompaniesController(
     [Authorize]
     public async Task<IActionResult> CreateCompanyAsync([FromBody] CompanyDto company) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        //var temp = Request;
-
-
         // если данных о компании нет - вернуть некорректные данные
-        //if (true) // для проверки
         if (company == null || company.Id < 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -249,26 +220,17 @@ public class CompaniesController(
         // преобразования данных о квартире
         int? flat = company.Address.Flat == 0 ? null : company.Address.Flat;
 
-        // --- проверка, потом удалить
-        var allCountries = await _dbService.GetAllCountriesAsync();
-        // ---
-
         // 3.1 получить данные о стране расположения компании
         var country = await _dbService
             .GetCountryByIdAsync(company.Address.City.Country.Id);
 
         // если запись о стране не найдена - вернуть некорректные данные
-        // country.Id = 0; // для проверки
         if (country.Id <= 0)
             return BadRequest(new { CountryId = 0 });
 
 
         // 3.2 получить данные о городе расположения компании
         var cityId = company.Address.City.Id;
-
-        // --- проверка, потом удалить
-        var allCities = await _dbService.GetAllCitiesAsync();
-        // ---
 
         // если cityId=0 - добавление записи в БД о новом городе
         var city = new City();
@@ -282,37 +244,24 @@ public class CompaniesController(
                 await _dbService.CreateCityAsync(city);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateCity, string messageCreateCity) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateCity)
                 return BadRequest(new { CreateMessage = messageCreateCity });
-
-        } else {
+        }
+        else {
             // иначе - получить запись по Id из БД
             city = await _dbService.GetCityByIdAsync(cityId);
 
             // если запись о городе не найдена или в городе данные о стране
             // не соответствуют данным найденной записи о стране - вернуть
             // некорректные данные
-            //city.Id = 0; // для проверки
             if (city.Id == 0 || city.CountryId != country.Id)
                 return BadRequest(new { CityId = 0 });
 
         } // if
 
-        // --- проверка, потом удалить
-        var allCountries2 = await _dbService.GetAllCountriesAsync();
-        var allCities2 = await _dbService.GetAllCitiesAsync();
-        var x = 999; // для точки останова
-        // ---
-
 
         // 3.3 получить данные об улице расположения компании
         var streetId = company.Address.Street.Id;
-
-        // --- проверка, потом удалить
-        var allStreets = await _dbService.GetAllStreetsAsync();
-        // ---
 
         // если streetId=0 - добавление записи в БД о новой улице
         var street = new Street();
@@ -326,33 +275,21 @@ public class CompaniesController(
                 await _dbService.CreateStreetAsync(street);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateStreet, string messageCreateStreet) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateStreet)
                 return BadRequest(new { CreateMessage = messageCreateStreet });
-
-        } else {
+        }
+        else {
             // иначе - получить запись по Id из БД
             street = await _dbService.GetStreetByIdAsync(streetId);
 
             // если запись об улице не найдена - вернуть некорректные данные
-            // street.Id = 0; // для проверки
             if (street.Id == 0)
                 return BadRequest(new { StreetId = 0 });
 
         } // if
 
-        // --- проверка, потом удалить
-        var allStreets2 = await _dbService.GetAllStreetsAsync();
-        var x2 = 999; // для точки останова
-        // ---
-
 
         // 3.4 получить данные об адресе расположения компании
-
-        // --- проверка, потом удалить
-        var allAddresses = await _dbService.GetAllAddressesAsync();
-        // ---
 
         // получить запись об адресе по всем полученным параметрам
         var address = await _dbService.GetAddressByParamsAsync(
@@ -372,17 +309,10 @@ public class CompaniesController(
                 await _dbService.CreateAddressAsync(address);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateAddress, string messageCreateAddress) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateAddress)
                 return BadRequest(new { CreateMessage = messageCreateAddress });
 
         } // if
-
-
-        // --- проверка, потом удалить
-        var allAddresses2 = await _dbService.GetAllAddressesAsync();
-        // ---
 
 
         // 4. телефон компании
@@ -397,8 +327,6 @@ public class CompaniesController(
         var companyLogo = company.Logo;
 
         // получить имена файла и папки его расположения
-        // http://localhost:5297/download/getimage/companies/logos/logo.ico
-        // http://localhost:5297/download/getTempImage/companies/logos/tempLogo_1_0_kokokok/logo_test_1_69...png
         var items = companyLogo.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
         var fileName = items[items.Length - 1];
@@ -423,8 +351,6 @@ public class CompaniesController(
         var companyTitleImage = company.TitleImage;
 
         // получить имена файла и папки его расположения
-        // http://localhost:5297/download/getimage/companies/images/company.jpg
-        // http://localhost:5297/download/getTempImage/companies/images/tempImage_1_1/company001_123.png
         items = companyTitleImage.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
         fileName = items[items.Length - 1];
@@ -468,7 +394,6 @@ public class CompaniesController(
             await _dbService.CreateCompanyAsync(newCompany);
 
         // если при добавлении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { CreateMessage = message });
 
@@ -485,12 +410,7 @@ public class CompaniesController(
     [Authorize]
     public async Task<IActionResult> EditCompanyAsync([FromBody] CompanyDto company) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        // var temp = Request;
-
         // если данных о компании нет - вернуть некорректные данные
-        // if (true) // для проверки
         if (company == null || company.Id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -503,20 +423,17 @@ public class CompaniesController(
 
         // если компания не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // companyEdt.Id = 0; // для проверки
         if (companyEdt.Id == 0)
             return Unauthorized(new { CompanyId = company.Id });
 
 
         // 1. данные о пользователе-владельце
-        // companyEdt.UserOwnerId = 10; // для проверки
         if (companyEdt.UserOwnerId != company.UserOwnerId) {
             
             // получить запись в БД о пользователе по Id
             var user = await _dbService.GetUserByIdAsync(company.UserOwnerId);
 
             // если данных о пользователе нет - вернуть некорректные данные
-            // user.Id = 0; // для проверки
             if (user.Id == 0)
                 return BadRequest(new { UserId = 0 });
 
@@ -547,26 +464,17 @@ public class CompaniesController(
             companyEdt.Address.Building != company.Address.Building ||
             companyEdt.Address.Flat     != flat) {
 
-            // --- проверка, потом удалить
-            var allCountries = await _dbService.GetAllCountriesAsync();
-            // ---
-
             // 3.1 получить данные о стране расположения компании
             var country = await _dbService
                 .GetCountryByIdAsync(company.Address.City.Country.Id);
 
             // если запись о стране не найдена - вернуть некорректные данные
-            // country.Id = 0; // для проверки
             if (country.Id == 0)
                 return BadRequest(new { CountryId = 0 });
 
 
             // 3.2 получить данные о городе расположения компании
             var cityId = company.Address.City.Id;
-
-            // --- проверка, потом удалить
-            var allCities = await _dbService.GetAllCitiesAsync();
-            // ---
 
             // если cityId=0 - добавление записи в БД о новом городе
             var city = new City();
@@ -580,37 +488,24 @@ public class CompaniesController(
                     await _dbService.CreateCityAsync(city);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreateCity, string messageCreateCity) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreateCity)
                     return BadRequest(new { CreateMessage = messageCreateCity });
-
-            } else {
+            }
+            else {
                 // иначе - получить запись по Id из БД
                 city = await _dbService.GetCityByIdAsync(cityId);
 
                 // если запись о городе не найдена или в городе данные о стране
                 // не соответствуют данным найденной записи о стране - вернуть
                 // некорректные данные
-                // city.Id = 0; // для проверки
                 if (city.Id == 0 || city.CountryId != country.Id)
                     return BadRequest(new { CityId = 0 });
 
             } // if
 
-            // --- проверка, потом удалить
-            var allCountries2 = await _dbService.GetAllCountriesAsync();
-            var allCities2 = await _dbService.GetAllCitiesAsync();
-            var x = 999; // для точки останова
-            // ---
-
 
             // 3.3 получить данные об улице расположения компании
             var streetId = company.Address.Street.Id;
-
-            // --- проверка, потом удалить
-            var allStreets = await _dbService.GetAllStreetsAsync();
-            // ---
 
             // если streetId=0 - добавление записи в БД о новой улице
             var street = new Street();
@@ -624,33 +519,21 @@ public class CompaniesController(
                     await _dbService.CreateStreetAsync(street);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreateStreet, string messageCreateStreet) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreateStreet)
                     return BadRequest(new { CreateMessage = messageCreateStreet });
-
-            } else {
+            }
+            else {
                 // иначе - получить запись по Id из БД
                 street = await _dbService.GetStreetByIdAsync(streetId);
 
                 // если запись об улице не найдена - вернуть некорректные данные
-                // street.Id = 0; // для проверки
                 if (street.Id == 0)
                     return BadRequest(new { StreetId = 0 });
 
             } // if
 
-            // --- проверка, потом удалить
-            var allStreets2 = await _dbService.GetAllStreetsAsync();
-            var x2 = 999; // для точки останова
-            // ---
-
 
             // 3.4 получить данные об адресе расположения компании
-
-            // --- проверка, потом удалить
-            var allAddresses = await _dbService.GetAllAddressesAsync();
-            // ---
 
             // получить запись об адресе по всем полученным параметрам
             var address = await _dbService.GetAddressByParamsAsync(
@@ -670,16 +553,10 @@ public class CompaniesController(
                     await _dbService.CreateAddressAsync(address);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreateAddress, string messageCreateAddress) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreateAddress)
                     return BadRequest(new { CreateMessage = messageCreateAddress });
 
             } // if
-
-            // --- проверка, потом удалить
-            var allAddresses2 = await _dbService.GetAllAddressesAsync();
-            // ---
 
 
             // изменить данные
@@ -708,7 +585,6 @@ public class CompaniesController(
         if (companyEdt.Logo != company.Logo) {
 
             // получить имена файла и папки его расположения
-            // http://localhost:5297/download/getTempImage/companies/logos/tempLogo_1_1/logo_test_1_12...png
             var items = company.Logo.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
             var fileName = items[items.Length - 1];
@@ -719,7 +595,6 @@ public class CompaniesController(
             // если файл находится не во временной папке,
             // вернуть объект и сообщение об ошибке
             var tempDirName = LoadService.TEMP_LOGO;
-            // if (fileDirectoryName.StartsWith(tempDirName)) // для проверки
             if (!fileDirectoryName.StartsWith(tempDirName))
                 return BadRequest(new { company.Logo });
 
@@ -741,7 +616,6 @@ public class CompaniesController(
         if (companyEdt.TitleImage != company.TitleImage) {
 
             // получить имена файла и папки его расположения
-            // http://localhost:5297/download/getTempImage/companies/images/tempImage_1_1/company001_123.png
             var items = company.TitleImage.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
             var fileName = items[items.Length - 1];
@@ -752,7 +626,6 @@ public class CompaniesController(
             // если файл находится не во временной папке,
             // вернуть объект и сообщение об ошибке
             var tempDirName = LoadService.TEMP_IMAGE;
-            // if (fileDirectoryName.StartsWith(tempDirName)) // для проверки
             if (!fileDirectoryName.StartsWith(tempDirName))
                 return BadRequest(new { Image = company.TitleImage });
 
@@ -785,7 +658,6 @@ public class CompaniesController(
             await _dbService.UpdateCompanyAsync(companyEdt);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 
@@ -859,25 +731,18 @@ public class CompaniesController(
     public IActionResult DeleteTempCompanyImages(
         [FromQuery] int userId, [FromQuery] int id, [FromQuery] string imageType) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        //var temp = Request;
-
         // id -> companyId
 
         // если данных о пользователе нет - вернуть некорректные данные
-        //userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данные о компании неверные - вернуть некорректные данные
         // (id=0 - режим создания компании, иначе - режим изменения данных)
-        // id = -1; // для проверки
         if (id < 0)
             return BadRequest(new { CompanyId = 0 });
 
         // если данных о типе изображения нет - вернуть некорректные данные
-        //imageType = ""; // для проверки
         if (string.IsNullOrEmpty(imageType))
             return BadRequest(new { ImageType = "" });
 
@@ -921,7 +786,6 @@ public class CompaniesController(
                 (bool isOk, string message) = _loadService.DeleteDirectory(dir);
 
                 // если при удалении была ошибка - передать ошибку
-                //if (true)
                 if (!isOk)
                     return BadRequest(new { DeleteMessage = message });
 

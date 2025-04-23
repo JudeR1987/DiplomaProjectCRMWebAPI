@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Net.NetworkInformation;
 
 namespace Application.Interfaces;
 
@@ -72,13 +71,5 @@ public interface ILoadService
 
     // 1. загрузка файла на сервер
     Task UploadFileAsync(string path, string fileName, IFormFile file);
-
-
-    // выгрузка файлов (Download)
-
-    // 1. сформировать специальный объект ответа на запрос
-    // для передачи файла как массива байтов
-    /*Task<FileContentResult>
-        DownloadFileAsBytes(string path, string fileName);*/
 
 } // interface ILoadService

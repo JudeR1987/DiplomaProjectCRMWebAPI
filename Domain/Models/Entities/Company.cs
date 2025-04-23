@@ -76,20 +76,6 @@ public class Company(int userOwnerId, string name, int addressId,
     public virtual List<Service> Services { get; set; } = [];
 
 
-    /*
-     * coordinate_lat number <double> Широта
-     * 
-     * coordinate_lon number <double> Долгота
-     * 
-     * allow_delete_record boolean
-     * allow_change_record boolean
-     * site string
-     * currency_short_title string
-     * allow_change_record_delay_step integer <int32>
-     * allow_delete_record_delay_step integer <int32>
-     */
-
-
     // конструктор по умолчанию
     public Company() : this(0, "", 0, "", null, "", "", "", "", null) {
     } // Company

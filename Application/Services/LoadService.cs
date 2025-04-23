@@ -11,14 +11,17 @@ public class LoadService : ILoadService
     // корневой каталог
     public const string APP_DATA = "App_Data";
 
+
     // имена папок для хранения файлов с фотографиями пользователей
     public const string USERS = "users";
     public const string PHOTOS = "photos";
     public const string TEMP_PHOTO = "tempPhoto";
 
+
     // имена папок для хранения файлов с фотографиями сотрудников
     // (PHOTOS="photos" и TEMP_PHOTO="tempPhoto" такие же как и у пользователей)
     public const string EMPLOYEES = "employees";
+
 
     // имена папок для хранения файлов с изображениями
     // логотипов компаний и их основных изображений
@@ -27,6 +30,7 @@ public class LoadService : ILoadService
     public const string IMAGES = "images";
     public const string TEMP_LOGO = "tempLogo";
     public const string TEMP_IMAGE = "tempImage";
+
 
     // имя файла с изображением по умолчанию
     // для персон
@@ -38,18 +42,23 @@ public class LoadService : ILoadService
     // для компаний
     public const string DEFAULT_COMPANY = "company.jpg";
 
+
     // тип контента
     // text/plain для текста или универсальный тип application/octet-stream
     public const string OCTET_STREAM = "application/octet-stream";
 
+
     // контроллер для загрузки данных
     public const string UPLOAD = "upload";
+
 
     // контроллер для выгрузки данных
     public const string DOWNLOAD = "download";
 
+
     // метод действия для выгрузки изображений из основной папки
     public const string GET_IMAGE = "getImage";
+
 
     // метод действия для выгрузки изображений из временной папки
     public const string GET_TEMP_IMAGE = "getTempImage";
@@ -69,6 +78,7 @@ public class LoadService : ILoadService
         CreateDirectories();
 
     } // LoadService
+
 
 
     // добавление уникального суффикса к имени файла изображения
@@ -160,9 +170,7 @@ public class LoadService : ILoadService
             ? $"_{Utils.GetRandomString()}"
             : "";
         
-        var tempDir = $"{TEMP_PHOTO}_{userId}_{employeeId}{randomString}";
-
-        return tempDir;
+        return $"{TEMP_PHOTO}_{userId}_{employeeId}{randomString}";
 
     } // GetTempCompanyImageDirectoryByParams
 
@@ -225,24 +233,6 @@ public class LoadService : ILoadService
 
     } // UploadFileAsync
 
-
-    // выгрузка файлов (Download)
-
-    // 1. сформировать специальный объект ответа на запрос
-    // для передачи файла как массива байтов
-    /*public async Task<FileContentResult>
-        DownloadFileAsBytes(string path, string fileName) {
-
-        // массив байтов для отправки на клиента
-        byte[] bytes = await File.ReadAllBytesAsync(path);
-
-        // text/plain для текста или универсальный тип application/octet-stream
-        var type = ContentType_OctetStream;
-
-        // вернуть клиенту файл с фотографией пользователя, как массив байтов
-        return ControllerBase.File(bytes, type, fileName);
-
-    } // DownloadFileAsBytes*/
 
 
     // создание каталогов при их отсутствии

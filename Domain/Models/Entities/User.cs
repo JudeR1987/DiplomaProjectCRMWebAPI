@@ -19,10 +19,6 @@ public class User(string userName, /*string login, */string phone, string email,
     public string UserName { get; set; } = userName;
 
 
-    // логин пользователя (логин=телефону только при регистрации) // ИСПРАВИТЬ???
-    /*public string Login { get; set; } = login;*/
-
-
     // номер телефона пользователя
     public string Phone { get; set; } = phone;
 
@@ -74,20 +70,14 @@ public class User(string userName, /*string login, */string phone, string email,
     public virtual Employee Employee { get; set; } = null!;
 
 
-    // связное свойство для таблицы "ЛОГИНЫ", связь 1:M
-    // (один пользователь может использовать множество учётных записей)
-    //public virtual List<Login> Logins { get; set; } = [];
-
-
     // конструктор по умолчанию
-    public User() : this("", /*"", */"", "", "", "", "", false, null) {
+    public User() : this("", "", "", "", "", "", false, null) {
     } // User
 
 
     // статический метод, возвращающий новый объект-копию
     public static User NewUser(User srcUser) =>
         new(srcUser.UserName,
-            /*srcUser.Login,*/
             srcUser.Phone,
             srcUser.Email,
             srcUser.Password,
@@ -107,14 +97,12 @@ public class User(string userName, /*string login, */string phone, string email,
     public static UserDto UserToDto(User srcUser) =>
         new(srcUser.Id,
             srcUser.UserName,
-            /*srcUser.Login,*/
             srcUser.Phone,
             srcUser.Email,
             srcUser.Password,
             srcUser.Avatar,
             srcUser.UserToken,
             srcUser.IsLogin,
-            //srcUser.Roles != null ? Role.RolesToDto(srcUser.Roles) : [],
             Role.RolesToDto(srcUser.Roles ?? []),
             srcUser.Deleted
         );

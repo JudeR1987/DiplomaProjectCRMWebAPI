@@ -33,26 +33,18 @@ public interface IDbService
     // (если запись не найдена - вернуть new User() с Id=0)
     Task<User> GetUserByIdAsync(int userId);
 
-    // 2.3. получить пользователя по логину и паролю
-    // (если пользователь не найден - вернуть new User() с Id=0)
-    //Task<User> GetUserToLoginAsync(string login, string password);
-
-    // 2.4. получить зарегистрированного пользователя с совпадающим логином
-    // (если пользователь не найден - вернуть new User() с Id=0)
-    //Task<User> GetUserByLoginAsync(string login);
-
-    // 2.4. получить зарегистрированного пользователя с совпадающим телефоном
+    // 2.3. получить зарегистрированного пользователя с совпадающим телефоном
     // (если пользователь не найден - вернуть new User() с Id=0)
     Task<User> GetUserByPhoneAsync(string phone);
 
-    // 2.5. получить зарегистрированного пользователя с совпадающим email
+    // 2.4. получить зарегистрированного пользователя с совпадающим email
     // (если пользователь не найден - вернуть new User() с Id=0)
     Task<User> GetUserByEmailAsync(string email);
 
-    // 2.6. добавить новую запись о пользователе в БД
+    // 2.5. добавить новую запись о пользователе в БД
     Task CreateUserAsync(User newUser);
 
-    // 2.7. изменить данные пользователя в БД
+    // 2.6. изменить данные пользователя в БД
     Task UpdateUserAsync(User user);
 
 
@@ -127,7 +119,7 @@ public interface IDbService
 
     // 7.2. получить запись об адресе из БД по всем параметрам
     // (если запись не найдена - вернуть new Address() с Id=0)
-    Task<Address> GetAddressByParamsAsync(/*int countryId,*/
+    Task<Address> GetAddressByParamsAsync(
         int cityId, int streetId, string building, int? flat);
 
     // 7.3. добавить новую запись об адресе в БД
@@ -280,11 +272,6 @@ public interface IDbService
 
     // 13.5. получить все записи об услугах заданного сотрудника из БД
     Task<List<Service>> GetAllServicesByEmployeeIdAsync(int employeeId);
-
-    // 13.5. получить все записи об услугах заданного сотрудника из БД,
-    // сгруппированные по категориям услуг (DTO)
-    /*Task<List<DisplayServicesCategory>>
-        GetAllServicesByEmployeeIdGroupByCategoriesAsync(int employeeId);*/
 
     // 13.6. добавить новую запись о сотруднике в БД
     Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Domain.Models.Entities;
-using Domain.Models.Infrastructure;
 
 namespace Domain.Configurations;
 

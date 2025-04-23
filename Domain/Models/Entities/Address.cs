@@ -53,7 +53,7 @@ public class Address(int cityId, int streetId, string building,
 
     // конструктор по умолчанию
     public Address() : this(0, 0, "", null, null) {
-    } // Address()
+    } // Address
 
 
     // статический метод, возвращающий новый объект-копию

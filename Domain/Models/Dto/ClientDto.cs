@@ -36,8 +36,6 @@ public record ClientDto(
     // номер карты клиента
     string? Card,
 
-    // birth_date string Дата рождения клиента в формате yyyy-mm-dd
-
     // дата рождения клиента
     DateTime BirthDate,
 
@@ -52,19 +50,6 @@ public record ClientDto(
 
     // дата и время удаления записи о клиенте
     DateTime? Deleted
-
-    // признак отправки поздравления на День Рождения клиента по SMS
-    // (0 - не поздравлять, 1 - поздравлять)
-    //int SmsBirthday,
-
-    // признак исключения клиента из SMS-рассылок
-    // (0 - не исключать, 1 - исключить)
-    //int SmsNot
-
-    // ? categories object Массив идентификаторов категорий клиента
-
-    // ? custom_fields object Массив дополнительных полей клиента
-    // в виде пар "api-key": "value"
 
     );
 // record ClientDto

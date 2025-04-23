@@ -16,7 +16,7 @@ public class EmployeesController(
     ILoadService loadService) : ControllerBase
 {
     // ссылка на серверное окружение - для получения папки хоста
-    private IHostEnvironment _environment = environment;
+    private readonly IHostEnvironment _environment = environment;
     
     // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
@@ -29,9 +29,6 @@ public class EmployeesController(
     // о коллекции записей о сотрудниках из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesAsync())
@@ -49,9 +46,6 @@ public class EmployeesController(
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllEmployeesWithDeletedAsync())
             .Select(Employee.EmployeeToDto)
@@ -67,9 +61,6 @@ public class EmployeesController(
     // удалённых записей о сотрудниках из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedEmployeesAsync())
@@ -88,11 +79,7 @@ public class EmployeesController(
     [Authorize]
     public async Task<IActionResult> GetAllByCompanyIdAsync(int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных об идентификаторе компании нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -114,14 +101,7 @@ public class EmployeesController(
     [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-        var temp = DateTime.Now;
-
-
         // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -131,7 +111,6 @@ public class EmployeesController(
 
         // если сотрудник не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // employee.Id = 0; // для проверки
         if (employee.Id == 0)
             return Unauthorized(new { EmployeeId = id });
 
@@ -155,13 +134,11 @@ public class EmployeesController(
         // id -> employeeId
 
         // если данных о пользователе нет - вернуть некорректные данные
-        // userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
         // если данные о сотруднике неверные - вернуть некорректные данные
         // (id=0 - режим добавления данных, иначе - режим изменения данных)
-        // id = -1; // для проверки
         if (id < 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -197,7 +174,6 @@ public class EmployeesController(
                 (bool isOk, string message) = _loadService.DeleteDirectory(dir);
 
                 // если при удалении была ошибка - передать ошибку
-                // if (true)
                 if (!isOk)
                     return BadRequest(new { DeleteMessage = message });
 
@@ -217,10 +193,6 @@ public class EmployeesController(
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetEmployeeFormParamsAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
 
         // все записи таблицы "СПЕЦИАЛЬНОСТИ" из БД
         var allSpecializations = (await _dbService.GetAllSpecializationsAsync())
@@ -247,12 +219,7 @@ public class EmployeesController(
     [Authorize]
     public async Task<IActionResult> GetByUserIdAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-
         // если данных об идентификаторе пользователя нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { UserId = 0 });
 
@@ -277,7 +244,6 @@ public class EmployeesController(
     public async Task<IActionResult> CreateEmployeeAsync([FromBody] EmployeeDto employee) {
 
         // если данных о сотруднике нет или Id некорректный - вернуть некорректные данные
-        // if (true) // для проверки
         if (employee == null || employee.Id != 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -295,10 +261,6 @@ public class EmployeesController(
         // 3. данные о специальности
         var specializationId = employee.Specialization.Id;
 
-        // --- проверка, потом удалить
-        var allSpecializations = await _dbService.GetAllSpecializationsAsync();
-        // ---
-
         // если specializationId=0 - добавление записи в БД о новой специальности
         var specialization = new Specialization();
         if (specializationId == 0) {
@@ -311,34 +273,22 @@ public class EmployeesController(
                 await _dbService.CreateSpecializationAsync(specialization);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateSpecialization, string messageCreateSpecialization) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateSpecialization)
                 return BadRequest(new { CreateMessage = messageCreateSpecialization });
-
-        } else {
+        }
+        else {
             // иначе - получить запись по Id из БД
             specialization = await _dbService.GetSpecializationByIdAsync(specializationId);
 
             // если запись о специальности не найдена - вернуть некорректные данные
-            // specialization.Id = 0; // для проверки
             if (specialization.Id == 0)
                 return BadRequest(new { SpecializationId = 0 });
 
         } // if
 
-        // --- проверка, потом удалить
-        var allSpecializations2 = await _dbService.GetAllSpecializationsAsync();
-        var x = 999; // для точки останова
-        // ---
-
 
         // 4. данные о должности
         var positionId = employee.Position.Id;
-
-        // --- проверка, потом удалить
-        var allPositions = await _dbService.GetAllPositionsAsync();
-        // ---
 
         // если positionId=0 - добавление записи в БД о новой должности
         var position = new Position();
@@ -352,26 +302,18 @@ public class EmployeesController(
                 await _dbService.CreatePositionAsync(position);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreatePosition, string messageCreatePosition) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreatePosition)
                 return BadRequest(new { CreateMessage = messageCreatePosition });
-
-        } else {
+        }
+        else {
             // иначе - получить запись по Id из БД
             position = await _dbService.GetPositionByIdAsync(positionId);
 
             // если запись о должности не найдена - вернуть некорректные данные
-            // position.Id = 0; // для проверки
             if (position.Id == 0)
                 return BadRequest(new { PositionId = 0 });
 
         } // if
-
-        // --- проверка, потом удалить
-        var allPositions2 = await _dbService.GetAllPositionsAsync();
-        var x2 = 999; // для точки останова
-        // ---
 
 
         // 5. рейтинг сотрудника (от 0 до 5)
@@ -382,8 +324,6 @@ public class EmployeesController(
         var employeePhoto = employee.Avatar;
 
         // получить имена файла и папки расположения фотографии
-        // http://localhost:5297/download/getimage/employees/photos/photo.ico
-        // http://localhost:5297/download/getTempImage/employees/photos/tempPhoto_1_0_kokokok/test_11_69...jpg
         var items = employeePhoto.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
         var fileName = items[items.Length - 1];
@@ -419,7 +359,6 @@ public class EmployeesController(
             await _dbService.CreateEmployeeAsync(newEmployee);
 
         // если при добавлении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { CreateMessage = message });
 
@@ -437,7 +376,6 @@ public class EmployeesController(
     public async Task<IActionResult> EditEmployeeAsync([FromBody] EmployeeDto employee) {
 
         // если данных о сотруднике нет или Id некорректный - вернуть некорректные данные
-        // if (true) // для проверки
         if (employee == null || employee.Id <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -450,20 +388,17 @@ public class EmployeesController(
 
         // если сотрудник не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // employeeEdt.Id = 0; // для проверки
         if (employeeEdt.Id == 0)
             return Unauthorized(new { EmployeeId = employee.Id });
 
 
         // 1. данные о пользователе
-        // employeeEdt.UserId = 999; // для проверки
         if (employeeEdt.UserId != employee.User.Id) {
 
             // получить запись в БД о пользователе по Id
             var user = await _dbService.GetUserByIdAsync(employee.User.Id);
 
             // если данных о пользователе нет - вернуть некорректные данные
-            // user.Id = 0; // для проверки
             if (user.Id == 0)
                 return BadRequest(new { UserId = 0 });
 
@@ -478,14 +413,12 @@ public class EmployeesController(
 
 
         // 2. данные о компании
-        // employeeEdt.CompanyId = 999; // для проверки
         if (employeeEdt.CompanyId != employee.Company.Id) {
 
             // получить запись в БД о компании по Id
             var company = await _dbService.GetCompanyByIdAsync(employee.Company.Id);
 
             // если данных о компании нет - вернуть некорректные данные
-            // company.Id = 0; // для проверки
             if (company.Id == 0)
                 return BadRequest(new { CompanyId = 0 });
 
@@ -505,10 +438,6 @@ public class EmployeesController(
             // получить данные о специальности сотрудника
             var specializationId = employee.Specialization.Id;
 
-            // --- проверка, потом удалить
-            var allSpecializations = await _dbService.GetAllSpecializationsAsync();
-            // ---
-
             // если specializationId=0 - добавление записи в БД о новой специальности
             var specialization = new Specialization();
             if (specializationId == 0) {
@@ -521,26 +450,18 @@ public class EmployeesController(
                     await _dbService.CreateSpecializationAsync(specialization);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreateSpecialization, string messageCreateSpecialization) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreateSpecialization)
                     return BadRequest(new { CreateMessage = messageCreateSpecialization });
-
-            } else {
+            }
+            else {
                 // иначе - получить запись по Id из БД
                 specialization = await _dbService.GetSpecializationByIdAsync(specializationId);
 
                 // если запись о специальности не найдена - вернуть некорректные данные
-                // specialization.Id = 0; // для проверки
                 if (specialization.Id == 0)
                     return BadRequest(new { SpecializationId = 0 });
 
             } // if
-
-            // --- проверка, потом удалить
-            var allSpecializations2 = await _dbService.GetAllSpecializationsAsync();
-            var x = 999; // для точки останова
-            // ---
 
 
             // изменить данные
@@ -558,10 +479,6 @@ public class EmployeesController(
             // получить данные о должности сотрудника
             var positionId = employee.Position.Id;
 
-            // --- проверка, потом удалить
-            var allPositions = await _dbService.GetAllPositionsAsync();
-            // ---
-
             // если positionId=0 - добавление записи в БД о новой должности
             var position = new Position();
             if (positionId == 0) {
@@ -574,26 +491,18 @@ public class EmployeesController(
                     await _dbService.CreatePositionAsync(position);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreatePosition, string messageCreatePosition) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreatePosition)
                     return BadRequest(new { CreateMessage = messageCreatePosition });
-
-            } else {
+            }
+            else {
                 // иначе - получить запись по Id из БД
                 position = await _dbService.GetPositionByIdAsync(positionId);
 
                 // если запись о должности не найдена - вернуть некорректные данные
-                // position.Id = 0; // для проверки
                 if (position.Id == 0)
                     return BadRequest(new { PositionId = 0 });
 
             } // if
-
-            // --- проверка, потом удалить
-            var allPositions2 = await _dbService.GetAllPositionsAsync();
-            var x2 = 999; // для точки останова
-            // ---
 
 
             // изменить данные
@@ -612,7 +521,6 @@ public class EmployeesController(
         if (employeeEdt.Avatar != employee.Avatar) {
 
             // получить имена файла и папки расположения фотографии
-            // http://localhost:5297/download/getTempImage/employees/photos/tempPhoto_1_0_kokokok/test_11_69...jpg
             var items = employee.Avatar.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
             var fileName = items[items.Length - 1];
@@ -622,7 +530,6 @@ public class EmployeesController(
             // если файл находится не во временной папке,
             // вернуть объект и сообщение об ошибке
             var tempDirName = LoadService.TEMP_PHOTO;
-            // if (fileDirectoryName.StartsWith(tempDirName)) // для проверки
             if (!fileDirectoryName.StartsWith(tempDirName))
                 return BadRequest(new { employee.Avatar });
 
@@ -645,7 +552,6 @@ public class EmployeesController(
             await _dbService.UpdateEmployeeAsync(employeeEdt);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 
@@ -662,11 +568,7 @@ public class EmployeesController(
     [Authorize]
     public async Task<IActionResult> DeleteEmployeeAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о сотруднике нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -676,7 +578,6 @@ public class EmployeesController(
 
         // если сотрудник не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // employee.Id = 0; // для проверки
         if (employee.Id == 0)
             return Unauthorized(new { EmployeeId = id });
 
@@ -690,7 +591,6 @@ public class EmployeesController(
             await _dbService.UpdateEmployeeAsync(employee);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 
@@ -708,7 +608,6 @@ public class EmployeesController(
     public async Task<IActionResult> GetAllServicesByEmployeeIdAsync([FromQuery] int id) {
 
         // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { EmployeeId = 0 });
 
@@ -737,12 +636,10 @@ public class EmployeesController(
         var serviceId = secondId;
 
         // если данных об идентификаторе компании нет - вернуть некорректные данные
-        // companyId = 0; // для проверки
         if (companyId <= 0)
             return BadRequest(new { CompanyId = 0 });
 
         // если данных об идентификаторе услуги нет - вернуть некорректные данные
-        // serviceId = 0; // для проверки
         if (serviceId <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -758,47 +655,6 @@ public class EmployeesController(
         return new JsonResult(new { employees });
 
     } // GetAllByCompanyIdByServiceIdAsync
-
-
-    // 12. по GET-запросу вернуть клиенту данные о коллекции записей об услугах
-    // для заданного сотрудника, сгруппированные по категориям услуг из БД в JSON-формате
-    /*[HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetAllServicesByEmployeeIdGroupByCategoriesAsync(
-        [FromQuery] int id) {
-
-        // если данных об идентификаторе сотрудника нет - вернуть некорректные данные
-        // id = 0; // для проверки
-        if (id <= 0)
-            return BadRequest(new { EmployeeId = 0 });
-
-
-        // получить отображаемые данные(DTO) об услугах
-        // для заданного сотрудника, сгруппированные по категориям услуг
-        var displayServicesCategories = await _dbService
-            .GetAllServicesByEmployeeIdGroupByCategoriesAsync(id);
-
-        *//*var displayServicesCategories = (await _dbService.GetEmployeeByIdAsync(id))
-            .EmployeesServices
-            .Where(employeeService => employeeService.Deleted == null &&
-                                      employeeService.Service.Deleted == null)
-            .Select(employeeService => employeeService.Service)
-            .GroupBy(service => service.ServicesCategory,
-                (key, group) => new {
-                    ServicesCategory = key,
-                    Services = group.ToList()
-                })
-            .Where(group => group.ServicesCategory.Deleted == null)
-            .Select(group => new DisplayServicesCategory(
-                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
-                Service.ServicesToDto(group.Services)
-                ))
-            .ToList();*//*
-
-        // вернуть данные в JSON-формате
-        return new JsonResult(new { displayServicesCategories });
-
-    } // GetAllServicesByEmployeeIdGroupByCategoriesAsync*/
 
 
     // метод копирования файла фотографии из временной папки в рабочую

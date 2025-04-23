@@ -47,39 +47,25 @@ public class DbService(IDbRepository dbRepository) : IDbService
         .FirstOrDefault(user => user.Id == userId)
         ?? new User() { Id = 0 };
 
-    // 2.3. получить пользователя по логину и паролю
-    // (если пользователь не найден - вернуть new User() с Id=0)
-    /*public async Task<User> GetUserToLoginAsync(string login, string password) =>
-        (await GetAllUsersAsync())
-        .Find(user => user.Login == login && user.Password == password)
-        ?? new User() { Id = 0 };*/
-
-    // 2.4. получить зарегистрированного пользователя с совпадающим логином
-    // (если пользователь не найден - вернуть new User() с Id=0)
-    /*public async Task<User> GetUserByLoginAsync(string login) =>
-        (await GetAllUsersAsync())
-        .Find(user => user.Login == login)
-        ?? new User() { Id = 0 };*/
-
-    // 2.4. получить зарегистрированного пользователя с совпадающим телефоном
+    // 2.3. получить зарегистрированного пользователя с совпадающим телефоном
     // (если пользователь не найден - вернуть new User() с Id=0)
     public async Task<User> GetUserByPhoneAsync(string phone) =>
         (await GetAllUsersAsync())
         .Find(user => user.Phone == phone)
         ?? new User() { Id = 0 };
 
-    // 2.5. получить зарегистрированного пользователя с совпадающим email
+    // 2.4. получить зарегистрированного пользователя с совпадающим email
     // (если пользователь не найден - вернуть new User() с Id=0)
     public async Task<User> GetUserByEmailAsync(string email) =>
         (await GetAllUsersAsync())
         .Find(user => user.Email == email)
         ?? new User() { Id = 0 };
 
-    // 2.6. добавить новую запись о пользователе в БД
+    // 2.5. добавить новую запись о пользователе в БД
     public async Task CreateUserAsync(User newUser) =>
         await _dbRepository.CreateUserAsync(newUser);
 
-    // 2.7. изменить данные пользователя в БД
+    // 2.6. изменить данные пользователя в БД
     public async Task UpdateUserAsync(User user) =>
         await _dbRepository.UpdateUserAsync(user);
 
@@ -178,12 +164,11 @@ public class DbService(IDbRepository dbRepository) : IDbService
 
     // 7.2. получить запись об адресе из БД по всем параметрам
     // (если запись не найдена - вернуть new Address() с Id=0)
-    public async Task<Address> GetAddressByParamsAsync(/*int countryId,*/
+    public async Task<Address> GetAddressByParamsAsync(
         int cityId, int streetId, string building, int? flat) =>
         (await GetAllAddressesAsync())
         .FirstOrDefault(
             address =>
-            /*address.City.Country.Id == countryId &&*/
             address.City.Id         == cityId &&
             address.Street.Id       == streetId &&
             address.Building        == building &&
@@ -413,26 +398,6 @@ public class DbService(IDbRepository dbRepository) : IDbService
                                   employeeService.Service.Deleted == null)
         .Select(employeeService => employeeService.Service)
         .ToList();
-
-    // 13.5. получить все записи об услугах заданного сотрудника из БД,
-    // сгруппированные по категориям услуг (DTO)
-    /*public async Task<List<DisplayServicesCategory>>
-        GetAllServicesByEmployeeIdGroupByCategoriesAsync(int employeeId) =>
-        (await GetEmployeeByIdAsync(employeeId)).EmployeesServices
-        .Where(employeeService => employeeService.Deleted == null &&
-                                  employeeService.Service.Deleted == null)
-        .Select(employeeService => employeeService.Service)
-        .GroupBy(service => service.ServicesCategory,
-            (key, group) => new {
-                ServicesCategory = key,
-                Services = group.ToList()
-            })
-        .Where(group => group.ServicesCategory.Deleted == null)
-        .Select(group => new DisplayServicesCategory(
-            ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
-            Service.ServicesToDto(group.Services)
-            ))
-        .ToList();*/
 
     // 13.6. добавить новую запись о сотруднике в БД
     public async Task<(bool, string)> CreateEmployeeAsync(Employee newEmployee) =>

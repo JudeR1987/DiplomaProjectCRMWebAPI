@@ -40,7 +40,7 @@ public class WorkDayFreeSlot(int workDayId, int slotId, DateTime? deleted)
 
     // конструктор по умолчанию
     public WorkDayFreeSlot() : this(0, 0, null) {
-    } // WorkDayFreeSlot()
+    } // WorkDayFreeSlot
 
 
     // статический метод, возвращающий новый объект-копию
@@ -61,11 +61,5 @@ public class WorkDayFreeSlot(int workDayId, int slotId, DateTime? deleted)
             srcWorkDayFreeSlot.SlotId,
             srcWorkDayFreeSlot.Deleted
         );
-
-
-    // статический метод, возвращающий список объектов-DTO
-    /*public static List<RecordServiceDto> RecordsServicesToDto(
-        List<RecordService> srcRecordsServices) =>
-        srcRecordsServices.Select(RecordServiceToDto).ToList();*/
 
 } // class FreeSlot

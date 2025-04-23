@@ -40,7 +40,7 @@ public class WorkDayBreakSlot(int workDayId, int slotId, DateTime? deleted)
 
     // конструктор по умолчанию
     public WorkDayBreakSlot() : this(0, 0, null) {
-    } // WorkDayBreakSlot()
+    } // WorkDayBreakSlot
 
 
     // статический метод, возвращающий новый объект-копию
@@ -61,11 +61,5 @@ public class WorkDayBreakSlot(int workDayId, int slotId, DateTime? deleted)
             srcWorkDayBreakSlot.SlotId,
             srcWorkDayBreakSlot.Deleted
         );
-
-
-    // статический метод, возвращающий список объектов-DTO
-    /*public static List<RecordServiceDto> RecordsServicesToDto(
-        List<RecordService> srcRecordsServices) =>
-        srcRecordsServices.Select(RecordServiceToDto).ToList();*/
 
 } // class BreakSlot

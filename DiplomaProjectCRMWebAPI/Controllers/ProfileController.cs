@@ -16,7 +16,7 @@ public class ProfileController(
     ILoadService loadService) : ControllerBase
 {
     // ссылка на серверное окружение - для получения папки хоста
-    private IHostEnvironment _environment = environment;
+    private readonly IHostEnvironment _environment = environment;
 
     // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
@@ -34,9 +34,6 @@ public class ProfileController(
     [Authorize]
     public async Task<IActionResult> EditPasswordAsync(
         [FromForm] int userId, [FromForm] string newPassword) {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // если данных нет - вернуть некорректные данные
         if (userId <= 0)
@@ -57,7 +54,6 @@ public class ProfileController(
 
         // установить пользователю новое значение пароля
         user.Password = newPassword;
-        //user.Password = "1";
 
         // сохранить изменённые данные пользователя в базе данных
         await _dbService.UpdateUserAsync(user);
@@ -82,9 +78,6 @@ public class ProfileController(
         [FromForm] int userId,[FromForm] string userName, [FromForm] string phone,
         [FromForm] string email, [FromForm] string avatar) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        
         // если требуемых данных о пользователе нет - вернуть некорректные данные
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
@@ -97,7 +90,7 @@ public class ProfileController(
 
         if (string.IsNullOrEmpty(email))
             return BadRequest(new { Email = email ?? "" });
-        //avatar = ""; // для проверки
+        
         if (string.IsNullOrEmpty(avatar))
             return BadRequest(new { Avatar = avatar ?? "" });
 
@@ -107,7 +100,6 @@ public class ProfileController(
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        //if (true) // для проверки
         if (user.Id == 0)
             return Unauthorized(new { userId });
 
@@ -120,25 +112,14 @@ public class ProfileController(
         // если номер не совпадает с номером пользователя
         if (phone != user.Phone) {
 
-            // поиск пользователя по логину (логин=телефону) // ИСПРАВИТЬ!!!
-            /*var registeredUserByLogin =
-                await _dbService.GetUserByLoginAsync(phone);*/
-
             // поиск пользователя по телефону
             var registeredUserByPhone =
                 await _dbService.GetUserByPhoneAsync(phone);
 
             // если пользователь найден(Id != 0),
             // вернуть объект с совпадающим параметром
-            /*if (registeredUserByLogin.Id != 0)
-                return BadRequest(new { phone });*/
             if (registeredUserByPhone.Id != 0)
                 return BadRequest(new { phone });
-
-            // установить новое значение номера телефона пользователя
-            // ( и логина т.к. логин=телефону)
-            /*user.Phone = phone;
-            user.Login = phone;*/
 
             // установить новое значение номера телефона пользователя
             user.Phone = phone;
@@ -224,10 +205,6 @@ public class ProfileController(
 
             // установить новое значение avatar пользователя, удалив имя
             // временной папки и подстроку "Temp" метода действия из пути
-            /* var avatar1 = avatar
-                 .Replace($"{LoadService.TEMP_PHOTO}_{userId}/", "")
-                 .Replace("Temp", "");
-             var avatar2 = _loadService.GetPathToUserAvatar(fileName);*/
             user.Avatar = _loadService.GetPathToUserAvatar(fileName);
 
         } // if
@@ -251,12 +228,7 @@ public class ProfileController(
     [Authorize]
     public IActionResult DeleteTempUserPhotos([FromQuery] int userId) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        // var temp = Request;
-
         // если данных о пользователе нет - вернуть некорректные данные
-        // userId = 0; // для проверки
         if (userId <= 0)
             return BadRequest(new { UserId = 0 });
 
@@ -290,11 +262,7 @@ public class ProfileController(
     [Authorize]
     public async Task<IActionResult> DeleteUserAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о пользователе нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { UserId = 0 });
 
@@ -304,14 +272,12 @@ public class ProfileController(
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        //user.Id = 0; // для проверки
         if (user.Id == 0)
             return Unauthorized(new { UserId = id });
 
 
         // если пользователь не входил в учётную запись - вернуть
         // сообщение об ошибке 401(НЕ АВТОРИЗОВАН)
-        //user.IsLogin = false; // для проверки
         if (!user.IsLogin)
             return Unauthorized(new { user.IsLogin });
 

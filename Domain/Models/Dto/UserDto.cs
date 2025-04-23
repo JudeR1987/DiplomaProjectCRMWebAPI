@@ -10,9 +10,6 @@ public record UserDto(
     // имя пользователя
     string UserName,
 
-    // логин пользователя
-    /*string Login,*/
-
     // номер телефона пользователя
     string Phone,
 

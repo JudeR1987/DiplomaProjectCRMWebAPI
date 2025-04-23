@@ -12,15 +12,6 @@ public class WorkDayConfiguration : IEntityTypeConfiguration<WorkDay>
 
         #region Задание ограничений полей таблицы "РАСПИСАНИЕ" при помощи Fluent API
 
-        // настроить ограничение поля Name для WorkDay:
-        // задать ограничение максимальной длины строкового поля наименования города
-        // nvarchar(50) not null
-        /*builder
-            .Property(city => city.Name)
-            .HasMaxLength(50)
-            .IsRequired()
-            .IsUnicode();*/
-
         #endregion
 
 

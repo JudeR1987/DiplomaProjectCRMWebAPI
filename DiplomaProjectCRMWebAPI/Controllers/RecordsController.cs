@@ -3,10 +3,7 @@ using Application.Interfaces;
 using Domain.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Models.ViewModels;
-using Domain.Models.Dto;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Domain.Models.Infrastructure;
-using System.IO;
 
 namespace DiplomaProjectCRMWebAPI.Controllers;
 
@@ -15,8 +12,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class RecordsController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
     // количество элементов на странице
@@ -27,9 +23,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
     // о коллекции записей на сеанс из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllRecordsAsync())
@@ -47,9 +40,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllRecordsWithDeletedAsync())
             .Select(Record.RecordToDto)
@@ -65,9 +55,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
     // удалённых записей на сеанс из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedRecordsAsync())
@@ -88,12 +75,10 @@ public class RecordsController(IDbService dbService) : ControllerBase
         [FromQuery] int id, [FromQuery] int page) {
 
         // если данных о компании нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
         // если данных о запрашиваемой странице нет - вернуть некорректные данные
-        // page = 0; // для проверки
         if (page <= 0)
             return BadRequest(new { page });
 
@@ -130,20 +115,11 @@ public class RecordsController(IDbService dbService) : ControllerBase
         [FromForm] int length, [FromForm] string? comment, [FromForm] int attendance,
         [FromForm] bool isOnline, [FromForm] bool isPaid) {
 
-        // если данных о записи нет или Id некорректный - вернуть некорректные данные
-        // if (true) // для проверки
-        /*if (record == null || record.Id != 0)
-            return BadRequest(new { RecordId = 0 });*/
-
-
         // 1) данные для создания новой записи в БД об онлайн-записи на сеанс:
 
         // 1. данные о сотруднике
-        //var employeeId = record.Employee.Id;
-
 
         // 2. данные о клиенте
-        // var clientId = record.Client.Id;
 
         // получить запись о клиенте по всем полученным параметрам
         var client = await _dbService.GetClientByParamsAsync(
@@ -163,8 +139,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
                 await _dbService.CreateClientAsync(client);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateClient, string messageCreateClient) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateClient)
                 return BadRequest(new { CreateMessage = messageCreateClient });
 
@@ -180,24 +154,14 @@ public class RecordsController(IDbService dbService) : ControllerBase
 
 
         // 5. длительность сеанса(в секундах)
-        //var length = record.Length;
-
 
         // 6. комментарий к записи на сеанс
-        //var comment = record.Comment == "" ? null : record.Comment;
-
 
         // 7. статус посещения клиентом записи на сеанс
-        //var attendance = record.Attendance;
-
 
         // 8. принадлежность записи на сеанс к онлайн-записи
-        //var isOnline = record.IsOnline;
-
 
         // 9. статус оплаты
-        //var isPaid = record.IsPaid;
-
 
         // 10. дата и время удаления записи о сеансе
         DateTime? deleted = null;
@@ -214,7 +178,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
             await _dbService.CreateRecordAsync(newRecord);
 
         // если при добавлении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { CreateMessage = message });
 
@@ -266,7 +229,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
                 // сократить промежуток процедуры
                 recordSlot.From = freeSlot.To;
                 recordSlot.Length -= freeSlot.Length;
-
             }
             // если длительность процедуры меньше - изменить найденный промежуток
             // (связь, а не сам промежуток)
@@ -289,8 +251,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
                         await _dbService.CreateSlotAsync(slot);
 
                     // если при добавлении была ошибка - передать ошибку
-                    /*(bool isOkCreateSlot, string messageCreateSlot) =
-                        (false, "привет-123!!!"); // для проверки*/
                     if (!isOkCreateSlot)
                         return BadRequest(new { CreateMessage = messageCreateSlot });
 
@@ -315,8 +275,6 @@ public class RecordsController(IDbService dbService) : ControllerBase
                 await _dbService.UpdateWorkDayFreeSlotAsync(workDayFreeSlot);
 
             // если при изменении была ошибка - передать ошибку
-            /*(bool isOkUpdateWorkDayFreeSlot, string messageUpdateWorkDayFreeSlot) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkUpdateWorkDayFreeSlot)
                 return BadRequest(new { UpdateMessage = messageUpdateWorkDayFreeSlot });
 

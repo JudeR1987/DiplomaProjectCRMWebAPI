@@ -22,28 +22,6 @@ public class SlotConfiguration : IEntityTypeConfiguration<Slot>
 
         #region Задание отношений между таблицами при помощи Fluent API
 
-        // связь с таблицей "СОТРУДНИКИ"
-        /*builder
-            .HasOne(workDay => workDay.Employee)
-            .WithMany(employee => employee.Schedule)
-            .HasForeignKey(workDay => workDay.EmployeeId);*/
-
-
-        // Настройка отношения "многие ко многим"  Cities <- Addresses -> Streets
-        /*builder
-            .HasMany(city => city.Streets)
-            .WithMany(street => street.Cities)
-            .UsingEntity<Address>(
-                address => address
-                    .HasOne(a => a.Street)
-                    .WithMany(street => street.Addresses)
-                    .HasForeignKey(a => a.StreetId),
-                address => address
-                    .HasOne(a => a.City)
-                    .WithMany(city => city.Addresses)
-                    .HasForeignKey(a => a.CityId)
-            );*/
-
         #endregion
 
 

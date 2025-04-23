@@ -28,43 +28,18 @@ public class AuthController(
     private readonly ILoadService _loadService = loadService;
 
 
-    // по POST-запросу при успешной аутентификации вернуть
+    // 1. по POST-запросу при успешной аутентификации вернуть
     // клиенту Ok с JWT-токеном, или сообщение об ошибке аутентификации
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginModel loginModel) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о пользователе нет - вернуть некорректные данные
-        /*if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
-            (string.IsNullOrEmpty(loginModel.Login) &&
-            string.IsNullOrEmpty(loginModel.Email)))
-            return BadRequest(new { loginModel });*/
         if (loginModel == null || string.IsNullOrEmpty(loginModel.Password) ||
             (string.IsNullOrEmpty(loginModel.Phone) &&
             string.IsNullOrEmpty(loginModel.Email)))
             return BadRequest(new { loginModel });
 
 
-        // если в данных указан логин(телефон), то найдём пользователя
-        // по логину и паролю
-        /*if (!string.IsNullOrEmpty(loginModel.Login)) {
-            
-            user = await _dbService
-                .GetUserByLoginAsync(loginModel.Login);
-
-            // если пользователь не найден(Id=0) - вернуть сообщение
-            // об ошибке 401(НЕ АВТОРИЗОВАН)
-            if (user.Id == 0)
-                return Unauthorized(new { loginModel.Login });
-
-            // если пароль найденного пользователя не совпадает - вернуть сообщение
-            // об ошибке 401(НЕ АВТОРИЗОВАН)
-            if (user.Password != loginModel.Password)
-                return Unauthorized(new { loginModel.Login, loginModel.Password });
-
-        } // if*/
         // если в данных указан телефон, то найдём пользователя
         // по телефону и паролю
         var user = new User();
@@ -106,7 +81,7 @@ public class AuthController(
         } // if
 
 
-        // зададим найденному пользователю требуемые параметры
+        // задание найденному пользователю требуемых параметров
 
         // создать jwt-токен безопасности для пользователя
         var jwtTokenString = _jwtService.CreateJwtToken(user);
@@ -133,13 +108,10 @@ public class AuthController(
     } // Login
 
 
-    // по POST-запросу выйти из учётной записи и вернуть
+    // 2. по POST-запросу выйти из учётной записи и вернуть
     // клиенту Ok, или сообщение об ошибке
     [HttpPost]
     public async Task<IActionResult> LogOut([FromBody] LogOutModel logOutModel) {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // если данных о пользователе нет - вернуть некорректные данные
         if (logOutModel == null || logOutModel.UserId <= 0 ||
@@ -182,14 +154,10 @@ public class AuthController(
     } // LogOut
 
 
-    // по POST-запросу вернуть клиенту новый JWT-токен, или сообщение об ошибке
+    // 3. по POST-запросу вернуть клиенту новый JWT-токен, или сообщение об ошибке
     [HttpPost]
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-        //refreshModel = new RefreshModel(refreshModel.UserId, ""); // для проверки
         // если данных о пользователе нет - вернуть некорректные данные
         if (refreshModel == null || refreshModel.UserId <= 0 ||
             string.IsNullOrEmpty(refreshModel.UserToken))
@@ -201,14 +169,12 @@ public class AuthController(
 
         // если пользователь не найден(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        //user.Id = 0; // для проверки
         if (user.Id == 0)
             return Unauthorized(new { refreshModel.UserId });
 
 
         // если пользователь не входил в учётную запись или его токен
         // обновления не соответствует - вернуть сообщение об ошибке
-        //user.IsLogin = false; // для проверки
         if (!user.IsLogin || user.UserToken != refreshModel.UserToken)
             return Unauthorized(new { refreshModel.UserId, refreshModel.UserToken });
 
@@ -222,7 +188,6 @@ public class AuthController(
         // установить пользователю новое значение токена обновления
         user.UserToken = newUserToken;
 
-        //user.Password = "1"; // для проверки
         // сохранить изменённые данные пользователя в базе данных
         await _dbService.UpdateUserAsync(user);
         
@@ -236,29 +201,17 @@ public class AuthController(
     } // Refresh
 
 
-    // по POST-запросу зарегистрировать пользователя в системе и вернуть
+    // 4. по POST-запросу зарегистрировать пользователя в системе и вернуть
     // клиенту Ok, или сообщение об ошибке регистрации
     [HttpPost]
     public async Task<IActionResult> Registration([FromBody] LoginModel loginModel) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных о пользователе нет - вернуть некорректные данные
-        /*if (loginModel == null ||
-            string.IsNullOrEmpty(loginModel.Login) ||
-            string.IsNullOrEmpty(loginModel.Phone) ||
-            string.IsNullOrEmpty(loginModel.Email))
-            return BadRequest(new { loginModel });*/
         if (loginModel == null ||
             string.IsNullOrEmpty(loginModel.Phone) ||
             string.IsNullOrEmpty(loginModel.Email))
             return BadRequest(new { loginModel });
 
-
-        // поиск пользователя по логину (логин=телефону только при регистрации) // ИСПРАВИТЬ???
-        /*var registeredUserByLogin = await _dbService
-            .GetUserByLoginAsync(loginModel.Login);*/
 
         // поиск пользователя по телефону
         var registeredUserByPhone = await _dbService
@@ -266,8 +219,6 @@ public class AuthController(
 
         // если пользователь найден(Id != 0),
         // вернуть объект с совпадающим параметром
-        /*if (registeredUserByLogin.Id != 0)
-            return BadRequest(new { loginModel.Phone });*/
         if (registeredUserByPhone.Id != 0)
             return BadRequest(new { loginModel.Phone });
 
@@ -282,49 +233,38 @@ public class AuthController(
             return BadRequest(new { loginModel.Email });
 
 
-        // если хотя бы один пользователь найден(Id != 0),
-        // вернуть объект с совпадающими параметрами
-        /*if (regUserByLogin.Id != 0 || regUserByEmail.Id != 0)
-            return new JsonResult(new { Phone = regPhone, Email = regEmail });*/
-
-
         // данные для регистрации
 
         // 1 - имя пользователя (если не указано, то
         // вместо имени используем номер телефона)
-        //var userName = loginModel.Login;
         var userName = string.IsNullOrEmpty(loginModel.UserName)
             ? loginModel.Phone
             : loginModel.UserName;
 
-        // 2 - логин пользователя
-        //var login = loginModel.Login;
-
-        // 3 - номер телефона пользователя
+        // 2 - номер телефона пользователя
         var phone = loginModel.Phone;
 
-        // 4 - номер телефона пользователя
+        // 3 - номер телефона пользователя
         var email = loginModel.Email;
 
-        // 5 - пароль учётной записи пользователя
+        // 4 - пароль учётной записи пользователя
         var password = Utils.GetRandomString(17);
 
-        // 6 - путь к файлу аватарки пользователя
-        // (значение по умолчанию)
+        // 5 - путь к файлу аватарки пользователя (значение по умолчанию)
         /*var avatar = "http://localhost:5297/download/getimage/users/photos/photo.ico";*/
         var avatar = _loadService.GetPathToUserAvatar(LoadService.DEFAULT_PHOTO);
 
-        // 7 - пользовательский токен обновления
+        // 6 - пользовательский токен обновления
         var userToken = _jwtService.CreateUserToken();
 
-        // 8 - состояние входа пользователя в учётную запись
+        // 7 - состояние входа пользователя в учётную запись
         // (true - вошёл, false - вышел)
         var isLogin = false;
 
 
         // создать нового пользователя
         var newUser = new User(
-            userName, /*login, */phone, email, password,
+            userName, phone, email, password,
             avatar, userToken, isLogin, null
         );
 

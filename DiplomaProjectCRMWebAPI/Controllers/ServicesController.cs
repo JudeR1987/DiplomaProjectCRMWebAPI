@@ -11,8 +11,7 @@ namespace DiplomaProjectCRMWebAPI.Controllers;
 [Route("api/{controller}/{action}")]
 public class ServicesController(IDbService dbService) : ControllerBase
 {
-    // получение ссылки на сервис-поставщик данных из базы данных
-    // при помощи внедрения зависимости - через конструктор
+    // ссылка на сервис-поставщик данных из базы данных
     private readonly IDbService _dbService = dbService;
 
 
@@ -20,9 +19,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // о коллекции записей об услугах из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllAsync() {
-
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
 
         // все записи таблицы
         var source = (await _dbService.GetAllServicesAsync())
@@ -40,9 +36,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWithDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllServicesWithDeletedAsync())
             .Select(Service.ServiceToDto)
@@ -59,9 +52,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllDeletedAsync() {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы
         var source = (await _dbService.GetAllDeletedServicesAsync())
             .Select(Service.ServiceToDto)
@@ -77,16 +67,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // об услугах для заданной компании из БД в JSON-формате
     [HttpGet]
     public async Task<IActionResult> GetAllByCompanyIdAsync(int id) {
-
         
-        
-        // метод, вроде, НЕ ИСПОЛЬЗУЕТСЯ!?!?!?
-        
-        
-        
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // все записи таблицы с указанным параметром
         var source = (await _dbService.GetAllServicesByCompanyIdAsync(id))
             .Select(Service.ServiceToDto)
@@ -105,12 +86,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     public async Task<IActionResult> GetAllByCompanyIdGroupByCategoriesAsync(
         [FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-
         // если данных об идентификаторе компании нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -120,19 +96,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
         var displayServicesCategories = await _dbService
             .GetAllServicesByCompanyIdGroupByCategoriesAsync(id);
 
-        /*var displayServicesCategories = await _db.Services
-            .Where(service => service.CompanyId == companyId && service.Deleted == null)
-            .GroupBy(service => service.ServicesCategory,
-                (key, group) => new {
-                    ServicesCategory = key,
-                    Services = group.ToList()
-                })
-            .Where(group => group.ServicesCategory.Deleted == null)
-            .Select(group => new DisplayServicesCategory(
-                ServicesCategory.ServicesCategoryToDto(group.ServicesCategory),
-                Service.ServicesToDto(group.Services)
-                ))
-            .ToListAsync();*/
 
         // вернуть данные в JSON-формате
         return new JsonResult(new { displayServicesCategories });
@@ -146,12 +109,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     // [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
-
         // если данных об идентификаторе услуги нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -161,7 +119,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
         // если услуга не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // service.Id = 0; // для проверки
         if (service.Id == 0)
             return Unauthorized(new { ServiceId = id });
 
@@ -181,13 +138,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> CreateServiceAsync([FromBody] ServiceDto service) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        //var temp = Request;
-
-
         // если данных об услуге компании нет - вернуть некорректные данные
-        // if (true) // для проверки
         if (service == null || service.Id < 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -203,10 +154,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
         // получить данные о категории услуг компании
         var servicesCategoryId = service.ServicesCategory.Id;
 
-        // --- проверка, потом удалить
-        var allServicesCategories = await _dbService.GetAllServicesCategoriesAsync();
-        // ---
-
         // если servicesCategoryId=0 - добавление записи в БД о новой категории услуг
         var servicesCategory = new ServicesCategory();
         if (servicesCategoryId == 0) {
@@ -219,33 +166,24 @@ public class ServicesController(IDbService dbService) : ControllerBase
                 await _dbService.CreateServicesCategoryAsync(servicesCategory);
 
             // если при добавлении была ошибка - передать ошибку
-            /*(bool isOkCreateServicesCategory, string messageCreateServicesCategory) =
-                (false, "привет-123!!!"); // для проверки*/
             if (!isOkCreateServicesCategory)
                 return BadRequest(new { CreateMessage = messageCreateServicesCategory });
-
-        } else {
+        }
+        else {
             // иначе - получить запись по Id из БД
             servicesCategory = await _dbService.GetServicesCategoryByIdAsync(servicesCategoryId);
 
             // если запись о категории услуг не найдена - вернуть некорректные данные
-            // servicesCategory.Id = 0; // для проверки
             if (servicesCategory.Id == 0)
                 return BadRequest(new { ServicesCategoryId = 0 });
 
         } // if
-
-        // --- проверка, потом удалить
-        var allServicesCategories2 = await _dbService.GetAllServicesCategoriesAsync();
-        var x = 999; // для точки останова
-        // ---
 
 
         // 3. данные о компании, для которой услуга определена
         var companyId = service.CompanyId;
 
         // если данных о компании нет - вернуть некорректные данные
-        // companyId = 0; // для проверки
         if (companyId <= 0)
             return BadRequest(new { CompanyId = 0 });
 
@@ -281,7 +219,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
             await _dbService.CreateServiceAsync(newService);
 
         // если при добавлении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { CreateMessage = message });
 
@@ -298,12 +235,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> EditServiceAsync([FromBody] ServiceDto service) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-        // var temp = Request;
-
         // если данных об услуге компании нет - вернуть некорректные данные
-        //if (true) // для проверки
         if (service == null || service.Id <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -316,7 +248,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
         // если услуга не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // serviceEdt.Id = 0; // для проверки
         if (serviceEdt.Id == 0)
             return Unauthorized(new { ServiceId = service.Id });
 
@@ -332,10 +263,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
             // получить данные о категории услуг компании
             var servicesCategoryId = service.ServicesCategory.Id;
 
-            // --- проверка, потом удалить
-            var allServicesCategories = await _dbService.GetAllServicesCategoriesAsync();
-            // ---
-
             // если servicesCategoryId=0 - добавление записи в БД о новой категории услуг
             var servicesCategory = new ServicesCategory();
             if (servicesCategoryId == 0) {
@@ -348,27 +275,19 @@ public class ServicesController(IDbService dbService) : ControllerBase
                     await _dbService.CreateServicesCategoryAsync(servicesCategory);
 
                 // если при добавлении была ошибка - передать ошибку
-                /*(bool isOkCreateServicesCategory, string messageCreateServicesCategory) =
-                    (false, "привет-123!!!"); // для проверки*/
                 if (!isOkCreateServicesCategory)
                     return BadRequest(new { CreateMessage = messageCreateServicesCategory });
-
-            } else {
+            }
+            else {
                 // иначе - получить запись по Id из БД
                 servicesCategory = await _dbService
                     .GetServicesCategoryByIdAsync(servicesCategoryId);
 
                 // если запись о категории услуг не найдена - вернуть некорректные данные
-                // servicesCategory.Id = 0; // для проверки
                 if (servicesCategory.Id == 0)
                     return BadRequest(new { ServicesCategoryId = 0 });
 
             } // if
-
-            // --- проверка, потом удалить
-            var allServicesCategories2 = await _dbService.GetAllServicesCategoriesAsync();
-            var x = 999; // для точки останова
-            // ---
 
 
             // изменить данные
@@ -381,14 +300,12 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
 
         // 3. данные о компании, для которой услуга определена
-        // serviceEdt.CompanyId = 999; // для проверки
         if (serviceEdt.CompanyId != service.CompanyId) {
             
             // получить запись в БД о компании по Id
             var company = await _dbService.GetCompanyByIdAsync(service.CompanyId);
 
             // если данных о компании нет - вернуть некорректные данные
-            // company.Id = 0; // для проверки
             if (company.Id == 0)
                 return BadRequest(new { CompanyId = 0 });
 
@@ -429,7 +346,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
             await _dbService.UpdateServiceAsync(serviceEdt);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 
@@ -446,11 +362,7 @@ public class ServicesController(IDbService dbService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteServiceAsync([FromQuery] int id) {
 
-        // имитация временной задержки
-        // Task.Delay(1_500).Wait();
-
         // если данных об услуге нет - вернуть некорректные данные
-        // id = 0; // для проверки
         if (id <= 0)
             return BadRequest(new { ServiceId = 0 });
 
@@ -460,7 +372,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
 
         // если услуга не найдена(Id=0) - вернуть сообщение
         // об ошибке 401(НЕ АВТОРИЗОВАН)
-        // service.Id = 0; // для проверки
         if (service.Id == 0)
             return Unauthorized(new { ServiceId = id });
 
@@ -474,7 +385,6 @@ public class ServicesController(IDbService dbService) : ControllerBase
             await _dbService.UpdateServiceAsync(service);
 
         // если при изменении была ошибка - передать ошибку
-        // (bool isOk, string message) = (false, "привет-123!!!"); // для проверки
         if (!isOk)
             return BadRequest(new { UpdateMessage = message });
 

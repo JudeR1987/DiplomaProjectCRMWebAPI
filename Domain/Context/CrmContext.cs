@@ -12,6 +12,7 @@ public class CrmContext : DbContext
     public DbSet<Role> Roles => Set<Role>();
 
 
+
     // 2. таблица "ПОЛЬЗОВАТЕЛИ"
     public DbSet<User> Users => Set<User>();
 

@@ -14,8 +14,8 @@ public class AuthOptions
     public const string AUDIENCE = "http://localhost:5297";
 
 
-    // время существования токена
-    public const int LIFETIME = 10;
+    // время существования токена (5 минут)
+    public const int LIFETIME = 5;
 
 
     // секретный ключ для шифрации

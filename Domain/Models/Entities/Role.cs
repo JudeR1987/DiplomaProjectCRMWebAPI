@@ -17,6 +17,7 @@ public class Role(string name, DateTime? deleted)
     // наименование роли пользователя
     public string Name { get; set; } = name;
 
+
     // дата и время удаления записи о роли пользователя
     public DateTime? Deleted { get; set; } = deleted;
 
@@ -58,6 +59,6 @@ public class Role(string name, DateTime? deleted)
 
     // статический метод, возвращающий список объектов-DTO
     public static List<RoleDto> RolesToDto(List<Role> srcRoles) =>
-        srcRoles.Select(RoleToDto).ToList();
+        [.. srcRoles.Select(RoleToDto)];
 
 } // class Role

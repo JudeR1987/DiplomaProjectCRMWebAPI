@@ -40,7 +40,7 @@ public class EmployeeService(int employeeId, int serviceId, DateTime? deleted)
 
     // конструктор по умолчанию
     public EmployeeService() : this(0, 0, null) {
-    } // EmployeeService()
+    } // EmployeeService
 
 
     // статический метод, возвращающий новый объект-копию
@@ -58,9 +58,7 @@ public class EmployeeService(int employeeId, int serviceId, DateTime? deleted)
     public static EmployeeServiceDto EmployeeServiceToDto(EmployeeService srcEmployeeService) =>
         new(srcEmployeeService.Id,
             srcEmployeeService.EmployeeId,
-            // Employee.EmployeeToDto(srcEmployeeService.Employee),
             srcEmployeeService.ServiceId,
-            // Service.ServiceToDto(srcEmployeeService.Service),
             srcEmployeeService.Deleted
         );
 

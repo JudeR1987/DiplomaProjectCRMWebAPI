@@ -46,19 +46,6 @@ public class WorkDay(int employeeId, DateTime date, bool isWorking,
     public DateTime? Deleted { get; set; } = deleted;
 
 
-    // вычисляемые свойства
-
-    // длительность по времени всех промежутков для перерыва
-    /*public TimeSpan BreakTime =>
-        new(0, 0, BreakSlots.Sum(breakSlot => breakSlot.Length));*/
-
-
-    // длительность по времени рабочего дня
-    /*public TimeSpan WorkTime => IsWorking
-        ? EndTime - StartTime - BreakTime
-        : new TimeSpan(0, 0, 0);*/
-
-
     // навигационные свойства для связи "многие ко многим" Schedule <--> Slots
 
     // связное свойство для таблицы "РАСПИСАНИЕ_СВОБОДНЫЕ_ПРОМЕЖУТКИ_ВРЕМЕНИ", связь 1:M
@@ -85,7 +72,7 @@ public class WorkDay(int employeeId, DateTime date, bool isWorking,
     // конструктор по умолчанию
     public WorkDay() : this(0, DateTime.Now.Date, false,
         new TimeOnly(0, 0), new TimeOnly(0, 0), null) {
-    } // WorkDay()
+    } // WorkDay
 
 
     // статический метод, возвращающий новый объект-копию
@@ -113,17 +100,7 @@ public class WorkDay(int employeeId, DateTime date, bool isWorking,
             srcWorkDay.IsWorking,
             srcWorkDay.StartTime.ToString(),
             srcWorkDay.EndTime.ToString(),
-            /*srcWorkDay.BreakTime,*/
-            /*srcWorkDay.WorkTime,*/
-            /*Slot.SlotsToDto(srcWorkDay.FreeSlots),
-            Slot.SlotsToDto(srcWorkDay.BreakSlots),*/
             srcWorkDay.Deleted
         );
-
-
-    // статический метод, возвращающий список объектов-DTO
-    /*public static List<CityDto> CitiesToDto(List<City> srcCities) =>
-        //srcCities.Select(CityToDto).ToList();
-        [.. srcCities.Select(CityToDto)];*/
 
 } // class WorkDay

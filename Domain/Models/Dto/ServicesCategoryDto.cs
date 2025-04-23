@@ -14,14 +14,5 @@ public record ServicesCategoryDto(
     // дата и время удаления записи о категории услуг
     DateTime? Deleted
 
-    // ?
-    // api_id  Integer Внешний идентификатор категории
-
-    // ? вес категории(используется для сортировки категорий при отображении)
-    //int Weight
-
-    // ?
-    // staff array   Список ID сотрудников, оказывающих услугу
-
     );
 // record ServicesCategoryDto

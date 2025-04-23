@@ -94,17 +94,6 @@ public class Record(int employeeId, int clientId, DateTime date,
         .Sum(recordService => recordService.TotalPrice);
 
 
-    // clients_count integer<int32>
-
-    // last_change_date string <date-time> Дата последнего редактирования записи
-
-    // prepaid boolean Доступна ли онлайн-оплата для записи
-
-    // prepaid_confirmed boolean Статус online-оплаты
-
-    // activity_id number ID групповой записи
-
-
     // конструктор по умолчанию
     public Record() : this(0, 0, DateTime.Now.AddDays(1),
         DateTime.Now.AddDays(-1), 3600, null, 0, false, false, null) {
@@ -135,9 +124,7 @@ public class Record(int employeeId, int clientId, DateTime date,
     public static RecordDto RecordToDto(Record srcRecord) =>
         new(srcRecord.Id,
             Employee.EmployeeToDto(srcRecord.Employee),
-            // srcRecord.EmployeeId,
             Client.ClientToDto(srcRecord.Client),
-            // srcRecord.ClientId,
             srcRecord.Date,
             srcRecord.CreateDate,
             srcRecord.Length,
@@ -145,7 +132,6 @@ public class Record(int employeeId, int clientId, DateTime date,
             srcRecord.Attendance,
             srcRecord.IsOnline,
             srcRecord.IsPaid,
-            // RecordService.RecordsServicesToDto(srcRecord.RecordsServices),
             srcRecord.TotalPrice,
             srcRecord.Deleted
         );

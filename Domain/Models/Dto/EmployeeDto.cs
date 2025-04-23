@@ -7,9 +7,6 @@ public record EmployeeDto(
     // идентификатор записи о сотруднике
     int Id,
 
-    // имя сотрудника
-    //string Name,
-
     // данные о пользователе
     UserDto User,
 
@@ -27,9 +24,6 @@ public record EmployeeDto(
 
     // путь к файлу аватарки сотрудника
     string Avatar,
-
-    // услуги, предоставляемые сотрудником
-    // List<ServiceDto> Services,
 
     // дата и время удаления записи о сотруднике
     DateTime? Deleted

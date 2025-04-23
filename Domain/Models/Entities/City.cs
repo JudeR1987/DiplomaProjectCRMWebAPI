@@ -44,7 +44,7 @@ public class City(string name, int countryId, DateTime? deleted)
 
     // конструктор по умолчанию
     public City() : this("", 0, null) {
-    } // City()
+    } // City
 
 
     // статический метод, возвращающий новый объект-копию
@@ -64,14 +64,7 @@ public class City(string name, int countryId, DateTime? deleted)
         new(srcCity.Id,
             srcCity.Name,
             Country.CountryToDto(srcCity.Country ?? new Country()),
-            //srcCity.CountryId,
             srcCity.Deleted
         );
-
-
-    // статический метод, возвращающий список объектов-DTO
-    /*public static List<CityDto> CitiesToDto(List<City> srcCities) =>
-        //srcCities.Select(CityToDto).ToList();
-        [.. srcCities.Select(CityToDto)];*/
 
 } // class City

@@ -2,7 +2,6 @@
 using Domain.Context;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Application.Repositories;
 

@@ -29,7 +29,7 @@ public class Specialization(string name, DateTime? deleted)
 
     // конструктор по умолчанию
     public Specialization() : this("", null) {
-    } // Specialization()
+    } // Specialization
 
 
     // статический метод, возвращающий новый объект-копию

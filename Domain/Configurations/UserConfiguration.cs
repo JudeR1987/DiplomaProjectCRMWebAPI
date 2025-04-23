@@ -21,21 +21,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .IsUnicode();
 
-        // настроить ограничение поля Login для User:
-        // задать ограничение максимальной длины строкового поля логина пользователя
-        // nvarchar(50) not null
-        /*builder
-            .Property(user => user.Login)
-            .HasMaxLength(50)
-            .IsRequired()
-            .IsUnicode();*/
-
-        // настроить ограничение поля Login для User:
-        // задать уникальность строкового поля логина пользователя
-        /*builder
-            .HasIndex(user => user.Login)
-            .IsUnique();*/
-
         // настроить ограничение поля Phone для User:
         // задать ограничение максимальной длины строкового поля телефона пользователя
         // nvarchar(12) not null
@@ -44,12 +29,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(12)
             .IsRequired()
             .IsUnicode();
-
-        // настроить ограничение поля Phone для User:
-        // задать уникальность строкового поля телефона пользователя
-        /*builder
-            .HasIndex(user => user.Phone)
-            .IsUnique();*/
 
         // настроить ограничение поля Email для User:
         // задать ограничение максимальной длины строкового поля
@@ -60,12 +39,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(50)
             .IsRequired()
             .IsUnicode();
-
-        // настроить ограничение поля Email для User:
-        // задать уникальность строкового поля электронной почты пользователя
-        /*builder
-            .HasIndex(user => user.Email)
-            .IsUnique();*/
 
         // настроить ограничение поля Password для User:
         // задать ограничение минимальной длины строкового поля пароля пользователя
@@ -119,14 +92,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         #region Инициализация таблицы "ПОЛЬЗОВАТЕЛИ"
 
         var users = new List<User> {
-            new() { Id = 1, UserName = "Андрей М.",   /*Login = "+72332123456", */Phone = "+72332123456", Email = "diaspora@inbox.ru",   Password = "+72332123456", Avatar = "http://localhost:5297/download/getimage/users/photos/user001_31710.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 2, UserName = "Вераника К.", /*Login = "+72252546231", */Phone = "+72252546231", Email = "pilka@bk.ru",         Password = "+72252546231", Avatar = "http://localhost:5297/download/getimage/users/photos/user002_5fed0.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 3, UserName = "Елена Б.",    /*Login = "+74251635241", */Phone = "+74251635241", Email = "holiday@hotmail.com", Password = "+74251635241", Avatar = "http://localhost:5297/download/getimage/users/photos/user003_56c80.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 4, UserName = "Татьяна С.",  /*Login = "+78990123987", */Phone = "+78990123987", Email = "astrology@live.com",  Password = "+78990123987", Avatar = "http://localhost:5297/download/getimage/users/photos/user004_40af0.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 5, UserName = "Наталья О.",  /*Login = "+79090159951", */Phone = "+79090159951", Email = "kabala@furmail.ru",   Password = "+79090159951", Avatar = "http://localhost:5297/download/getimage/users/photos/user005_d7810.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 6, UserName = "Надежда И.",  /*Login = "+71459024075", */Phone = "+71459024075", Email = "capacity@yandex.ru",  Password = "+71459024075", Avatar = "http://localhost:5297/download/getimage/users/photos/user006_86940.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 7, UserName = "Валерия Б.",  /*Login = "+72113391752", */Phone = "+72113391752", Email = "big@hotmail.com",     Password = "+72113391752", Avatar = "http://localhost:5297/download/getimage/users/photos/user007_24e30.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
-            new() { Id = 8, UserName = "Анжелика А.", /*Login = "+79004005566", */Phone = "+79004005566", Email = "big99@hotmail.com",   Password = "+79004005566", Avatar = "http://localhost:5297/download/getimage/users/photos/user008_1cd10.jpg",  UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null }
+            new() { Id = 1, UserName = "Андрей М.",   Phone = "+72332123456", Email = "diaspora@inbox.ru",   Password = "+72332123456", Avatar = "http://localhost:5297/download/getimage/users/photos/user001_31710.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 2, UserName = "Вераника К.", Phone = "+72252546231", Email = "pilka@bk.ru",         Password = "+72252546231", Avatar = "http://localhost:5297/download/getimage/users/photos/user002_5fed0.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 3, UserName = "Елена Б.",    Phone = "+74251635241", Email = "holiday@hotmail.com", Password = "+74251635241", Avatar = "http://localhost:5297/download/getimage/users/photos/user003_56c80.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 4, UserName = "Татьяна С.",  Phone = "+78990123987", Email = "astrology@live.com",  Password = "+78990123987", Avatar = "http://localhost:5297/download/getimage/users/photos/user004_40af0.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 5, UserName = "Наталья О.",  Phone = "+79090159951", Email = "kabala@furmail.ru",   Password = "+79090159951", Avatar = "http://localhost:5297/download/getimage/users/photos/user005_d7810.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 6, UserName = "Надежда И.",  Phone = "+71459024075", Email = "capacity@yandex.ru",  Password = "+71459024075", Avatar = "http://localhost:5297/download/getimage/users/photos/user006_86940.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 7, UserName = "Валерия Б.",  Phone = "+72113391752", Email = "big@hotmail.com",     Password = "+72113391752", Avatar = "http://localhost:5297/download/getimage/users/photos/user007_24e30.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null },
+            new() { Id = 8, UserName = "Анжелика А.", Phone = "+79004005566", Email = "big99@hotmail.com",   Password = "+79004005566", Avatar = "http://localhost:5297/download/getimage/users/photos/user008_1cd10.jpg", UserToken = Utils.GetRandomString(), IsLogin = false, Deleted = null }
         };
 
         // инициализация таблицы "ПОЛЬЗОВАТЕЛИ"

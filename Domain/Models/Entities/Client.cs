@@ -11,7 +11,7 @@ namespace Domain.Models.Entities;
 public class Client(string? surname, string name, string? patronymic,
     string phone, string email, int gender, int importanceId,
     double discount, string? card, DateTime birthDate, string? comment,
-    int spent, int balance, DateTime? deleted/*, int smsBirthday, int smsNot*/)
+    int spent, int balance, DateTime? deleted)
 {
     // первичный ключ - идентификатор записи о клиенте
     public int Id { get; set; }
@@ -86,57 +86,17 @@ public class Client(string? surname, string name, string? patronymic,
     public virtual List<Employee> Employees { get; set; } = [];
 
 
-    // признак отправки поздравления на День Рождения клиента по SMS
-    // (0 - не поздравлять, 1 - поздравлять)
-    //public int SmsBirthday { get; set; } = smsBirthday;
-
-
-    // признак исключения клиента из SMS-рассылок
-    // (0 - не исключать, 1 - исключить)
-    //public int SmsNot { get; set; } = smsNot;
-
-
-    // ? categories object Массив идентификаторов категорий клиента
-
-    // ? custom_fields object Массив дополнительных полей клиента
-    // в виде пар "api-key": "value"
-
-    /*
-     * name string Имя клиента
-     * surname string Фамилия клиента
-     * patronymic string Отчество клиента
-     * phone string Телефон клиента
-     * email string Email клиента
-     * sex_id number Пол клиента (1 - мужской, 2 - женский, 0 - не известен)
-     * importance_id number Класс важности клиента (0 - нет, 1 - бронза, 2 - серебро, 3 - золото)
-     * discount number Скидка клиента
-     * card string Номер карты клиента
-     * birth_date string Дата рождения клиента в формате yyyy-mm-dd
-     * comment string Комментарий
-     * spent number Сколько потратил средств в компании на момент добавления
-     * balance number Баланс клиента
-     * sms_check number 1 - Поздравлять с Днем Рождения по SMS, 0 - не поздравлять
-     * sms_not number 1 - Исключить клиента из SMS рассылок, 0 - не исключать
-     ? categories object Массив идентификаторов категорий клиента
-     ? custom_fields object Массив дополнительных полей клиента в виде пар "api-key": "value"
-     */
-
     // Ф.И.О. клиента
     public string FullName =>
         string.IsNullOrEmpty(Surname) || string.IsNullOrEmpty(Patronymic)
         ? Name
         : $"{Surname} {Name[0]}.{Patronymic[0]}.";
 
-    /*public string FullName =>
-        $"{(string.IsNullOrEmpty(Surname) ? "" : $"{Surname} ")}" +
-        $"{(string.IsNullOrEmpty(Name) ? "" : $"{Name[0]}.")}" +
-        $"{(string.IsNullOrEmpty(Patronymic) ? "" : $"{Patronymic[0]}.")}";*/
-
 
     // конструктор по умолчанию
     public Client() : this(null, "", null, "", "", 0, 0,
         0, null, DateTime.Now.Date, null, 0, 0, null/*, 0, 0*/) {
-    } // Client()
+    } // Client
 
 
     // статический метод, возвращающий новый объект-копию
